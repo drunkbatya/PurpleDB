@@ -3,7 +3,7 @@
 #include <string.h>
 #include "error.h"
 #include "shared.h"
-#include "select.h"
+#include "modules.h"
 
 int check_if_table_exists(char *table_name) {
     if (strcmp(table_name, LEVELS) == 0 || strcmp(table_name, MODULES) == 0
@@ -125,6 +125,13 @@ void insert(char **lecs) {
     if (validate_modules(lecs) == 0) {
         return;
     }
+    char *inserts[5];
+    inserts[0] = lecs[1];
+    inserts[1] = lecs[2];
+    inserts[2] = lecs[3];
+    inserts[3] = lecs[4];
+    inserts[4] = lecs[5];
+    insert_for_modules(inserts);
 }
 
 void select(char **lecs) {

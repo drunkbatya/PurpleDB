@@ -31,5 +31,6 @@ int get_file_size_in_bytes(FILE *pfile);
 void print_struct(modules *local, int identifier);
 void insert_for_modules(char **new_line);
 void write_record_in_file(FILE *pfile, modules *record_to_write, int index);
+int check_id(char * id);
 
 #endif  // SRC_FUNCTIONS_H_
