@@ -33,6 +33,7 @@ int main() {
     return 0;
 }
 */
+
 void select_for_modules(char **field, char **where) {
     int identifier;
     for (int i = 0; i < 5; i++) {
@@ -67,7 +68,7 @@ void select_for_modules(char **field, char **where) {
         }
     }
     fclose(ptr);
-    if (counter == 0) error_field_not_found();
+    if (counter == 0) error_record_not_found();
 }
 
 

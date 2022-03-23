@@ -119,7 +119,7 @@ int parse_insert_query(char *str) {
     lecs[4] = lecs[5];  // value4
     lecs[5] = lecs[6];  // value5
     pretty_print_insert(lecs);
-    // select(lecs);
+    insert(lecs);
     return (1);
 }
 
