@@ -1,7 +1,7 @@
 // Copyright [2022] <griselle, sparelis, laynadre>
 
-#ifndef SRC_STRUCT_H_
-#define SRC_STRUCT_H_
+#ifndef SRC_MAIN_H_
+#define SRC_MAIN_H_
 
 typedef struct tModules {
     int id;
@@ -24,4 +24,4 @@ typedef struct tStatus {
     char status_change_date[11];
     char status_change_time[9];
 } status_events;
-#endif  // SRC_STRUCT_H_
+#endif  // SRC_MAIN_H_
