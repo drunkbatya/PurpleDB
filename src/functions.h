@@ -1,5 +1,5 @@
-#ifndef SRC_SELECT_H_
-#define SRC_SELECT_H_
+#ifndef SRC_FUNCTIONS_H_
+#define SRC_FUNCTIONS_H_
 
 typedef struct tModules {
     int id;
@@ -29,5 +29,7 @@ int get_records_count_in_file(FILE *pfile);
 modules read_record_from_file(FILE *pfile, int index);
 int get_file_size_in_bytes(FILE *pfile);
 void print_struct(modules *local, int identifier);
+void insert_for_modules(char **new_line);
+void write_record_in_file(FILE *pfile, modules *record_to_write, int index);
 
-#endif  // SRC_SELECT_H_
+#endif  // SRC_FUNCTIONS_H_

@@ -1,71 +1,52 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-typedef struct tModules {
-    int id;
-    char module_name[30];
-    int mem_level_modules;
-    int cell_num;
-    int deletion_flag;
-} modules;
-
-typedef struct tLevels {
-    int mem_level_levels;
-    int cell_amount;
-    int protect_flag;
-} levels;
-
-typedef struct tStatus {
-    int event_id;
-    int module_id;
-    int new_status;
-    char status_change_date[11];
-    char status_change_time[9];
-} status_events;
+#include "error.h"
+#include "shared.h"
+#include "functions.h"
 
 
-int compare (modules *local, char *id, char *module_name, char *mem_level_modules, char *cell_num, char *deletion_flag);
-void select_for_modules(char *id, char *module_name, char *mem_level_modules, char *cell_num, char *deletion_flag);
 int get_records_count_in_file(FILE *pfile);
 modules read_record_from_file(FILE *pfile, int index);
-void print_struct(modules *local);
-void insert_for_modules(char *id, char *module_name, char *mem_level_modules, char *cell_num, char *deletion_flag);
 int get_file_size_in_bytes(FILE *pfile);
 void write_record_in_file(FILE *pfile, modules *record_to_write, int index);
 
 
-int main() {
-    char id[] = "1";
-    char module_name[] = "*";
-    char mem_level_modules[] = "1";
-    char cell_num[] = "1";
-    char deletion_flag[] = "1";
-    insert_for_modules(id, module_name, mem_level_modules, cell_num, deletion_flag);
-    return 0;
-}
-
-
-void insert_for_modules(char *id, char *module_name, char *mem_level_modules, char *cell_num, char *deletion_flag) {
-    modules local;
-    local.id = atoi(id);
-    for (int i = 0; i < (int)strlen(module_name); i++) {
-        local.module_name[i] = module_name[i];
+void insert_for_modules(char **new_line) {
+    int flag = check_id(new_line[0]);
+    if (flag == 0) {
+        invalid_id_error();
+        return;
     }
-    local.mem_level_modules = atoi(mem_level_modules);
-    local.cell_num = atoi(cell_num);
-    local.deletion_flag = atoi(deletion_flag);
-    FILE *ptr = fopen("../materials/master_modules.db", "a");
+    modules local;
+    local.id = atoi(new_line[0]);
+    for (int i = 0; i < (int)strlen(new_line[1]); i++) {
+        local.module_name[i] = new_line[1][i];
+    }
+    local.mem_level_modules = atoi(new_line[2]);
+    local.cell_num = atoi(new_line[3]);
+    local.deletion_flag = atoi(new_line[4]);
+    FILE *ptr = fopen(MODULES_PATH, "a");
     int len = get_records_count_in_file(ptr);
     write_record_in_file(ptr, &local, len);
     fclose(ptr);
-    FILE *read = fopen("../materials/master_modules.db", "r");
-    modules new;
-    for (int i = 0; i < len + 1; i++) {
-        new = read_record_from_file(read, i);
-            print_struct(&new);
+}
+
+
+int check_id(char * id) {
+    modules local;
+    int counter = 0;
+    FILE *ptr = fopen(MODULES_PATH, "r");
+    int len = get_records_count_in_file(ptr);
+    for (int i = 0; i < len; i++) {
+        local = read_record_from_file(ptr, i);
+        if (local.id == atoi(id)) {
+            fclose(ptr);
+            return 0;
+        }
     }
-    fclose(read);
+    fclose(ptr);
+    return 1;
 }
 
 
@@ -93,7 +74,7 @@ int get_records_count_in_file(FILE *pfile) {
 // Function of reading a record of a given type from a file by its serial number.
 modules read_record_from_file(FILE *pfile, int index) {
     // Calculation of the offset at which desired entry should be located from the beginning of the file.
-    int offset = index * sizeof(modules);          // оффсет - сдвиг??
+    int offset = index * sizeof(modules);
     // Move the position pointer to the calculated offset from the beginning of the file.
     fseek(pfile, offset, SEEK_SET);
 
@@ -117,12 +98,4 @@ int get_file_size_in_bytes(FILE *pfile) {
     return size;
 }
 
-void print_struct(modules *local) {
-    printf("%d ", local->id);
-    printf("%s ", local->module_name);
-    printf("%d ", local->mem_level_modules);
-    printf("%d ", local->cell_num);
-    printf("%d ", local->deletion_flag);
-    printf("\n");
-}
 

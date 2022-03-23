@@ -8,5 +8,6 @@ int error_shell_query_parse(void);
 int error_miss_semicolon(void);
 int error_unknown_db(char *table_name);
 void error_field_not_found();
+void invalid_id_error();
 
 #endif  // SRC_ERROR_H_

@@ -26,3 +26,7 @@ int error_unknown_db(char *table_name) {
 void error_field_not_found() {
     printf("Field not found, try again\n");
 }
+
+void invalid_id_error() {
+    printf("Id already exists\n");
+}
