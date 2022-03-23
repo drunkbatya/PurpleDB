@@ -5,6 +5,7 @@
 #include "error.h"
 #include "client.h"
 #include "purple_lib.h"
+#include "shared.h"
 
 // main shell loop
 int client(void) {
@@ -74,7 +75,7 @@ int parse_select_query(char *str) {
     lecs[2] = lecs[4];  // where
     lecs[3] = lecs[6];  // where_val
     pretty_print_select(lecs);
-    // select(lecs);
+    select(lecs);
     return (1);
 }
 
@@ -110,7 +111,7 @@ int parse_insert_query(char *str) {
     lecs[4] = lecs[5];  // value4
     lecs[5] = lecs[6];  // value5
     pretty_print_insert(lecs);
-    // select(lecs);
+    //select(lecs);
     return (1);
 }
 

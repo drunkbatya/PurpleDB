@@ -3,13 +3,7 @@
 #include <string.h>
 #include "error.h"
 #include "shared.h"
-
-int select(char **lecs);
-int check_if_table_exists(char *table_name);
-void assign_modules_structure(char **lecs);
-void assign_modules_select(char **lecs, char **select);
-void assign_modules_where(char **lecs, char **where);
-void print_mock(char **select, char **where);
+#include "select.h"
 
 // MOCK
 /*
@@ -44,11 +38,11 @@ void assign_modules_select(char **lecs, char **select) {
     if (strcmp(lecs[0], "*") == 0) {  // To select all columns
         for (int i = 0; i < 5; i++) {
             select[i] = lecs[0];
-            return;
         }
+        return;
     }
     for (int i = 0; i < 5; i++) {
-        select[i] = "";
+        select[i] = "0";
     }
 
     if (strcmp(lecs[0], "id") == 0) {
@@ -68,8 +62,8 @@ void assign_modules_where(char **lecs, char **where) {
     if (strcmp(lecs[2], "*") == 0) {  // if no WHERE
         for (int i = 0; i < 5; i++) {
             where[i] = lecs[2];
-            return;
         }
+        return;
     }
     for (int i = 0; i < 5; i++) {
         where[i] = "";
@@ -106,7 +100,6 @@ int select(char **lecs) {
         error_unknown_db(lecs[1]);
         return 0;
     }
-
   //  if (strcmp(lecs[1], LEVELS) == 0) {
   //      select_for_levels();
  //   }
@@ -116,7 +109,7 @@ int select(char **lecs) {
         char *where[5];
         assign_modules_select(lecs, select);
         assign_modules_where(lecs, where);
-      //  print_mock(select, where);
+        print_mock(select, where);
         select_for_modules(select, where);
     }
 

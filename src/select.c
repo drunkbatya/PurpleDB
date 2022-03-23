@@ -2,39 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include "error.h"
+#include "shared.h"
+#include "select.h"
 
-typedef struct tModules {
-    int id;
-    char module_name[30];
-    int mem_level_modules;
-    int cell_num;
-    int deletion_flag;
-} modules;
-
-typedef struct tLevels {
-    int mem_level_levels;
-    int cell_amount;
-    int protect_flag;
-} levels;
-
-typedef struct tStatus {
-    int event_id;
-    int module_id;
-    int new_status;
-    char status_change_date[11];
-    char status_change_time[9];
-} status_events;
-
-
-void select_for_modules(char **field, char **where);
-int compare (modules *local, int check_field, char * temp);
-int get_records_count_in_file(FILE *pfile);
-modules read_record_from_file(FILE *pfile, int index);
-int get_file_size_in_bytes(FILE *pfile);
-void print_struct(modules *local, int identifier);
-
-
-
+/*
 int main() {
     char *select[5];
     char *id = "*";
@@ -61,7 +32,7 @@ int main() {
     select_for_modules(select, where);
     return 0;
 }
-
+*/
 void select_for_modules(char **field, char **where) {
     int identifier;
     for (int i = 0; i < 5; i++) {
@@ -86,7 +57,7 @@ void select_for_modules(char **field, char **where) {
     }
     modules local;
     int counter = 0;
-    FILE *ptr = fopen("../materials/master_modules.db", "r");
+    FILE *ptr = fopen(MODULES_PATH, "r");
     int len = get_records_count_in_file(ptr);
     for (int i = 0; i < len; i++) {
         local = read_record_from_file(ptr, i);
@@ -153,12 +124,17 @@ int get_file_size_in_bytes(FILE *pfile) {
 }
 
 void print_struct(modules *local, int identifier) {
-    if (identifier == 0) printf("%d\n", local->id);
-    if (identifier == 1) printf("%s\n", local->module_name);
-    if (identifier == 2) printf("%d\n", local->mem_level_modules);
-    if (identifier == 3) printf("%d\n", local->cell_num);
-    if (identifier == 4) printf("%d\n", local->deletion_flag);
-    if (identifier == 5) {
+    if (identifier == 0) {
+        printf("%d\n", local->id);
+    } else if (identifier == 1) {
+        printf("%s\n", local->module_name);
+    } else if (identifier == 2) {
+        printf("%d\n", local->mem_level_modules);
+    } else if (identifier == 3) {
+        printf("%d\n", local->cell_num);
+    } else if (identifier == 4) {
+        printf("%d\n", local->deletion_flag);
+    } else if (identifier == 5) {
         printf("%d ", local->id);
         printf("%s ", local->module_name);
         printf("%d ", local->mem_level_modules);
