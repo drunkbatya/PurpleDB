@@ -1,6 +1,7 @@
 // Copyright [2022] <griselle, sparelis, laynadre>
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "error.h"
 #include "client.h"
@@ -33,6 +34,8 @@ int parse_query(char *str) {
         return (1);
     if (strlen(str) < 3)
         return (0);
+    if (strncmp(str, "exit", 4) == 0)
+        program_exit();
     if (*(str + strlen(str) - 2) != ';')
         return (error_miss_semicolon());
     if (strncmp(str, "select ", 7) == 0) {
@@ -43,6 +46,11 @@ int parse_query(char *str) {
     if (strncmp(str, "insert into ", 12) == 0) {
         if (!parse_insert_query(str))
             return (0);
+        return (1);
+    }
+
+    if (strncmp(str, "show tables;", 12) == 0) {
+        show_tables();
         return (1);
     }
     return (0);
@@ -219,4 +227,20 @@ void pretty_print_insert(char **arr) {
     printf("\n\t%s,", arr[4]);
     printf("\n\t%s", arr[5]);
     printf("\n"NC);
+}
+
+void show_tables(void) {
+    printf(BOLD"SHOW TABLES"NC);
+    printf("\n\n");
+    printf(" -----name------\n");
+    printf("| modules       |\n");
+    printf("| levels        |\n");
+    printf("| status_events |\n");
+    printf(" ---------------\n");
+}
+
+void program_exit(void) {
+    // save all shit
+    printf("Bye..\n");
+    exit(0);
 }
