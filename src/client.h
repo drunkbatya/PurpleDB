@@ -5,7 +5,16 @@
 
 #define PS1 "PurpleDB :-( "
 #define WELCOME "Welcome to PurpleDB!\n\n"
-#define SHELL_BUF_SIZE 10
+#define SHELL_BUF_SIZE 60
+
+#define NC "\033[0m"
+#define CYAN "\033[0;36m"
+#define BOLD "\033[1m"
 
 int client(void);
+int parse_query(char *str);
+int parse_select_query(char *str);
+void pretty_print_select(char **arr);
+int check_select_query_no_where(char **lecs);
+int check_select_query_where(char **lecs);
 #endif  // SRC_CLIENT_H_
