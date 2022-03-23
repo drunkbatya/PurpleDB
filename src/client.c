@@ -49,8 +49,6 @@ int parse_select_query(char *str) {
     char *where;
     char *where_val;
 
-    // select * from modules where id = 1;
-    // select * from modules;
     strtok(str, " "); // skip select
     column = strtok(NULL, " ");
     if (column == NULL || strchr(column, ';'))
@@ -86,10 +84,26 @@ int parse_select_query(char *str) {
                 return (0);
         }
     }
-    printf("|%s|\n", table_name);
-    //pretty_print_select(table_name, column, where, where_val);
+    pretty_print_select(table_name, column, where, where_val);
     //select(char *table_name, char *column, char *where, char *where_val);
     return (1);
 }
 
-// void pretty_print_select(char *table_name, char *column, char *where, char *where_val)
+void pretty_print_select(char *table_name, char *column, char *where, char *where_val) {
+    printf(BOLD"SELECT"NC);
+    printf("\n\t"CYAN);
+    printf("%s", column);
+    printf("\n"NC);
+    printf(BOLD"FROM"NC);
+    printf("\n\t"CYAN);
+    printf("%s", table_name);
+    if (!strcmp(where, "*")) {
+        printf("\n"NC);
+        return;
+    }
+    printf("\n"NC);
+    printf(BOLD"WHERE"NC);
+    printf("\n\t"CYAN);
+    printf("%s = %s", where, where_val);
+    printf("\n"NC);
+}
