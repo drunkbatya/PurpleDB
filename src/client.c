@@ -48,7 +48,11 @@ int parse_query(char *str) {
             return (0);
         return (1);
     }
-
+    if (strncmp(str, "delete from ", 12) == 0) {
+        if (!parse_delete_query(str))
+            return (0);
+        return (1);
+    }
     if (strncmp(str, "show tables;", 12) == 0) {
         show_tables();
         return (1);
@@ -89,7 +93,7 @@ int parse_select_query(char *str) {
 
 int parse_insert_query(char *str) {
     // table_name, values_op, value1,
-    // value2, value3, value4, value 5
+    // value2, value3, value4, value5
     //
     // in our way we have only 3 or 5 unit structures
     char *lecs[7];
@@ -119,10 +123,31 @@ int parse_insert_query(char *str) {
     lecs[4] = lecs[5];  // value4
     lecs[5] = lecs[6];  // value5
     pretty_print_insert(lecs);
-    // select(lecs);
+    // insert(lecs);
     return (1);
 }
 
+int parse_delete_query(char *str) {
+    // table_name, where_op, where,
+    // equal_op, where_val
+    char *lecs[5];
+    int lecs_counter;
+
+    lecs_counter = 0;
+    strtok(str, " ");  // skip delete
+    strtok(NULL, " ");  // skip from
+    while (lecs_counter < 5) {
+        lecs[lecs_counter] = strtok(NULL, " ");
+        lecs_counter++;
+    }
+    if (!check_delete_query(lecs))
+        return (0);
+    lecs[1] = lecs[2];  // where this
+    lecs[2] = lecs[4];  // equal this
+    pretty_print_delete(lecs);
+    // delete(lecs);
+    return (1);
+}
 
 int check_select_query_no_where(char **lecs) {
     if (lecs[0] == NULL || strchr(lecs[0], ';'))  // column
@@ -190,6 +215,25 @@ int check_insert_query_5arg(char **lecs) {
     return (1);
 }
 
+int check_delete_query(char **lecs) {
+    if (lecs[0] == NULL || strchr(lecs[0], ';'))  // table_name
+        return (0);
+    if (lecs[1] == NULL || strcmp(lecs[1], "where"))
+        return (0);
+    if (lecs[2] == NULL || strchr(lecs[2], ';'))  // where this
+        return (0);
+    if (lecs[3] == NULL || strcmp(lecs[3], "="))
+        return (0);
+    if (lecs[4] == NULL)  // equals this
+        return (0);
+    if (strchr(lecs[4], ';')) {
+        *(strchr(lecs[4], ';')) = '\0';  // remove ';'
+        if (!strlen(lecs[4]))
+            return (0);
+    }
+    return (1);
+}
+
 void pretty_print_select(char **arr) {
     printf(BOLD"SELECT"NC);
     printf("\n\t"CYAN);
@@ -226,6 +270,17 @@ void pretty_print_insert(char **arr) {
     printf("\n\t%s,", arr[3]);
     printf("\n\t%s,", arr[4]);
     printf("\n\t%s", arr[5]);
+    printf("\n"NC);
+}
+
+void pretty_print_delete(char **arr) {
+    printf(BOLD"DELETE FROM"NC);
+    printf("\n\t"CYAN);
+    printf("%s", arr[0]);
+    printf("\n"NC);
+    printf(BOLD"WHERE"NC);
+    printf("\n\t"CYAN);
+    printf("%s = %s", arr[1], arr[2]);
     printf("\n"NC);
 }
 

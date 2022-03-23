@@ -15,12 +15,15 @@ int client(void);
 int parse_query(char *str);
 int parse_select_query(char *str);
 int parse_insert_query(char *str);
+int parse_delete_query(char *str);
 int check_select_query_no_where(char **lecs);
 int check_select_query_where(char **lecs);
 int check_insert_query_3arg(char **lecs);
 int check_insert_query_5arg(char **lecs);
+int check_delete_query(char **lecs);
 void pretty_print_select(char **arr);
 void pretty_print_insert(char **arr);
+void pretty_print_delete(char **arr);
 void show_tables(void);
 void program_exit(void);
 #endif  // SRC_CLIENT_H_
