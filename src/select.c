@@ -125,21 +125,27 @@ int get_file_size_in_bytes(FILE *pfile) {
 
 void print_struct(modules *local, int identifier) {
     if (identifier == 0) {
-        printf("%d\n", local->id);
+        printf("ID\n");
+        printf("| %d |\n", local->id);
     } else if (identifier == 1) {
-        printf("%s\n", local->module_name);
+        printf("MODULE NAME\n");
+        printf("| %s |\n", local->module_name);
     } else if (identifier == 2) {
-        printf("%d\n", local->mem_level_modules);
+        printf("MEMORY LEVEL MODULES\n");
+        printf("| %d |\n", local->mem_level_modules);
     } else if (identifier == 3) {
-        printf("%d\n", local->cell_num);
+        printf("CELL NUMBER\n");
+        printf("| %d |\n", local->cell_num);
     } else if (identifier == 4) {
-        printf("%d\n", local->deletion_flag);
+        printf("DELETION FLAG\n");
+        printf("| %d |\n", local->deletion_flag);
     } else if (identifier == 5) {
-        printf("%d ", local->id);
-        printf("%s ", local->module_name);
-        printf("%d ", local->mem_level_modules);
-        printf("%d ", local->cell_num);
-        printf("%d ", local->deletion_flag);
+        printf("| ID | MODULE NAME | MEMORY LEVEL MODULES | CELL NUMBER | DELETION FLAG |\n");
+        printf("| %d ", local->id);
+        printf("| %s ", local->module_name);
+        printf("| %d ", local->mem_level_modules);
+        printf("| %d ", local->cell_num);
+        printf("| %d |", local->deletion_flag);
         printf("\n");
     }
 }
