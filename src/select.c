@@ -100,22 +100,6 @@ void select_for_modules(char **field, char **where) {
 }
 
 
-
-
-// void select_for_modules(char *id, char *module_name, char *mem_level_modules, char *cell_num, char *deletion_flag) {
-//     modules local;
-//     FILE *ptr = fopen("../materials/master_modules.db", "r");
-//     int len = get_records_count_in_file(ptr);
-//     for (int i = 0; i < len; i++) {
-//         local = read_record_from_file(ptr, i);
-//         if (compare(&local, id, module_name, mem_level_modules, cell_num, deletion_flag) == 1) {
-//             print_struct(&local);
-//         }
-//     }
-//     fclose(ptr);
-// }
-
-
 int compare (modules *local, int check_field, char *temp) {
     if ((check_field == 0) && (local->id == atoi(temp))) {
         return 1;
