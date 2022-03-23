@@ -14,6 +14,12 @@ int error_shell_query_parse(void) {
 }
 
 int error_miss_semicolon(void) {
-    printf("\nError! Incorrect query: miss semicolon - ';'\n");
+    printf("\nError! Incorrect query: missing semicolon - ';'\n");
     return (1);
 }
+
+int error_unknown_db(char *table_name) {
+    printf("\nError! No table '%s' found\n", table_name);
+    return (1);
+}
+
