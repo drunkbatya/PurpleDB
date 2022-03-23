@@ -5,7 +5,9 @@
 
 #define PS1 "PurpleDB :-( "
 #define WELCOME "Welcome to PurpleDB!\n\n"
-#define SHELL_BUF_SIZE 10
+#define SHELL_BUF_SIZE 40
 
 int client(void);
+int parse_query(char *str);
+int parse_select_query(char *str);
 #endif  // SRC_CLIENT_H_
