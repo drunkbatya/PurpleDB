@@ -14,5 +14,11 @@
 int client(void);
 int parse_query(char *str);
 int parse_select_query(char *str);
-void pretty_print_select(char *table_name, char *column, char *where, char *where_val);
+int parse_insert_query(char *str);
+int check_select_query_no_where(char **lecs);
+int check_select_query_where(char **lecs);
+int check_insert_query_3arg(char **lecs);
+int check_insert_query_5arg(char **lecs);
+void pretty_print_select(char **arr);
+void pretty_print_insert(char **arr);
 #endif  // SRC_CLIENT_H_
