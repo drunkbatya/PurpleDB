@@ -24,14 +24,12 @@ typedef struct tStatus {
     char status_change_time[9];
 } status_events;
 
-
 int compare (modules *local, char *id, char *module_name, char *mem_level_modules, char *cell_num, char *deletion_flag);
 void select_for_modules(char *id, char *module_name, char *mem_level_modules, char *cell_num, char *deletion_flag);
 int get_records_count_in_file(FILE *pfile);
 modules read_record_from_file(FILE *pfile, int index);
 void print_struct(modules *local);
 int get_file_size_in_bytes(FILE *pfile);
-
 
 int main() {
     char id[] = "*";
@@ -118,4 +116,3 @@ void print_struct(modules *local) {
     printf("%d ", local->deletion_flag);
     printf("\n");
 }
-
