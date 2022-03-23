@@ -44,7 +44,7 @@ int main() {
 
 void select_for_modules(char *id, char *module_name, char *mem_level_modules, char *cell_num, char *deletion_flag) {
     modules local;
-    FILE *ptr = fopen("../materials/master_modules.db", "r");
+    FILE *ptr = fopen("../db/master_modules.db", "r");
     int len = get_records_count_in_file(ptr);
     for (int i = 0; i < len; i++) {
         local = read_record_from_file(ptr, i);
