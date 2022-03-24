@@ -77,9 +77,9 @@ int assign_status_select(char **lecs, char **select) {
 }
 
 int assign_modules_select(char **lecs, char **select) {
-    if (strcmp(lecs[0], "*") == 0) {  // To select all columns
+    if (strcmp(lecs[1], "*") == 0) {  // To select all columns
         for (int i = 0; i < 5; i++) {
-            select[i] = lecs[0];
+            select[i] = lecs[1];
         }
         return 1;
     }
@@ -87,23 +87,23 @@ int assign_modules_select(char **lecs, char **select) {
         select[i] = "0";
     }
 
-    if (strcmp(lecs[0], "id") == 0) {
+    if (strcmp(lecs[1], "id") == 0) {
         select[0] = "1";
         return 1;
-    } else if (strcmp(lecs[0], "module_name") == 0) {
+    } else if (strcmp(lecs[1], "module_name") == 0) {
         select[1] = "1";
         return 1;
-    } else if (strcmp(lecs[0], "mem_level_modules") == 0) {
+    } else if (strcmp(lecs[1], "mem_level_modules") == 0) {
         select[2] = "1";
         return 1;
-    } else if (strcmp(lecs[0], "cell_num") == 0) {
+    } else if (strcmp(lecs[1], "cell_num") == 0) {
         select[3] = "1";
         return 1;
-    } else if (strcmp(lecs[0], "deletion_flag") == 0) {
+    } else if (strcmp(lecs[1], "deletion_flag") == 0) {
         select[4] = "1";
         return 1;
     } else {
-        error_unknown_column(lecs[0], lecs[1]);
+        error_unknown_column(lecs[1], lecs[0]);
         return 0;
     }
 }
