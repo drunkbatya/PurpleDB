@@ -1,9 +1,13 @@
+// Copyright [2022] <griselle, sparelis, laynadre>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include "error.h"
 #include "shared.h"
 #include "modules.h"
+#include "levels.h"
+#include "status.h"
 
 int check_if_table_exists(char *table_name) {
     if (strcmp(table_name, LEVELS) == 0 || strcmp(table_name, MODULES) == 0
@@ -15,9 +19,9 @@ int check_if_table_exists(char *table_name) {
 }
 
 int assign_levels_select(char **lecs, char **select) {
-    if (strcmp(lecs[0], "*") == 0) {  // To select all columns
+    if (strcmp(lecs[1], "*") == 0) {  // To select all columns
         for (int i = 0; i < 3; i++) {
-            select[i] = lecs[0];
+            select[i] = lecs[1];
         }
         return 1;
     }
@@ -25,25 +29,25 @@ int assign_levels_select(char **lecs, char **select) {
         select[i] = "0";
     }
 
-    if (strcmp(lecs[0], "mem_level_levels") == 0) {
+    if (strcmp(lecs[1], "mem_level_levels") == 0) {
         select[0] = "1";
         return 1;
-    } else if (strcmp(lecs[0], "cell_amount") == 0) {
+    } else if (strcmp(lecs[1], "cell_amount") == 0) {
         select[1] = "1";
         return 1;
-    } else if (strcmp(lecs[0], "protec_flag") == 0) {
+    } else if (strcmp(lecs[1], "protec_flag") == 0) {
         select[2] = "1";
         return 1;
     } else {
-        error_unknown_column(lecs[0], lecs[1]);
+        error_unknown_column(lecs[1], lecs[0]);
         return 0;
     }
 }
 
 int assign_status_select(char **lecs, char **select) {
-    if (strcmp(lecs[0], "*") == 0) {  // To select all columns
+    if (strcmp(lecs[1], "*") == 0) {  // To select all columns
         for (int i = 0; i < 5; i++) {
-            select[i] = lecs[0];
+            select[i] = lecs[1];
         }
         return 1;
     }
@@ -51,31 +55,31 @@ int assign_status_select(char **lecs, char **select) {
         select[i] = "0";
     }
 
-    if (strcmp(lecs[0], "event_id") == 0) {
+    if (strcmp(lecs[1], "event_id") == 0) {
         select[0] = "1";
         return 1;
-    } else if (strcmp(lecs[0], "module_id") == 0) {
+    } else if (strcmp(lecs[1], "module_id") == 0) {
         select[1] = "1";
         return 1;
-    } else if (strcmp(lecs[0], "new_status") == 0) {
+    } else if (strcmp(lecs[1], "new_status") == 0) {
         select[2] = "1";
         return 1;
-    } else if (strcmp(lecs[0], "status_change_date") == 0) {
+    } else if (strcmp(lecs[1], "status_change_date") == 0) {
         select[3] = "1";
         return 1;
-    } else if (strcmp(lecs[0], "status_change_time") == 0) {
+    } else if (strcmp(lecs[1], "status_change_time") == 0) {
         select[4] = "1";
         return 1;
     } else {
-        error_unknown_column(lecs[0], lecs[1]);
+        error_unknown_column(lecs[1], lecs[0]);
         return 0;
     }
 }
 
 int assign_modules_select(char **lecs, char **select) {
-    if (strcmp(lecs[0], "*") == 0) {  // To select all columns
+    if (strcmp(lecs[1], "*") == 0) {  // To select all columns
         for (int i = 0; i < 5; i++) {
-            select[i] = lecs[0];
+            select[i] = lecs[1];
         }
         return 1;
     }
@@ -83,23 +87,23 @@ int assign_modules_select(char **lecs, char **select) {
         select[i] = "0";
     }
 
-    if (strcmp(lecs[0], "id") == 0) {
+    if (strcmp(lecs[1], "id") == 0) {
         select[0] = "1";
         return 1;
-    } else if (strcmp(lecs[0], "module_name") == 0) {
+    } else if (strcmp(lecs[1], "module_name") == 0) {
         select[1] = "1";
         return 1;
-    } else if (strcmp(lecs[0], "mem_level_modules") == 0) {
+    } else if (strcmp(lecs[1], "mem_level_modules") == 0) {
         select[2] = "1";
         return 1;
-    } else if (strcmp(lecs[0], "cell_num") == 0) {
+    } else if (strcmp(lecs[1], "cell_num") == 0) {
         select[3] = "1";
         return 1;
-    } else if (strcmp(lecs[0], "deletion_flag") == 0) {
+    } else if (strcmp(lecs[1], "deletion_flag") == 0) {
         select[4] = "1";
         return 1;
     } else {
-        error_unknown_column(lecs[0], lecs[1]);
+        error_unknown_column(lecs[1], lecs[0]);
         return 0;
     }
 }
@@ -184,7 +188,7 @@ int assign_levels_where(char *where_col, char *where_val, char **where) {
         return 1;
     }
     for (int i = 0; i < 3; i++) {
-        where[i] = "";
+        where[i] = "0";
     }
 
     if (strcmp(where_col, "mem_level_levels") == 0) {
@@ -266,19 +270,6 @@ int assign_modules_where(char *where_col, char *where_val, char **where) {
     }
 }
 
-void print_mock(char **select, char **where) {
-    printf("update ");
-    for (int i= 0; i < 5; i++) {
-        printf("%s ", select[i]);
-    }
-    printf("\n");
-    printf("where ");
-    for (int i= 0; i < 5; i++) {
-        printf("%s ", where[i]);
-    }
-    printf("\n");
-}
-
 int validate_status(char **lecs) {
     if (validate_int(lecs[1]) == 0) {
         return 0;
@@ -287,6 +278,12 @@ int validate_status(char **lecs) {
         return 0;
     }
     if (validate_int(lecs[3]) == 0) {
+        return 0;
+    }
+    if (validate_int(lecs[4]) == 0) {
+        return 0;
+    }
+    if (validate_int(lecs[5]) == 0) {
         return 0;
     }
     return 1;
@@ -336,55 +333,94 @@ void insert(char **lecs) {
         error_unknown_db(lecs[0]);
         return;
     }
-    if (validate_modules(lecs) == 0) {
-        return;
+    if (strcmp(lecs[0], MODULES) == 0) {
+        if (validate_modules(lecs) == 0) {
+            return;
+        }
+        char *inserts[5];
+        inserts[0] = lecs[1];
+        inserts[1] = lecs[2];
+        inserts[2] = lecs[3];
+        inserts[3] = lecs[4];
+        inserts[4] = lecs[5];
+        insert_for_modules(inserts);
     }
-    char *inserts[5];
-    inserts[0] = lecs[1];
-    inserts[1] = lecs[2];
-    inserts[2] = lecs[3];
-    inserts[3] = lecs[4];
-    inserts[4] = lecs[5];
-    insert_for_modules(inserts);
+    if (strcmp(lecs[0], LEVELS) == 0) {
+        if (validate_levels(lecs) == 0) {
+            return;
+        }
+        char *inserts[3];
+        inserts[0] = lecs[1];
+        inserts[1] = lecs[2];
+        inserts[2] = lecs[3];
+        insert_for_levels(inserts);
+    }
+    if (strcmp(lecs[0], STATUS) == 0) {
+        if (validate_status(lecs) == 0) {
+            return;
+        }
+        char *inserts[5];
+        inserts[0] = lecs[1];
+        inserts[1] = lecs[2];
+        inserts[2] = lecs[3];
+        inserts[3] = lecs[4];
+        inserts[4] = lecs[5];
+        insert_for_status(inserts);
+    }
 }
 
+/*
+void print_mock(char **select, char **where) {
+    printf("select ");
+    for (int i= 0; i < 5; i++) {
+        printf("%s ", select[i]);
+    }
+    printf("\n");
+    printf("where ");
+    for (int i= 0; i < 5; i++) {
+        printf("%s ", where[i]);
+    }
+    printf("\n");
+}
+*/
+
 void select(char **lecs) {
-    if (check_if_table_exists(lecs[1]) == 0) {
-        error_unknown_db(lecs[1]);
+    if (check_if_table_exists(lecs[0]) == 0) {
+        error_unknown_db(lecs[0]);
         return;
     }
-    if (strcmp(lecs[1], MODULES) == 0) {
-        char *select[5];
+    if (strcmp(lecs[0], MODULES) == 0) {
+        char *select_ar[5];
         char *where[5];
-        if (assign_modules_select(lecs, select) == 0) {
+        if (assign_modules_select(lecs, select_ar) == 0) {
             return;
         }
         if (assign_modules_where(lecs[2], lecs[3], where) == 0) {
             return;
         }
-        select_for_modules(select, where);
+        select_for_modules(select_ar, where);
     }
-    if (strcmp(lecs[1], LEVELS) == 0) {
-        char *select[3];
+    if (strcmp(lecs[0], LEVELS) == 0) {
+        char *select_ar[3];
         char *where[3];
-        if (assign_levels_select(lecs, select) == 0) {
+        if (assign_levels_select(lecs, select_ar) == 0) {
             return;
         }
         if (assign_levels_where(lecs[2], lecs[3], where) == 0) {
             return;
         }
-      //  select_for_levels(select, where);
+        select_for_levels(select_ar, where);
     }
-    if (strcmp(lecs[1], STATUS) == 0) {
-        char *select[3];
-        char *where[3];
-        if (assign_status_select(lecs, select) == 0) {
+    if (strcmp(lecs[0], STATUS) == 0) {
+        char *select_ar[5];
+        char *where[5];
+        if (assign_status_select(lecs, select_ar) == 0) {
             return;
         }
         if (assign_status_where(lecs[2], lecs[3], where) == 0) {
             return;
         }
-      //  select_for_status(select, where);
+        select_for_status(select_ar, where);
     }
 }
 
@@ -395,34 +431,35 @@ void update(char **lecs) {
     }
     if (strcmp(lecs[0], MODULES) == 0) {
         char *where[5];
-        char *update[5];
-        if (assign_modules_update(lecs[1], lecs[2], update) == 0) {
+        char *update_ar[5];
+        if (assign_modules_update(lecs[1], lecs[2], update_ar) == 0) {
             return;
         }
         if (assign_modules_where(lecs[3], lecs[4], where) == 0) {
             return;
         }
-        update_for_modules(where, update);
+        update_for_modules(where, update_ar);
     }
-    
+    if (strcmp(lecs[0], LEVELS) == 0) {
+        char *where[3];
+        char *update_ar[3];
+        if (assign_levels_update(lecs[1], lecs[2], update_ar) == 0) {
+            return;
+        }
+        if (assign_levels_where(lecs[3], lecs[4], where) == 0) {
+            return;
+        }
+        update_for_levels(where, update_ar);
+    }
+    if (strcmp(lecs[0], STATUS) == 0) {
+        char *where[5];
+        char *update_ar[5];
+        if (assign_status_update(lecs[1], lecs[2], update_ar) == 0) {
+            return;
+        }
+        if (assign_status_where(lecs[3], lecs[4], where) == 0) {
+            return;
+        }
+      //  update_for_status(where, update);
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

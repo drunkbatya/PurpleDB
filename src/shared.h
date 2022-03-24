@@ -1,3 +1,5 @@
+// Copyright [2022] <griselle, sparelis, laynadre>
+
 #ifndef SRC_SHARED_H_
 #define SRC_SHARED_H_
 
@@ -14,7 +16,6 @@ void insert(char **lecs);
 void update(char **lecs);
 
 int check_if_table_exists(char *table_name);
-void print_mock(char **select, char **where);
 int validate_int(char *strint);
 
 int assign_modules_select(char **lecs, char **select);
