@@ -31,8 +31,8 @@ void error_unknown_column(char *column, char *table_name) {
     printf("Error! No column '%s' in table '%s' found\n", column, table_name);
 }
 
-void error_unknown_condition(char *table_name) {
-    printf("Error! No such column in table '%s' found\n", table_name);
+void error_unknown_condition(char *column) {
+    printf("Error! Cannot assign condition '%s', no such column found\n", column);
 }
 
 void error_not_int(char *strint) {

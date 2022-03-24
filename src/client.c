@@ -7,6 +7,7 @@
 #include "client.h"
 #include "purple_lib.h"
 #include "shared.h"
+#include "hardcode.h"
 
 // main shell loop
 int client(void) {
@@ -53,10 +54,19 @@ int parse_query(char *str) {
             return (0);
         return (1);
     }
-    if (strncmp(str, "show tables;", 12) == 0) {
-        show_tables();
+    if (strncmp(str, "update ", 7) == 0) {
+        if (!parse_update_query(str))
+            return (0);
         return (1);
     }
+    if (strncmp(str, "show tables;", 12) == 0)
+        return (show_tables());
+    if (strncmp(str, "describe table modules;", 23) == 0)
+        return (describe_modules());
+    if (strncmp(str, "describe table levels;", 22) == 0)
+        return (describe_levels());
+    if (strncmp(str, "describe table status_events;", 29) == 0)
+        return (describe_status());
     return (0);
 }
 
@@ -71,6 +81,7 @@ int parse_select_query(char *str) {
     strtok(str, " ");  // skip select
     while (lecs_counter < 7) {
         lecs[lecs_counter] = strtok(NULL, " ");
+        space_backslasher(lecs[lecs_counter]);
         lecs_counter++;
     }
     check_out = check_select_query_no_where(lecs);
@@ -105,6 +116,7 @@ int parse_insert_query(char *str) {
     strtok(NULL, " (),");  // skip into
     while (lecs_counter < 7) {
         lecs[lecs_counter] = strtok(NULL, " (),");
+        space_backslasher(lecs[lecs_counter]);
         lecs_counter++;
     }
     check_out = check_insert_query_3arg(lecs);
@@ -138,6 +150,7 @@ int parse_delete_query(char *str) {
     strtok(NULL, " ");  // skip from
     while (lecs_counter < 5) {
         lecs[lecs_counter] = strtok(NULL, " ");
+        space_backslasher(lecs[lecs_counter]);
         lecs_counter++;
     }
     if (!check_delete_query(lecs))
@@ -146,6 +159,33 @@ int parse_delete_query(char *str) {
     lecs[2] = lecs[4];  // equal this
     pretty_print_delete(lecs);
     // delete(lecs);
+    return (1);
+}
+
+int parse_update_query(char *str) {
+    // table_name, set_op, column, equal_op
+    // new_value, where_op, where, equal_op,
+    // where_val
+    char *lecs[9];
+    int lecs_counter;
+    int check_out;
+
+    lecs_counter = 0;
+    strtok(str, " ");  // skip select
+    while (lecs_counter < 9) {
+        lecs[lecs_counter] = strtok(NULL, " ");
+        space_backslasher(lecs[lecs_counter]);
+        lecs_counter++;
+    }
+    check_out = check_update_query(lecs);
+    if (!check_out)
+        return (0);
+    lecs[1] = lecs[2];  // column
+    lecs[2] = lecs[4];  // new_value
+    lecs[3] = lecs[6];  // where
+    lecs[4] = lecs[8];  // where_val
+    pretty_print_update(lecs);
+    update(lecs);
     return (1);
 }
 
@@ -234,64 +274,43 @@ int check_delete_query(char **lecs) {
     return (1);
 }
 
-void pretty_print_select(char **arr) {
-    printf(BOLD"SELECT"NC);
-    printf("\n\t"CYAN);
-    printf("%s", arr[0]);
-    printf("\n"NC);
-    printf(BOLD"FROM"NC);
-    printf("\n\t"CYAN);
-    printf("%s", arr[1]);
-    if (!strcmp(arr[2], "*")) {
-        printf("\n"NC);
-        return;
+int check_update_query(char **lecs) {
+    if (lecs[0] == NULL || strchr(lecs[0], ';'))  // table_name
+        return (0);
+    if (lecs[1] == NULL || strcmp(lecs[1], "set"))
+        return (0);
+    if (lecs[2] == NULL || strchr(lecs[2], ';'))  // column
+        return (0);
+    if (lecs[3] == NULL || strcmp(lecs[3], "="))
+        return (0);
+    if (lecs[4] == NULL || strchr(lecs[4], ';'))  // new_value
+        return (0);
+    if (lecs[5] == NULL || strcmp(lecs[5], "where"))
+        return (0);
+    if (lecs[6] == NULL || strchr(lecs[6], ';'))  // where this
+        return (0);
+    if (lecs[7] == NULL || strcmp(lecs[7], "="))
+        return (0);
+    if (lecs[8] == NULL)  // equals this
+        return (0);
+    if (strchr(lecs[8], ';')) {
+        *(strchr(lecs[8], ';')) = '\0';  // remove ';'
+        if (!strlen(lecs[8]))
+            return (0);
     }
-    printf("\n"NC);
-    printf(BOLD"WHERE"NC);
-    printf("\n\t"CYAN);
-    printf("%s = %s", arr[2], arr[3]);
-    printf("\n"NC);
+    return (1);
 }
 
-void pretty_print_insert(char **arr) {
-    printf(BOLD"INSERT INTO"NC);
-    printf("\n\t"CYAN);
-    printf("%s", arr[0]);
-    printf("\n"NC);
-    printf(BOLD"VALUES"NC);
-    printf("\n\t"CYAN);
-    printf("%s,", arr[1]);
-    printf("\n\t%s,", arr[2]);
-    if (!strlen(arr[4])) {
-        printf("\n\t%s", arr[3]);
-        printf("\n"NC);
-        return;
+char *space_backslasher(char *str) {
+    char *new_ptr;
+
+    new_ptr = str;
+    while (new_ptr && *new_ptr != '\0') {
+        if (*new_ptr == '\\')
+            *new_ptr = ' ';
+        new_ptr++;
     }
-    printf("\n\t%s,", arr[3]);
-    printf("\n\t%s,", arr[4]);
-    printf("\n\t%s", arr[5]);
-    printf("\n"NC);
-}
-
-void pretty_print_delete(char **arr) {
-    printf(BOLD"DELETE FROM"NC);
-    printf("\n\t"CYAN);
-    printf("%s", arr[0]);
-    printf("\n"NC);
-    printf(BOLD"WHERE"NC);
-    printf("\n\t"CYAN);
-    printf("%s = %s", arr[1], arr[2]);
-    printf("\n"NC);
-}
-
-void show_tables(void) {
-    printf(BOLD"SHOW TABLES"NC);
-    printf("\n\n");
-    printf(" -----name------\n");
-    printf("| modules       |\n");
-    printf("| levels        |\n");
-    printf("| status_events |\n");
-    printf(" ---------------\n");
+    return (str);
 }
 
 void program_exit(void) {

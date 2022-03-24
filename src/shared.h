@@ -10,12 +10,26 @@
 #define STATUS_PATH "../materials/master_status_events.db"
 
 void select(char **lecs);
-int check_if_table_exists(char *table_name);
-int assign_modules_select(char **lecs, char **select);
-int assign_modules_where(char **lecs, char **where);
-void print_mock(char **select, char **where);
 void insert(char **lecs);
-int validate_modules(char **lecs);
+void update(char **lecs);
+
+int check_if_table_exists(char *table_name);
+void print_mock(char **select, char **where);
 int validate_int(char *strint);
+
+int assign_modules_select(char **lecs, char **select);
+int assign_modules_where(char *where_col, char *where_val, char **where);
+int assign_modules_update(char *update_col, char *update_val, char **update);
+int validate_modules(char **lecs);
+
+int assign_levels_update(char *update_col, char *update_val, char **update);
+int assign_levels_select(char **lecs, char **select);
+int assign_levels_where(char *where_col, char *where_val, char **where);
+int validate_levels(char **lecs);
+
+int assign_status_update(char *update_col, char *update_val, char **update);
+int assign_status_select(char **lecs, char **select);
+int assign_status_where(char *where_col, char *where_val, char **where);
+int validate_status(char **lecs);
 
 #endif  // SRC_SHARED_H_
