@@ -1,7 +1,6 @@
 // Copyright [2022] <griselle, sparelis, laynadre>
 
 #include <stdio.h>
-#include "struct.h"
 #include "client.h"
 
 int main(void) {
