@@ -7,7 +7,7 @@ all: clean build
 build: purpledb
 
 purpledb: main.o client.o purple_lib.o error.o shared.o modules.o levels.o hardcode.o binary.o
-	$(CC) $(CFLAGS) main.o client.o purple_lib.o error.o shared.o modules.o levels.o  hardcode.o binary.o -o purpledb -fsanitize=address
+	$(CC) $(CFLAGS) main.o client.o purple_lib.o error.o shared.o modules.o levels.o  hardcode.o binary.o -o $(OUT_DIR)/purpledb -fsanitize=address
 
 main.o: main.c
 	$(CC) $(CFLAGS) -c main.c -o main.o
@@ -38,3 +38,4 @@ binary.o: binary.c binary.h
 
 clean:
 	rm -f *.o purpledb
+	rm -f $(OUT_DIR)/purple*
