@@ -267,14 +267,6 @@ void update_for_modules(char **old, char **new) {
         }
     }
     fclose(ptr);
-
-    FILE *read = fopen(MODULES_PATH, "r");
-    modules check;
-    for (int i = 0; i < len + 1; i++) {
-        check = read_record_from_file(read, i);
-            print_struct(&check);
-    }
-    fclose(read);
 }
 
 void update_record(FILE *pfile, modules *local, modules *change, int index) {

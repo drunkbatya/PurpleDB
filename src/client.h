@@ -24,6 +24,5 @@ int check_insert_query_5arg(char **lecs);
 int check_delete_query(char **lecs);
 int check_update_query(char **lecs);
 char *space_backslasher(char *str);
-void show_tables(void);
 void program_exit(void);
 #endif  // SRC_CLIENT_H_
