@@ -41,22 +41,41 @@ void select_for_levels(char **field, char **where) {
             print_struct_levels(&local, identifier);
         }
     }
+    print_outro_levels(identifier);
     fclose(ptr);
     if (counter == 0) error_record_not_found();
 }
 
 void print_mask_levels(int identifier) {
     if (identifier == 0) {
-        printf("mem_level_levels\n");
+        printf(" ------------------\n");
+        printf("| mem_level_levels |\n");
+        printf("|------------------|\n");
     } else if (identifier == 1) {
-        printf("cell_amount\n");
+        printf(" -------------\n");
+        printf("| cell_amount |\n");
+        printf(" -------------\n");
     } else if (identifier == 2) {
-        printf("protect_flag\n");
+        printf(" --------------\n");
+        printf("| protect_flag |\n");
+        printf(" --------------\n");
     } else if (identifier == 3) {
+        printf(" -----------------------------------------------\n");
         printf("| mem_level_levels | cell_amount | protect_flag |\n");
+        printf("|-----------------------------------------------|\n");
     }
 }
 
+void print_outro_levels(int identifier) {
+    if (identifier == 0)
+        printf(" ------------------\n");
+    if (identifier == 1)
+        printf(" -------------\n");
+    if (identifier == 2)
+        printf(" --------------\n");
+    if (identifier == 3)
+        printf(" -----------------------------------------------\n");
+}
 
 int compare_levels (levels *local, int check_field, char *temp) {
     if ((check_field == 5) && (temp[0] == '-')) return 1;
@@ -81,17 +100,18 @@ levels read_record_from_file_levels(FILE *pfile, int index) {
     return record;
 }
 
+// printf("| %-6d |\n", local->id);
 void print_struct_levels(levels *local, int identifier) {
     if (identifier == 0) {
-        printf("| %d |\n", local->mem_level_levels);
+        printf("| %-16d |\n", local->mem_level_levels);
     } else if (identifier == 1) {
-        printf("| %d |\n", local->cell_amount);
+        printf("| %-11d |\n", local->cell_amount);
     } else if (identifier == 2) {
-        printf("| %d |\n", local->protect_flag);
+        printf("| %-12d |\n", local->protect_flag);
     } else if (identifier == 3) {
-        printf("| %d ", local->mem_level_levels);
-        printf("| %d ", local->cell_amount);
-        printf("| %d |", local->protect_flag);
+        printf("| %-16d ", local->mem_level_levels);
+        printf("| %-11d ", local->cell_amount);
+        printf("| %-12d |", local->protect_flag);
         printf("\n");
     }
 }

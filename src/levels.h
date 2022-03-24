@@ -14,5 +14,6 @@ int get_file_size_in_bytes(FILE *pfile);
 void update_for_levels(char **old, char **new);
 void update_record_levels(FILE *pfile, levels *local, levels *change, int index);
 int compare_for_update_levels (levels *local, levels *where);
+void print_outro_levels(int identifier);
 
 #endif  // SRC_LEVELS_H_
