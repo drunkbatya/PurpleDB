@@ -333,7 +333,7 @@ void insert(char **lecs) {
         error_unknown_db(lecs[0]);
         return;
     }
-    if (strcmp(lecs[1], MODULES) == 0) {
+    if (strcmp(lecs[0], MODULES) == 0) {
         if (validate_modules(lecs) == 0) {
             return;
         }
@@ -345,7 +345,7 @@ void insert(char **lecs) {
         inserts[4] = lecs[5];
         insert_for_modules(inserts);
     }
-    if (strcmp(lecs[1], LEVELS) == 0) {
+    if (strcmp(lecs[0], LEVELS) == 0) {
         if (validate_levels(lecs) == 0) {
             return;
         }
@@ -353,9 +353,9 @@ void insert(char **lecs) {
         inserts[0] = lecs[1];
         inserts[1] = lecs[2];
         inserts[2] = lecs[3];
-       // insert_for_levels(inserts);
+        insert_for_levels(inserts);
     }
-    if (strcmp(lecs[1], STATUS) == 0) {
+    if (strcmp(lecs[0], STATUS) == 0) {
         if (validate_status(lecs) == 0) {
             return;
         }
@@ -369,6 +369,7 @@ void insert(char **lecs) {
     }
 }
 
+/*
 void print_mock(char **select, char **where) {
     printf("select ");
     for (int i= 0; i < 5; i++) {
@@ -381,6 +382,7 @@ void print_mock(char **select, char **where) {
     }
     printf("\n");
 }
+*/
 
 void select(char **lecs) {
     if (check_if_table_exists(lecs[0]) == 0) {
@@ -388,37 +390,37 @@ void select(char **lecs) {
         return;
     }
     if (strcmp(lecs[0], MODULES) == 0) {
-        char *select[5];
+        char *select_ar[5];
         char *where[5];
-        if (assign_modules_select(lecs, select) == 0) {
+        if (assign_modules_select(lecs, select_ar) == 0) {
             return;
         }
         if (assign_modules_where(lecs[2], lecs[3], where) == 0) {
             return;
         }
-        select_for_modules(select, where);
+        select_for_modules(select_ar, where);
     }
     if (strcmp(lecs[0], LEVELS) == 0) {
-        char *select[3];
+        char *select_ar[3];
         char *where[3];
-        if (assign_levels_select(lecs, select) == 0) {
+        if (assign_levels_select(lecs, select_ar) == 0) {
             return;
         }
         if (assign_levels_where(lecs[2], lecs[3], where) == 0) {
             return;
         }
-        select_for_levels(select, where);
+        select_for_levels(select_ar, where);
     }
     if (strcmp(lecs[0], STATUS) == 0) {
-        char *select[5];
+        char *select_ar[5];
         char *where[5];
-        if (assign_status_select(lecs, select) == 0) {
+        if (assign_status_select(lecs, select_ar) == 0) {
             return;
         }
         if (assign_status_where(lecs[2], lecs[3], where) == 0) {
             return;
         }
-        select_for_status(select, where);
+        select_for_status(select_ar, where);
     }
 }
 
@@ -429,30 +431,30 @@ void update(char **lecs) {
     }
     if (strcmp(lecs[0], MODULES) == 0) {
         char *where[5];
-        char *update[5];
-        if (assign_modules_update(lecs[1], lecs[2], update) == 0) {
+        char *update_ar[5];
+        if (assign_modules_update(lecs[1], lecs[2], update_ar) == 0) {
             return;
         }
         if (assign_modules_where(lecs[3], lecs[4], where) == 0) {
             return;
         }
-        update_for_modules(where, update);
+        update_for_modules(where, update_ar);
     }
     if (strcmp(lecs[0], LEVELS) == 0) {
-        char *where[5];
-        char *update[5];
-        if (assign_levels_update(lecs[1], lecs[2], update) == 0) {
+        char *where[3];
+        char *update_ar[3];
+        if (assign_levels_update(lecs[1], lecs[2], update_ar) == 0) {
             return;
         }
         if (assign_levels_where(lecs[3], lecs[4], where) == 0) {
             return;
         }
-      //  update_for_levels(where, update);
+        update_for_levels(where, update_ar);
     }
     if (strcmp(lecs[0], STATUS) == 0) {
         char *where[5];
-        char *update[5];
-        if (assign_status_update(lecs[1], lecs[2], update) == 0) {
+        char *update_ar[5];
+        if (assign_status_update(lecs[1], lecs[2], update_ar) == 0) {
             return;
         }
         if (assign_status_where(lecs[3], lecs[4], where) == 0) {
