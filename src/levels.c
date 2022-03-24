@@ -77,7 +77,7 @@ void print_outro_levels(int identifier) {
         printf(" -----------------------------------------------\n");
 }
 
-int compare_levels (levels *local, int check_field, char *temp) {
+int compare_levels(levels *local, int check_field, char *temp) {
     if ((check_field == 5) && (temp[0] == '-')) return 1;
     if ((check_field == 0) && (local->mem_level_levels == atoi(temp))) {
         return 1;
@@ -92,7 +92,7 @@ int compare_levels (levels *local, int check_field, char *temp) {
 }
 
 levels read_record_from_file_levels(FILE *pfile, int index) {
-    int offset = index * sizeof(levels);        
+    int offset = index * sizeof(levels);
     fseek(pfile, offset, SEEK_SET);
     levels record;
     fread(&record, sizeof(levels), 1, pfile);
@@ -130,7 +130,6 @@ void insert_for_levels(char **new_line) {
 
 // Function of writing a record of the specified type to the file at the specified serial number.
 void write_record_in_file_levels(FILE *pfile, levels *record_to_write, int index) {
-    // Calculation of the offset at which the required record should be located from the beginning of the file.
     int offset = index * sizeof(levels);
     // Move the position pointer to the calculated offset from the beginning of the file.
     fseek(pfile, offset, SEEK_SET);
@@ -193,7 +192,6 @@ void update_for_levels(char **old, char **new) {
 }
 
 void update_record_levels(FILE *pfile, levels *local, levels *change, int index) {
-    // Calculation of the offset at which the required record should be located from the beginning of the file.
     int offset = index * sizeof(levels);
     // Move the position pointer to the calculated offset from the beginning of the file.
     fseek(pfile, offset, SEEK_SET);

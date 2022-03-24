@@ -451,25 +451,4 @@ void update(char **lecs) {
         }
       //  update_for_status(where, update);
     }
-    
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
