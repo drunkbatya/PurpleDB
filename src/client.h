@@ -5,7 +5,7 @@
 
 #define PS1 "PurpleDB :-( "
 #define WELCOME "Welcome to PurpleDB!\n\n"
-#define SHELL_BUF_SIZE 60
+#define SHELL_BUF_SIZE 80
 
 #define NC "\033[0m"
 #define CYAN "\033[0;36m"
