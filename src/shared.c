@@ -19,9 +19,9 @@ int check_if_table_exists(char *table_name) {
 }
 
 int assign_levels_select(char **lecs, char **select) {
-    if (strcmp(lecs[0], "*") == 0) {  // To select all columns
+    if (strcmp(lecs[1], "*") == 0) {  // To select all columns
         for (int i = 0; i < 3; i++) {
-            select[i] = lecs[0];
+            select[i] = lecs[1];
         }
         return 1;
     }
@@ -29,25 +29,25 @@ int assign_levels_select(char **lecs, char **select) {
         select[i] = "0";
     }
 
-    if (strcmp(lecs[0], "mem_level_levels") == 0) {
+    if (strcmp(lecs[1], "mem_level_levels") == 0) {
         select[0] = "1";
         return 1;
-    } else if (strcmp(lecs[0], "cell_amount") == 0) {
+    } else if (strcmp(lecs[1], "cell_amount") == 0) {
         select[1] = "1";
         return 1;
-    } else if (strcmp(lecs[0], "protec_flag") == 0) {
+    } else if (strcmp(lecs[1], "protec_flag") == 0) {
         select[2] = "1";
         return 1;
     } else {
-        error_unknown_column(lecs[0], lecs[1]);
+        error_unknown_column(lecs[1], lecs[0]);
         return 0;
     }
 }
 
 int assign_status_select(char **lecs, char **select) {
-    if (strcmp(lecs[0], "*") == 0) {  // To select all columns
+    if (strcmp(lecs[1], "*") == 0) {  // To select all columns
         for (int i = 0; i < 5; i++) {
-            select[i] = lecs[0];
+            select[i] = lecs[1];
         }
         return 1;
     }
@@ -55,23 +55,23 @@ int assign_status_select(char **lecs, char **select) {
         select[i] = "0";
     }
 
-    if (strcmp(lecs[0], "event_id") == 0) {
+    if (strcmp(lecs[1], "event_id") == 0) {
         select[0] = "1";
         return 1;
-    } else if (strcmp(lecs[0], "module_id") == 0) {
+    } else if (strcmp(lecs[1], "module_id") == 0) {
         select[1] = "1";
         return 1;
-    } else if (strcmp(lecs[0], "new_status") == 0) {
+    } else if (strcmp(lecs[1], "new_status") == 0) {
         select[2] = "1";
         return 1;
-    } else if (strcmp(lecs[0], "status_change_date") == 0) {
+    } else if (strcmp(lecs[1], "status_change_date") == 0) {
         select[3] = "1";
         return 1;
-    } else if (strcmp(lecs[0], "status_change_time") == 0) {
+    } else if (strcmp(lecs[1], "status_change_time") == 0) {
         select[4] = "1";
         return 1;
     } else {
-        error_unknown_column(lecs[0], lecs[1]);
+        error_unknown_column(lecs[1], lecs[0]);
         return 0;
     }
 }
@@ -388,7 +388,6 @@ void select(char **lecs) {
         return;
     }
     if (strcmp(lecs[0], MODULES) == 0) {
-        printf("%s %s %s %s", lecs[0], lecs[1], lecs[2], lecs[3]);
         char *select[5];
         char *where[5];
         if (assign_modules_select(lecs, select) == 0) {
@@ -400,7 +399,6 @@ void select(char **lecs) {
         select_for_modules(select, where);
     }
     if (strcmp(lecs[0], LEVELS) == 0) {
-        printf("%s %s %s %s", lecs[0], lecs[1], lecs[2], lecs[3]);
         char *select[3];
         char *where[3];
         if (assign_levels_select(lecs, select) == 0) {
@@ -412,16 +410,15 @@ void select(char **lecs) {
         select_for_levels(select, where);
     }
     if (strcmp(lecs[0], STATUS) == 0) {
-        printf("%s %s %s %s", lecs[0], lecs[1], lecs[2], lecs[3]);
-        //char *select[5];
-        //char *where[5];
-       // if (assign_status_select(lecs, select) == 0) {
-         //   return;
-       // }
-       // if (assign_status_where(lecs[2], lecs[5], where) == 0) {
-         //   return;
-       // }
-       // select_for_status(select, where);
+        char *select[5];
+        char *where[5];
+        if (assign_status_select(lecs, select) == 0) {
+            return;
+        }
+        if (assign_status_where(lecs[2], lecs[3], where) == 0) {
+            return;
+        }
+        select_for_status(select, where);
     }
 }
 
