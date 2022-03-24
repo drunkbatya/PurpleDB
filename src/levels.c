@@ -5,7 +5,7 @@
 #include "shared.h"
 #include "levels.h"
 
-void select_for_levels(char **field, char **where) {            //  должно работать
+void select_for_levels(char **field, char **where) {
     int identifier;
     for (int i = 0; i < 3; i++) {
         if (field[i][0] == '*') {
@@ -15,8 +15,8 @@ void select_for_levels(char **field, char **where) {            //  должно
             break;
         }
     }
-    char temp[30];
-    int check_field;
+    char temp[30] = "-";
+    int check_field = 5;
     for (int i = 0; i < 3; i++) {
         if (strcmp(where[i], "") == 0) {
             continue;
@@ -57,6 +57,7 @@ void print_mask_levels(int identifier) {
 
 
 int compare_levels (levels *local, int check_field, char *temp) {
+    if ((check_field == 5) && (temp[0] == '-')) return 1;
     if ((check_field == 0) && (local->mem_level_levels == atoi(temp))) {
         return 1;
     }
