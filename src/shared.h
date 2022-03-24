@@ -13,10 +13,14 @@ void select(char **lecs);
 int check_if_table_exists(char *table_name);
 int assign_modules_select(char **lecs, char **select);
 int assign_modules_where(char *where_col, char *where_val, char **where);
+int assign_modules_update(char *update_col, char *update_val, char **update);
 void print_mock(char **select, char **where);
 void insert(char **lecs);
 int validate_modules(char **lecs);
 int validate_int(char *strint);
 void update(char **lecs);
+int assign_levels_update(char *update_col, char *update_val, char **update);
+int assign_levels_select(char **lecs, char **select);
+int assign_levels_where(char *where_col, char *where_val, char **where);
 
 #endif  // SRC_SHARED_H_

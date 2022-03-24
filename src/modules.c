@@ -28,8 +28,10 @@ void select_for_modules(char **field, char **where) {
         if (!strlen(where[i]))
             continue;
         check_field = i;
-        for (int j = 0; j < (int)strlen(where[i]); j++)
+        for (int j = 0; j < (int)strlen(where[i]); j++) {
             temp[j] = where[i][j];
+        }
+        temp[(int)strlen(where[i])] = '\0';
     }
     for (int i = 0; i < len; i++) {
         local = read_record_from_file(ptr, i);
@@ -115,21 +117,12 @@ int get_records_count_in_file(FILE *pfile) {
     return get_file_size_in_bytes(pfile) / sizeof(modules);
 }
 
-// Function of reading a record of a given type from a file by its serial number.
 modules read_record_from_file(FILE *pfile, int index) {
-    // Calculation of the offset at which desired entry should be located from the beginning of the file.
     int offset = index * sizeof(modules);          // оффсет - сдвиг??
-    // Move the position pointer to the calculated offset from the beginning of the file.
     fseek(pfile, offset, SEEK_SET);
-
-    // Reading a record of the specified type from a file.
     modules record;
     fread(&record, sizeof(modules), 1, pfile);
-
-    // For safety reasons, we return the file position pointer to the beginning of the file.
     rewind(pfile);
-
-    // Return read record
     return record;
 }
 
