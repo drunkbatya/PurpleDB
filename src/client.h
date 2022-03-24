@@ -21,6 +21,7 @@ int check_select_query_where(char **lecs);
 int check_insert_query_3arg(char **lecs);
 int check_insert_query_5arg(char **lecs);
 int check_delete_query(char **lecs);
+char *space_backslasher(char *str);
 void pretty_print_select(char **arr);
 void pretty_print_insert(char **arr);
 void pretty_print_delete(char **arr);

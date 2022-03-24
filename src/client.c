@@ -53,6 +53,11 @@ int parse_query(char *str) {
             return (0);
         return (1);
     }
+    if (strncmp(str, "update ", 7) == 0) {
+        if (!parse_delete_query(str))
+            return (0);
+        return (1);
+    }
     if (strncmp(str, "show tables;", 12) == 0) {
         show_tables();
         return (1);
@@ -71,6 +76,7 @@ int parse_select_query(char *str) {
     strtok(str, " ");  // skip select
     while (lecs_counter < 7) {
         lecs[lecs_counter] = strtok(NULL, " ");
+        space_backslasher(lecs[lecs_counter]);
         lecs_counter++;
     }
     check_out = check_select_query_no_where(lecs);
@@ -105,6 +111,7 @@ int parse_insert_query(char *str) {
     strtok(NULL, " (),");  // skip into
     while (lecs_counter < 7) {
         lecs[lecs_counter] = strtok(NULL, " (),");
+        space_backslasher(lecs[lecs_counter]);
         lecs_counter++;
     }
     check_out = check_insert_query_3arg(lecs);
@@ -138,6 +145,7 @@ int parse_delete_query(char *str) {
     strtok(NULL, " ");  // skip from
     while (lecs_counter < 5) {
         lecs[lecs_counter] = strtok(NULL, " ");
+        space_backslasher(lecs[lecs_counter]);
         lecs_counter++;
     }
     if (!check_delete_query(lecs))
@@ -146,6 +154,38 @@ int parse_delete_query(char *str) {
     lecs[2] = lecs[4];  // equal this
     pretty_print_delete(lecs);
     // delete(lecs);
+    return (1);
+}
+
+int parse_update_query(char *str) {
+    // table_name, set_op, column, equal_op
+    // new_value, where_op, equal_op, where_val
+    char *lecs[8];
+    int lecs_counter;
+    int check_out;
+
+    lecs_counter = 0;
+    strtok(str, " ");  // skip select
+    while (lecs_counter < 7) {
+        lecs[lecs_counter] = strtok(NULL, " ");
+        space_backslasher(lecs[lecs_counter]);
+        lecs_counter++;
+    }
+    check_out = check_select_query_no_where(lecs);
+    if (!check_out)
+        return (0);
+    if (check_out == 2) {
+        if (!check_select_query_where(lecs))
+            return (0);
+    } else {
+        lecs[4] = "*";  // where, empty str - ALL
+        lecs[6] = "";  // where_val
+    }
+    lecs[1] = lecs[2];  // table_name
+    lecs[2] = lecs[4];  // where
+    lecs[3] = lecs[6];  // where_val
+    pretty_print_select(lecs);
+    select(lecs);
     return (1);
 }
 
@@ -232,6 +272,18 @@ int check_delete_query(char **lecs) {
             return (0);
     }
     return (1);
+}
+
+char *space_backslasher(char *str) {
+    char *new_ptr;
+
+    new_ptr = str;
+    while (new_ptr && *new_ptr != '\0') {
+        if (*new_ptr == '\\')
+            *new_ptr = ' ';
+        new_ptr++;
+    }
+    return (str);
 }
 
 void pretty_print_select(char **arr) {
