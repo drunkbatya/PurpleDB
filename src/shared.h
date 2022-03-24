@@ -1,3 +1,5 @@
+// Copyright [2022] <griselle, sparelis, laynadre>
+
 #ifndef SRC_SHARED_H_
 #define SRC_SHARED_H_
 

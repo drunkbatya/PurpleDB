@@ -94,7 +94,9 @@ int parse_select_query(char *str) {
         lecs[4] = "*";  // where, empty str - ALL
         lecs[6] = "";  // where_val
     }
-    lecs[1] = lecs[2];  // table_name
+    lecs[5] = lecs[0];  // temp column name
+    lecs[0] = lecs[2];  // table_name
+    lecs[1] = lecs[5];  // column name
     lecs[2] = lecs[4];  // where
     lecs[3] = lecs[6];  // where_val
     pretty_print_select(lecs);
