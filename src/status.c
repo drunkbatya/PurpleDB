@@ -49,45 +49,45 @@ void select_for_status(char **field, char **where) {
 
 void print_mask_status(int identifier) {
     if (identifier == 0) {
-        printf(" --------\n");
-        printf("| id     |\n");
-        printf("|--------|\n");
+        printf(" ----------\n");
+        printf("| event_id |\n");
+        printf("|----------|\n");
     } else if (identifier == 1) {
         printf(" -------------------\n");
-        printf("| module_name       |\n");
+        printf("| module_id         |\n");
         printf("|-------------------|\n");
     } else if (identifier == 2) {
         printf(" -------------------\n");
-        printf("| mem_level_modules |\n");
+        printf("| new_status        |\n");
         printf("|-------------------|\n");
     } else if (identifier == 3) {
-        printf(" ----------\n");
-        printf("| cell_num |\n");
-        printf("|----------|\n");
+        printf(" --------------------\n");
+        printf("| status_change_date |\n");
+        printf("|--------------------|\n");
     } else if (identifier == 4) {
-        printf(" ---------------\n");
-        printf("| deletion_flag |\n");
-        printf("|---------------|\n");
+        printf(" --------------------\n");
+        printf("| status_change_time |\n");
+        printf("|--------------------|\n");
     } else if (identifier == 5) {
-        printf(" ---------------------------------------------------------------------------\n");
-        printf("| id     | module_name       | mem_level_modules | cell_num | deletion_flag |\n");
-        printf("|---------------------------------------------------------------------------|\n");
+        printf(" -----------------------------------------------------------------------------\n");
+        printf("| event_id | module_id | new_status | status_change_date | status_change_time |\n");
+        printf("|-----------------------------------------------------------------------------|\n");
     }
 }
 
 void print_outro_status(int identifier) {
     if (identifier == 0) {
-        printf(" --------\n");
+        printf(" ----------\n");
     } else if (identifier == 1) {
         printf(" -------------------\n");
     } else if (identifier == 2) {
-        printf(" -------------------\n");
+        printf(" --------------------\n");
     } else if (identifier == 3) {
-        printf(" ----------\n");
+        printf(" --------------------\n");
     } else if (identifier == 4) {
-        printf(" ---------------\n");
+        printf(" --------------------\n");
     } else if (identifier == 5) {
-        printf(" ---------------------------------------------------------------------------\n");
+        printf(" -----------------------------------------------------------------------------\n");
     }
 }
 

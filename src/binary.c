@@ -1,3 +1,5 @@
+// Copyright [2022] <griselle, sparelis, laynadre>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include "binary.h"
@@ -9,9 +11,9 @@ int get_records_count_in_file_status(FILE *pfile) {
 
 int get_file_size_in_bytes(FILE *pfile) {
     int size = 0;
-    fseek(pfile, 0, SEEK_END);    // Move the position pointer to the end of the file.
-    size = ftell(pfile);          // Read to the current position pointer.
-    rewind(pfile);                // For n pointer back to the beginning of the file.
+    fseek(pfile, 0, SEEK_END);
+    size = ftell(pfile);
+    rewind(pfile);
     return size;
 }
 

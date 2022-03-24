@@ -1,3 +1,5 @@
+// Copyright [2022] <griselle, sparelis, laynadre>
+
 #ifndef SRC_BINARY_H_
 #define SRC_BINARY_H_
 

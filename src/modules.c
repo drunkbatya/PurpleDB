@@ -168,7 +168,6 @@ void insert_for_modules(char **new_line) {
     fclose(ptr);
 }
 
-
 int check_id(char * id) {
     modules local;
     FILE *ptr = fopen(MODULES_PATH, "r");
@@ -183,7 +182,6 @@ int check_id(char * id) {
     fclose(ptr);
     return 1;
 }
-
 
 void write_record_in_file_modules(FILE *pfile, modules *record_to_write, int index) {
     int offset = index * sizeof(modules);
@@ -325,8 +323,8 @@ int get_records_count_in_file_modules(FILE *pfile) {
 
 int get_file_size_in_bytes_modules(FILE *pfile) {
     int size = 0;
-    fseek(pfile, 0, SEEK_END);    // Move the position pointer to the end of the file.
-    size = ftell(pfile);          // Read the number of bytes from the beginning of the file to the current position pointer.
-    rewind(pfile);                // For safety reasons, move the position pointer back to the beginning of the file.
-    return size;
+    fseek(pfile, 0, SEEK_END);
+    size = ftell(pfile);
+    rewind(pfile);
+    return (size);
 }
