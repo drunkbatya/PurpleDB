@@ -280,6 +280,12 @@ int validate_status(char **lecs) {
     if (validate_int(lecs[3]) == 0) {
         return 0;
     }
+    if (validate_int(lecs[4]) == 0) {
+        return 0;
+    }
+    if (validate_int(lecs[5]) == 0) {
+        return 0;
+    }
     return 1;
 }
 
@@ -404,8 +410,8 @@ void select(char **lecs) {
         select_for_levels(select, where);
     }
     if (strcmp(lecs[1], STATUS) == 0) {
-        char *select[3];
-        char *where[3];
+        char *select[5];
+        char *where[5];
         if (assign_status_select(lecs, select) == 0) {
             return;
         }
