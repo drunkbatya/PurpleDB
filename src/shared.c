@@ -28,7 +28,7 @@ int assign_modules_select(char **lecs, char **select) {
     if (strcmp(lecs[0], "id") == 0) {
         select[0] = "1";
         return 1;
-    } else if (strcmp(lecs[0], "name") == 0) {
+    } else if (strcmp(lecs[0], "module_name") == 0) {
         select[1] = "1";
         return 1;
     } else if (strcmp(lecs[0], "mem_level_modules") == 0) {
@@ -46,10 +46,10 @@ int assign_modules_select(char **lecs, char **select) {
     }
 }
 
-int assign_modules_where(char **lecs, char **where) {
-    if (strcmp(lecs[2], "*") == 0) {  // if no WHERE
+int assign_modules_where(char *where_col, *where_val, char **where) {
+    if (strcmp(where_col, "*") == 0) {  // if no WHERE
         for (int i = 0; i < 5; i++) {
-            where[i] = lecs[2];
+            where[i] = where_col;
         }
         return 1;
     }
@@ -58,22 +58,22 @@ int assign_modules_where(char **lecs, char **where) {
     }
 
     if (strcmp(lecs[2], "id") == 0) {
-        where[0] = lecs[3];
+        where[0] = where_val;
         return 1;
-    } else if (strcmp(lecs[2], "name") == 0) {
-        where[1] = lecs[3];
+    } else if (strcmp(lecs[2], "module_name") == 0) {
+        where[1] = where_val;
         return 1;
     } else if (strcmp(lecs[2], "mem_level_modules") == 0) {
-        where[2] = lecs[3];
+        where[2] = where_val;
         return 1;
     } else if (strcmp(lecs[2], "cell_num") == 0) {
-        where[3] = lecs[3];
+        where[3] = where_val;
         return 1;
     } else if (strcmp(lecs[2], "deletion_flag") == 0) {
-        where[4] = lecs[3];
+        where[4] = where_val;
         return 1;
     } else {
-        error_unknown_condition(lecs[1]);
+        error_unknown_condition(where_val);
         return 0;
     }
 }
@@ -139,31 +139,42 @@ void select(char **lecs) {
         error_unknown_db(lecs[1]);
         return;
     }
-  //  if (strcmp(lecs[1], LEVELS) == 0) {
-  //      select_for_levels();
- //   }
-
     if (strcmp(lecs[1], MODULES) == 0) {
         char *select[5];
         char *where[5];
         if (assign_modules_select(lecs, select) == 0) {
             return;
         }
-        if (assign_modules_where(lecs, where) == 0) {
+        if (assign_modules_where(lecs[2], lecs[3], where) == 0) {
             return;
         }
       //  print_mock(select, where);
         select_for_modules(select, where);
     }
-
-  //  if (strcmp(lecs[1], STATUS) == 0) {
-  //      select_for_statuses();
-  //  }
-    
-    return;
 }
 
+/*
+void update(char **lecs) {
+    if (check_if_table_exists(lecs[0]) == 0) {
+        error_unknown_db(lecs[0]);
+        return;
+    }
+    if (strcmp(lecs[1], MODULES) == 0) {
+        char *where[5];
+        char *update[5];
+        if (assign_modules_update(lecs, update) == 0) {
+            return;
+        }
+        if (assign_modules_where(lecs, update) == 0) {
+            return;
+        }
+      //  print_mock(select, where);
+        select_for_modules(select, where);
+    }
+    
+}
 
+*/
 
 
 
