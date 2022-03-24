@@ -35,6 +35,6 @@ int check_id(char * id);
 void update_for_modules(char **old, char **new);
 void update_record(FILE *pfile, modules *local, modules *change, int index);
 int compare_for_update (modules *local, modules *where);
-
+void print_mask(int identifier);
 
 #endif  // SRC_FUNCTIONS_H_
