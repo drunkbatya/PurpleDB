@@ -94,13 +94,9 @@ void print_outro_modules(int identifier) {
     }
 }
 
-<<<<<<< HEAD
 int compare_modules(modules *local, int check_field, char *temp) {
-=======
-int compare(modules *local, int check_field, char *temp) {
     if ((check_field == 5) && (temp[0] == '-'))
         return (1);
->>>>>>> c0d1d27eba4de530a00a433151497f00e68dc0b2
     if ((check_field == 0) && (local->id == atoi(temp))) {
         return 1;
     }

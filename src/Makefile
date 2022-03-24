@@ -9,8 +9,8 @@ build: purpledb
 crate_out_dir:
 	mkdir -p ../build
 
-purpledb: main.o client.o purple_lib.o error.o shared.o modules.o levels.o hardcode.o crate_out_dir status.o
-	$(CC) $(CFLAGS) main.o client.o purple_lib.o error.o shared.o modules.o levels.o hardcode.o status.o -o $(OUT_DIR)/purpledb -fsanitize=address
+purpledb: main.o client.o purple_lib.o error.o shared.o modules.o levels.o hardcode.o crate_out_dir status.o binary.o
+	$(CC) $(CFLAGS) main.o client.o purple_lib.o error.o shared.o modules.o levels.o hardcode.o status.o binary.o -o $(OUT_DIR)/purpledb -fsanitize=address
 
 main.o: main.c
 	$(CC) $(CFLAGS) -c main.c -o main.o

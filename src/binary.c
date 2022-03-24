@@ -7,10 +7,6 @@ int get_records_count_in_file(FILE *pfile) {
     return get_file_size_in_bytes(pfile) / sizeof(levels);
 }
 
-int get_records_count_in_file_modules(FILE *pfile) {
-    return get_file_size_in_bytes(pfile) / sizeof(modules);
-}
-
 int get_records_count_in_file_status(FILE *pfile) {
     return get_file_size_in_bytes(pfile) / sizeof(status_events);
 }
