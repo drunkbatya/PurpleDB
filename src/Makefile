@@ -6,7 +6,10 @@ all: clean build
 
 build: purpledb
 
-purpledb: main.o client.o purple_lib.o error.o shared.o modules.o levels.o hardcode.o binary.o
+crate_out_dir:
+	mkdir -p ../build
+
+purpledb: main.o client.o purple_lib.o error.o shared.o modules.o levels.o hardcode.o binary.o crate_out_dir
 	$(CC) $(CFLAGS) main.o client.o purple_lib.o error.o shared.o modules.o levels.o  hardcode.o binary.o -o $(OUT_DIR)/purpledb -fsanitize=address
 
 main.o: main.c
