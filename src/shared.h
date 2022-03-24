@@ -18,5 +18,6 @@ void insert(char **lecs);
 int validate_modules(char **lecs);
 int validate_int(char *strint);
 void update(char **lecs);
+int assign_modules_update(char *update_col, char *update_val, char **update);
 
 #endif  // SRC_SHARED_H_

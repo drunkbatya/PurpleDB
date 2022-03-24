@@ -46,6 +46,32 @@ int assign_modules_select(char **lecs, char **select) {
     }
 }
 
+int assign_modules_update(char *update_col, char *update_val, char **update) {
+    for (int i = 0; i < 5; i++) {
+        update[i] = "";
+    }
+
+    if (strcmp(update_col, "id") == 0) {
+        update[0] = update_val;
+        return 1;
+    } else if (strcmp(update_col, "module_name") == 0) {
+        update[1] = update_val;
+        return 1;
+    } else if (strcmp(update_col, "mem_level_modules") == 0) {
+        update[2] = update_val;
+        return 1;
+    } else if (strcmp(update_col, "cell_num") == 0) {
+        update[3] = update_val;
+        return 1;
+    } else if (strcmp(update_col, "deletion_flag") == 0) {
+        update[4] = update_val;
+        return 1;
+    } else {
+        error_unknown_condition(update_val);
+        return 0;
+    }
+}
+
 int assign_modules_where(char *where_col, char *where_val, char **where) {
     if (strcmp(where_col, "*") == 0) {  // if no WHERE
         for (int i = 0; i < 5; i++) {
@@ -79,7 +105,7 @@ int assign_modules_where(char *where_col, char *where_val, char **where) {
 }
 
 void print_mock(char **select, char **where) {
-    printf("select ");
+    printf("update ");
     for (int i= 0; i < 5; i++) {
         printf("%s ", select[i]);
     }
@@ -148,34 +174,28 @@ void select(char **lecs) {
         if (assign_modules_where(lecs[2], lecs[3], where) == 0) {
             return;
         }
-      //  print_mock(select, where);
         select_for_modules(select, where);
     }
 }
 
-/*
 void update(char **lecs) {
     if (check_if_table_exists(lecs[0]) == 0) {
         error_unknown_db(lecs[0]);
         return;
     }
-    if (strcmp(lecs[1], MODULES) == 0) {
+    if (strcmp(lecs[0], MODULES) == 0) {
         char *where[5];
         char *update[5];
-        if (assign_modules_update(lecs, update) == 0) {
+        if (assign_modules_update(lecs[1], lecs[2], update) == 0) {
             return;
         }
-        if (assign_modules_where(lecs, update) == 0) {
+        if (assign_modules_where(lecs[3], lecs[4], where) == 0) {
             return;
         }
-      //  print_mock(select, where);
-        select_for_modules(select, where);
+        update_for_modules(where, update);
     }
     
 }
-
-*/
-
 
 
 

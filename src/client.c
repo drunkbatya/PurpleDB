@@ -185,7 +185,7 @@ int parse_update_query(char *str) {
     lecs[3] = lecs[6];  // where
     lecs[4] = lecs[8];  // where_val
     pretty_print_update(lecs);
-    // update(lecs);
+    update(lecs);
     return (1);
 }
 
