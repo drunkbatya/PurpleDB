@@ -59,14 +59,14 @@ int parse_query(char *str) {
             return (0);
         return (1);
     }
-    if (strncmp(str, "show tables;", 12) == 0) {
-        show_tables();
-        return (1);
-    }
-    if (strncmp(str, "describe table modules;", 23) == 0) {
-        describe_modules();
-        return (1);
-    }
+    if (strncmp(str, "show tables;", 12) == 0)
+        return (show_tables());
+    if (strncmp(str, "describe table modules;", 23) == 0)
+        return (describe_modules());
+    if (strncmp(str, "describe table levels;", 22) == 0)
+        return (describe_levels());
+    if (strncmp(str, "describe table status_events;", 29) == 0)
+        return (describe_status());
     return (0);
 }
 
