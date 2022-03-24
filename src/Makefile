@@ -6,7 +6,7 @@ all: clean build
 
 build: purpledb
 
-purpledb: main.o client.o purple_lib.o error.o shared.o modules.o hardcode.o
+purpledb: main.o client.o purple_lib.o error.o shared.o modules.o levels.o hardcode.o
 	$(CC) $(CFLAGS) main.o client.o purple_lib.o error.o shared.o modules.o hardcode.o -o purpledb -fsanitize=address
 
 main.o: main.c
@@ -26,6 +26,9 @@ shared.o: shared.c shared.h
 
 modules.o: modules.c modules.h
 	$(CC) $(CFLAGS) -c modules.c -o modules.o
+
+levels.o: levels.c levels.h
+	$(CC) $(CFLAGS) -c levels.c -o levels.o
 
 hardcode.o: hardcode.c hardcode.h
 	$(CC) $(CFLAGS) -c hardcode.c -o hardcode.o
