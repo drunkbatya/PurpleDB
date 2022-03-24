@@ -336,16 +336,40 @@ void insert(char **lecs) {
         error_unknown_db(lecs[0]);
         return;
     }
-    if (validate_modules(lecs) == 0) {
-        return;
+    if (strcmp(lecs[1], MODULES) == 0) {
+        if (validate_modules(lecs) == 0) {
+            return;
+        }
+        char *inserts[5];
+        inserts[0] = lecs[1];
+        inserts[1] = lecs[2];
+        inserts[2] = lecs[3];
+        inserts[3] = lecs[4];
+        inserts[4] = lecs[5];
+        insert_for_modules(inserts);
     }
-    char *inserts[5];
-    inserts[0] = lecs[1];
-    inserts[1] = lecs[2];
-    inserts[2] = lecs[3];
-    inserts[3] = lecs[4];
-    inserts[4] = lecs[5];
-    insert_for_modules(inserts);
+    if (strcmp(lecs[1], LEVELS) == 0) {
+        if (validate_levels(lecs) == 0) {
+            return;
+        }
+        char *inserts[3];
+        inserts[0] = lecs[1];
+        inserts[1] = lecs[2];
+        inserts[2] = lecs[3];
+       // insert_for_levels(inserts);
+    }
+    if (strcmp(lecs[1], STATUS) == 0) {
+        if (validate_status(lecs) == 0) {
+            return;
+        }
+        char *inserts[5];
+        inserts[0] = lecs[1];
+        inserts[1] = lecs[2];
+        inserts[2] = lecs[3];
+        inserts[3] = lecs[4];
+        inserts[4] = lecs[5];
+      //  insert_for_status(inserts);
+    }
 }
 
 void select(char **lecs) {
@@ -403,6 +427,28 @@ void update(char **lecs) {
             return;
         }
         update_for_modules(where, update);
+    }
+    if (strcmp(lecs[0], LEVELS) == 0) {
+        char *where[5];
+        char *update[5];
+        if (assign_levels_update(lecs[1], lecs[2], update) == 0) {
+            return;
+        }
+        if (assign_levels_where(lecs[3], lecs[4], where) == 0) {
+            return;
+        }
+      //  update_for_levels(where, update);
+    }
+    if (strcmp(lecs[0], STATUS) == 0) {
+        char *where[5];
+        char *update[5];
+        if (assign_status_update(lecs[1], lecs[2], update) == 0) {
+            return;
+        }
+        if (assign_status_where(lecs[3], lecs[4], where) == 0) {
+            return;
+        }
+      //  update_for_status(where, update);
     }
     
 }
