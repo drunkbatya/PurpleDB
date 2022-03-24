@@ -1,5 +1,7 @@
 # PurpleDB
-Database mock for three unique tables: interactive interface, semi-competitive with SQL-like DBs - all you ever wanted.
+SQL-compatible RAM-free micro database with pretty terminal output.
+
+This is a school project written in Pure C in 2 days by [@Koterin](https://github.com/Koterin), [@drunkbatya](https://github.com/drunkbatya/) and [@GrusnyDance](https://github.com/GrusnyDance).
 
 ```sql
 PurpleDB :-( select * from modules where mem_level_modules = 4;
@@ -33,3 +35,104 @@ WHERE
 | 95     | Some module 95    | 4                 | 4        | 0             |
 | 98     | Some module 98    | 4                 | 2        | 0             |
  ---------------------------------------------------------------------------
+```
+## List of valiable commands
+- show tables;
+- describe table [table];
+- select [column] from [table];
+- select [column] from [table] where [column] = [value];
+- insert into [table] values ([value1], [value2], ..);
+- update [table] set [column] = [value] where [column] = [value];
+
+```sql
+--Warning! Spaces in strings are not supported, use backslash '\' to immitate it.
+--Example:
+select id from modules where module_name = Some\module\11;
+```
+
+## How to build
+Just cd to src/ and type 'make'
+```bash
+[~/dev/PurpleDB]: $ cd src/
+[~/dev/PurpleDB/src]: $ make
+```
+Then simply run executable file
+```bash
+[~/dev/PurpleDB/src]: $ ../build/purpledb 
+Welcome to PurpleDB!
+
+PurpleDB :-( 
+```
+
+## How to use
+### List of tables
+This DBMS can't create arbitrary tables, it just uses three pre-defined data structures (stored in '.db' files which located into materials/ folder).
+Just type 'show databases;' to see actual list of tables:
+```sql
+PurpleDB :-( show tables;
+SHOW TABLES
+
+ -----name------
+| modules       |
+| levels        |
+| status_events |
+ ---------------
+ ```
+
+### Table structure
+Standard SQL query 'describe table [table];' is works here!
+```sql
+PurpleDB :-( describe table status_events;
+DESCRIBE TABLE status_events
+
+ ---------name-----------type---
+| event_id           | int      |
+| module_id          | int      |
+| new_status         | int      |
+| status_change_date | char[12] |
+| status_change_time | char[9]  |
+ -------------------------------
+ ```
+ 
+ ### Insert data
+ You can insert INT or STRING values to corresponding columns
+ ```sql
+ PurpleDB :-( insert into modules values (167, I\Wanna\Test\It, 3, 2, 0);
+INSERT INTO
+	modules
+VALUES
+	167,
+	I Wanna Test It,
+	3,
+	2,
+	0
+```
+
+### Update data
+Update it works too:
+```sql
+PurpleDB :-( update modules set module_name = Empty\name where id = 98;
+UPDATE 
+	modules
+SET
+	module_name = Empty name
+WHERE
+	id = 98
+```
+
+Let's check:
+```sql
+PurpleDB :-( select module_name from modules where id = 98;
+SELECT
+	module_name
+FROM
+	modules
+WHERE
+	id = 98
+ -------------------
+| module_name       |
+|-------------------|
+| Empty name        |
+ -------------------
+ ```
+ Enjoy..
