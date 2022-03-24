@@ -370,24 +370,25 @@ void insert(char **lecs) {
 }
 
 void print_mock(char **select, char **where) {
-    printf("update ");
-    for (int i= 0; i < 3; i++) {
+    printf("select ");
+    for (int i= 0; i < 5; i++) {
         printf("%s ", select[i]);
     }
     printf("\n");
     printf("where ");
-    for (int i= 0; i < 3; i++) {
+    for (int i= 0; i < 5; i++) {
         printf("%s ", where[i]);
     }
     printf("\n");
 }
 
 void select(char **lecs) {
-    if (check_if_table_exists(lecs[1]) == 0) {
-        error_unknown_db(lecs[1]);
+    if (check_if_table_exists(lecs[0]) == 0) {
+        error_unknown_db(lecs[0]);
         return;
     }
-    if (strcmp(lecs[1], MODULES) == 0) {
+    if (strcmp(lecs[0], MODULES) == 0) {
+        printf("%s %s %s %s", lecs[0], lecs[1], lecs[2], lecs[3]);
         char *select[5];
         char *where[5];
         if (assign_modules_select(lecs, select) == 0) {
@@ -398,7 +399,8 @@ void select(char **lecs) {
         }
         select_for_modules(select, where);
     }
-    if (strcmp(lecs[1], LEVELS) == 0) {
+    if (strcmp(lecs[0], LEVELS) == 0) {
+        printf("%s %s %s %s", lecs[0], lecs[1], lecs[2], lecs[3]);
         char *select[3];
         char *where[3];
         if (assign_levels_select(lecs, select) == 0) {
@@ -409,16 +411,17 @@ void select(char **lecs) {
         }
         select_for_levels(select, where);
     }
-    if (strcmp(lecs[1], STATUS) == 0) {
-        char *select[5];
-        char *where[5];
-        if (assign_status_select(lecs, select) == 0) {
-            return;
-        }
-        if (assign_status_where(lecs[2], lecs[3], where) == 0) {
-            return;
-        }
-        select_for_status(select, where);
+    if (strcmp(lecs[0], STATUS) == 0) {
+        printf("%s %s %s %s", lecs[0], lecs[1], lecs[2], lecs[3]);
+        //char *select[5];
+        //char *where[5];
+       // if (assign_status_select(lecs, select) == 0) {
+         //   return;
+       // }
+       // if (assign_status_where(lecs[2], lecs[5], where) == 0) {
+         //   return;
+       // }
+       // select_for_status(select, where);
     }
 }
 
