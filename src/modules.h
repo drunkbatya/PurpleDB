@@ -32,5 +32,9 @@ void print_struct(modules *local, int identifier);
 void insert_for_modules(char **new_line);
 void write_record_in_file(FILE *pfile, modules *record_to_write, int index);
 int check_id(char * id);
+void update_for_modules(char **old, char **new);
+void update_record(FILE *pfile, modules *local, modules *change, int index);
+int compare_for_update (modules *local, modules *where);
+
 
 #endif  // SRC_FUNCTIONS_H_
