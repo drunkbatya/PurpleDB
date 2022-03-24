@@ -111,14 +111,14 @@ void insert_for_levels(char **new_line) {
 
 
 // Function of writing a record of the specified type to the file at the specified serial number.
-void write_record_in_file(FILE *pfile, modules *record_to_write, int index) {
+void write_record_in_file(FILE *pfile, levels *record_to_write, int index) {
     // Calculation of the offset at which the required record should be located from the beginning of the file.
-    int offset = index * sizeof(modules);
+    int offset = index * sizeof(levels);
     // Move the position pointer to the calculated offset from the beginning of the file.
     fseek(pfile, offset, SEEK_SET);
 
     // Write a record of the specified type to a file.
-    fwrite(record_to_write, sizeof(modules), 1, pfile);
+    fwrite(record_to_write, sizeof(levels), 1, pfile);
 
     // Just in case, force the I/O subsystem to write the contents of its buffer to a file right now.
     fflush(pfile);
@@ -138,7 +138,7 @@ int get_file_size_in_bytes(FILE *pfile) {
 
 
 void update_for_levels(char **old, char **new) {
-    modules where;
+    levels where;
     if (strcmp(old[0], "") != 0) {
         where.mem_level_levels = atoi(old[0]);
     } else {
@@ -155,7 +155,7 @@ void update_for_levels(char **old, char **new) {
         where.protect_flag = -1;
     }
 
-    modules change;
+    levels change;
     if (strcmp(new[0], "") != 0) {
         change.mem_level_levels = atoi(new[0]);
     } else {
@@ -173,7 +173,7 @@ void update_for_levels(char **old, char **new) {
     }
 
     FILE *ptr = fopen(LEVELS_PATH, "r+b");
-    modules local;
+    levels local;
     int len = get_records_count_in_file(ptr);
     for (int i = 0; i < len; i++) {
         local = read_record_from_file(ptr, i);
@@ -184,9 +184,9 @@ void update_for_levels(char **old, char **new) {
     fclose(ptr);
 }
 
-void update_record_levels(FILE *pfile, modules *local, modules *change, int index) {
+void update_record_levels(FILE *pfile, levels *local, levels *change, int index) {
     // Calculation of the offset at which the required record should be located from the beginning of the file.
-    int offset = index * sizeof(modules);
+    int offset = index * sizeof(levels);
     // Move the position pointer to the calculated offset from the beginning of the file.
     fseek(pfile, offset, SEEK_SET);
     if (change->mem_level_levels != -1) {
@@ -199,7 +199,7 @@ void update_record_levels(FILE *pfile, modules *local, modules *change, int inde
         local->protect_flag = change->protect_flag;
     }
     // Write a record of the specified type to a file.
-    fwrite(local, sizeof(modules), 1, pfile);
+    fwrite(local, sizeof(levels), 1, pfile);
 
     // Just in case, force the I/O subsystem to write the contents of its buffer to a file right now.
     fflush(pfile);
@@ -209,7 +209,7 @@ void update_record_levels(FILE *pfile, modules *local, modules *change, int inde
 }
 
 
-int compare_for_update_levels (modules *local, modules *where) {
+int compare_for_update_levels (levels *local, levels *where) {
     if ((where->mem_level_levels != -1) && (local->mem_level_levels != where->mem_level_levels)) {
         return 0;
     }
