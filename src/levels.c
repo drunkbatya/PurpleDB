@@ -127,11 +127,21 @@ void insert_for_levels(char **new_line) {
     int len = get_records_count_in_file(ptr);
     write_record_in_file_levels(ptr, &local, len);
     fclose(ptr);
+    
+//    levels local;
+//    local.mem_level_levels = atoi(new_line[0]);
+//    local.cell_amount = atoi(new_line[1]);
+//    local.protect_flag = atoi(new_line[2]);
+//    FILE *ptr = fopen(LEVELS_PATH, "a");
+//    int len = get_records_count_in_file(ptr);
+//    write_record_in_file_levels(ptr, &local, len);
+//    fclose(ptr);
 }
 
 
 // Function of writing a record of the specified type to the file at the specified serial number.
 void write_record_in_file_levels(FILE *pfile, levels *record_to_write, int index) {
+    // Calculation of the offset at which the required record should be located from the beginning of the file.
     int offset = index * sizeof(levels);
     // Move the position pointer to the calculated offset from the beginning of the file.
     fseek(pfile, offset, SEEK_SET);
