@@ -1,3 +1,5 @@
+// Copyright [2022] <griselle, sparelis, laynadre>
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -5,6 +7,7 @@
 #include "shared.h"
 #include "modules.h"
 #include "levels.h"
+#include "status.h"
 
 int check_if_table_exists(char *table_name) {
     if (strcmp(table_name, LEVELS) == 0 || strcmp(table_name, MODULES) == 0
@@ -409,7 +412,7 @@ void select(char **lecs) {
         if (assign_status_where(lecs[2], lecs[3], where) == 0) {
             return;
         }
-      //  select_for_status(select, where);
+        select_for_status(select, where);
     }
 }
 

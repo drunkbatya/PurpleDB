@@ -18,6 +18,8 @@ void select_for_modules(char **field, char **where) {
     int check_field;
     char temp[30];
 
+    check_field = 5;
+    temp[0] = '-';
     for (int i = 0; i < 5; i++) {
         if (field[i][0] == '*')
             identifier = 5;
@@ -95,6 +97,8 @@ void print_outro(int identifier) {
 }
 
 int compare(modules *local, int check_field, char *temp) {
+    if ((check_field == 5) && (temp[0] == '-'))
+        return (1);
     if ((check_field == 0) && (local->id == atoi(temp))) {
         return 1;
     }
