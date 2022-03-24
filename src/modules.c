@@ -34,12 +34,29 @@ void select_for_modules(char **field, char **where) {
     for (int i = 0; i < len; i++) {
         local = read_record_from_file(ptr, i);
         if (compare(&local, check_field, temp) == 1) {
-            print_struct(&local, identifier);
             counter++;
+            if (counter == 1) print_mask(identifier);
+            print_struct(&local, identifier);
         }
     }
     fclose(ptr);
     if (counter == 0) error_record_not_found();
+}
+
+void print_mask(int identifier) {
+    if (identifier == 0) {
+        printf("ID\n");
+    } else if (identifier == 1) {
+        printf("MODULE NAME\n");
+    } else if (identifier == 2) {
+        printf("MEMORY LEVEL MODULES\n");
+    } else if (identifier == 3) {
+        printf("CELL NUMBER\n");
+    } else if (identifier == 4) {
+        printf("DELETION FLAG\n");
+    } else if (identifier == 5) {
+        printf("| ID | MODULE NAME | MEMORY LEVEL MODULES | CELL NUMBER | DELETION FLAG |\n");
+    }
 }
 
 
@@ -88,22 +105,16 @@ modules read_record_from_file(FILE *pfile, int index) {
 
 void print_struct(modules *local, int identifier) {
     if (identifier == 0) {
-        printf("ID\n");
         printf("| %d |\n", local->id);
     } else if (identifier == 1) {
-        printf("MODULE NAME\n");
         printf("| %s |\n", local->module_name);
     } else if (identifier == 2) {
-        printf("MEMORY LEVEL MODULES\n");
         printf("| %d |\n", local->mem_level_modules);
     } else if (identifier == 3) {
-        printf("CELL NUMBER\n");
         printf("| %d |\n", local->cell_num);
     } else if (identifier == 4) {
-        printf("DELETION FLAG\n");
         printf("| %d |\n", local->deletion_flag);
     } else if (identifier == 5) {
-        printf("| ID | MODULE NAME | MEMORY LEVEL MODULES | CELL NUMBER | DELETION FLAG |\n");
         printf("| %d ", local->id);
         printf("| %s ", local->module_name);
         printf("| %d ", local->mem_level_modules);
@@ -246,7 +257,7 @@ void update_for_modules(char **old, char **new) {
         change.deletion_flag = -1;
     }
 
-    FILE *ptr = fopen("../materials/master_modules.db", "r+b");
+    FILE *ptr = fopen(MODULES_PATH, "r+b");
     modules local;
     int len = get_records_count_in_file(ptr);
     for (int i = 0; i < len; i++) {
@@ -257,7 +268,7 @@ void update_for_modules(char **old, char **new) {
     }
     fclose(ptr);
 
-    FILE *read = fopen("../materials/master_modules.db", "r");
+    FILE *read = fopen(MODULES_PATH, "r");
     modules check;
     for (int i = 0; i < len + 1; i++) {
         check = read_record_from_file(read, i);
