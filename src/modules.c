@@ -58,9 +58,9 @@ void print_mask(int identifier) {
         printf("| module_name       |\n");
         printf("|-------------------|\n");
     } else if (identifier == 2) {
-        printf(" ------------------\n");
-        printf("| mem_level_module |\n");
-        printf("|------------------|\n");
+        printf(" -------------------\n");
+        printf("| mem_level_modules |\n");
+        printf("|-------------------|\n");
     } else if (identifier == 3) {
         printf(" ----------\n");
         printf("| cell_num |\n");
@@ -70,9 +70,9 @@ void print_mask(int identifier) {
         printf("| deletion_flag |\n");
         printf("|---------------|\n");
     } else if (identifier == 5) {
-        printf(" --------------------------------------------------------------------------\n");
-        printf("| id     | module_name       | mem_level_module | cell_num | deletion_flag |\n");
-        printf("|--------------------------------------------------------------------------|\n");
+        printf(" ---------------------------------------------------------------------------\n");
+        printf("| id     | module_name       | mem_level_modules | cell_num | deletion_flag |\n");
+        printf("|---------------------------------------------------------------------------|\n");
     }
 }
 
@@ -82,13 +82,13 @@ void print_outro(int identifier) {
     } else if (identifier == 1) {
         printf(" -------------------\n");
     } else if (identifier == 2) {
-        printf(" ------------------\n");
+        printf(" -------------------\n");
     } else if (identifier == 3) {
         printf(" ----------\n");
     } else if (identifier == 4) {
         printf(" ---------------\n");
     } else if (identifier == 5) {
-        printf(" --------------------------------------------------------------------------\n");
+        printf(" ---------------------------------------------------------------------------\n");
     }
 }
 
@@ -132,7 +132,7 @@ void print_struct(modules *local, int identifier) {
     } else if (identifier == 1) {
         printf("| %-17s |\n", local->module_name);
     } else if (identifier == 2) {
-        printf("| %-16d |\n", local->mem_level_modules);
+        printf("| %-17d |\n", local->mem_level_modules);
     } else if (identifier == 3) {
         printf("| %-8d |\n", local->cell_num);
     } else if (identifier == 4) {
@@ -140,7 +140,7 @@ void print_struct(modules *local, int identifier) {
     } else if (identifier == 5) {
         printf("| %-7d", local->id);
         printf("| %-18s", local->module_name);
-        printf("| %-17d", local->mem_level_modules);
+        printf("| %-18d", local->mem_level_modules);
         printf("| %-9d", local->cell_num);
         printf("| %-13d |", local->deletion_flag);
         printf("\n");
