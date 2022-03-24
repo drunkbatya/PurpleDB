@@ -6,12 +6,14 @@
 #include "error.h"
 #include "shared.h"
 #include "modules.h"
+#include "binary.h"
+#include "main.h"
 
 void select_for_modules(char **field, char **where) {
     modules local;
     FILE *ptr = fopen(MODULES_PATH, "r");
     int identifier;
-    int len = get_records_count_in_file(ptr);
+    int len = get_records_count_in_file_modules(ptr);
     int counter = 0;
     int check_field;
     char temp[30];
@@ -34,7 +36,7 @@ void select_for_modules(char **field, char **where) {
         temp[(int)strlen(where[i])] = '\0';
     }
     for (int i = 0; i < len; i++) {
-        local = read_record_from_file(ptr, i);
+        local = read_record_from_file_modules(ptr, i);
         if (compare(&local, check_field, temp)) {
             counter++;
             if (counter == 1)
@@ -112,12 +114,7 @@ int compare(modules *local, int check_field, char *temp) {
     return 0;
 }
 
-
-int get_records_count_in_file(FILE *pfile) {
-    return get_file_size_in_bytes(pfile) / sizeof(modules);
-}
-
-modules read_record_from_file(FILE *pfile, int index) {
+modules read_record_from_file_modules(FILE *pfile, int index) {
     int offset = index * sizeof(modules);          // оффсет - сдвиг??
     fseek(pfile, offset, SEEK_SET);
     modules record;
@@ -164,7 +161,7 @@ void insert_for_modules(char **new_line) {
     local.cell_num = atoi(new_line[3]);
     local.deletion_flag = atoi(new_line[4]);
     FILE *ptr = fopen(MODULES_PATH, "a");
-    int len = get_records_count_in_file(ptr);
+    int len = get_records_count_in_file_modules(ptr);
     write_record_in_file(ptr, &local, len);
     fclose(ptr);
 }
@@ -173,9 +170,9 @@ void insert_for_modules(char **new_line) {
 int check_id(char * id) {
     modules local;
     FILE *ptr = fopen(MODULES_PATH, "r");
-    int len = get_records_count_in_file(ptr);
+    int len = get_records_count_in_file_modules(ptr);
     for (int i = 0; i < len; i++) {
-        local = read_record_from_file(ptr, i);
+        local = read_record_from_file_modules(ptr, i);
         if (local.id == atoi(id)) {
             fclose(ptr);
             return 0;
@@ -193,15 +190,6 @@ void write_record_in_file(FILE *pfile, modules *record_to_write, int index) {
     fflush(pfile);
     rewind(pfile);
 }
-
-int get_file_size_in_bytes(FILE *pfile) {
-    int size = 0;
-    fseek(pfile, 0, SEEK_END);
-    size = ftell(pfile);
-    rewind(pfile);
-    return size;
-}
-
 
 void update_for_modules(char **old, char **new) {
     if (strcmp(new[0], "") != 0) {
@@ -272,9 +260,9 @@ void update_for_modules(char **old, char **new) {
 
     FILE *ptr = fopen(MODULES_PATH, "r+b");
     modules local;
-    int len = get_records_count_in_file(ptr);
+    int len = get_records_count_in_file_modules(ptr);
     for (int i = 0; i < len; i++) {
-        local = read_record_from_file(ptr, i);
+        local = read_record_from_file_modules(ptr, i);
         if (compare_for_update(&local, &where) == 1) {
             update_record(ptr, &local, &change, i);
         }

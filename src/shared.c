@@ -4,6 +4,7 @@
 #include "error.h"
 #include "shared.h"
 #include "modules.h"
+#include "levels.h"
 
 int check_if_table_exists(char *table_name) {
     if (strcmp(table_name, LEVELS) == 0 || strcmp(table_name, MODULES) == 0
@@ -184,7 +185,7 @@ int assign_levels_where(char *where_col, char *where_val, char **where) {
         return 1;
     }
     for (int i = 0; i < 3; i++) {
-        where[i] = "";
+        where[i] = "0";
     }
 
     if (strcmp(where_col, "mem_level_levels") == 0) {
@@ -264,19 +265,6 @@ int assign_modules_where(char *where_col, char *where_val, char **where) {
         error_unknown_condition(where_val);
         return 0;
     }
-}
-
-void print_mock(char **select, char **where) {
-    printf("update ");
-    for (int i= 0; i < 5; i++) {
-        printf("%s ", select[i]);
-    }
-    printf("\n");
-    printf("where ");
-    for (int i= 0; i < 5; i++) {
-        printf("%s ", where[i]);
-    }
-    printf("\n");
 }
 
 int validate_status(char **lecs) {
@@ -372,6 +360,19 @@ void insert(char **lecs) {
     }
 }
 
+void print_mock(char **select, char **where) {
+    printf("update ");
+    for (int i= 0; i < 3; i++) {
+        printf("%s ", select[i]);
+    }
+    printf("\n");
+    printf("where ");
+    for (int i= 0; i < 3; i++) {
+        printf("%s ", where[i]);
+    }
+    printf("\n");
+}
+
 void select(char **lecs) {
     if (check_if_table_exists(lecs[1]) == 0) {
         error_unknown_db(lecs[1]);
@@ -397,7 +398,7 @@ void select(char **lecs) {
         if (assign_levels_where(lecs[2], lecs[3], where) == 0) {
             return;
         }
-      //  select_for_levels(select, where);
+        select_for_levels(select, where);
     }
     if (strcmp(lecs[1], STATUS) == 0) {
         char *select[3];

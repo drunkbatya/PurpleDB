@@ -2,20 +2,11 @@
 
 #ifndef SRC_MODULES_H_
 #define SRC_MODULES_H_
-
-typedef struct tModules {
-    int id;
-    char module_name[30];
-    int mem_level_modules;
-    int cell_num;
-    int deletion_flag;
-} modules;
+#include "main.h"
 
 void select_for_modules(char **field, char **where);
 int compare(modules *local, int check_field, char * temp);
-int get_records_count_in_file(FILE *pfile);
-modules read_record_from_file(FILE *pfile, int index);
-int get_file_size_in_bytes(FILE *pfile);
+modules read_record_from_file_modules(FILE *pfile, int index);
 void print_struct(modules *local, int identifier);
 void print_outro(int identifier);
 void insert_for_modules(char **new_line);
