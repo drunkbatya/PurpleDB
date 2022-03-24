@@ -8,11 +8,11 @@
 void pretty_print_select(char **arr) {
     printf(BOLD"SELECT"NC);
     printf("\n\t"CYAN);
-    printf("%s", arr[0]);
+    printf("%s", arr[1]);
     printf("\n"NC);
     printf(BOLD"FROM"NC);
     printf("\n\t"CYAN);
-    printf("%s", arr[1]);
+    printf("%s", arr[0]);
     if (!strcmp(arr[2], "*")) {
         printf("\n"NC);
         return;
