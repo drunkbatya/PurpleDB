@@ -6,40 +6,39 @@
 #include "modules.h"
 
 void select_for_modules(char **field, char **where) {
+    modules local;
+    FILE *ptr = fopen(MODULES_PATH, "r");
     int identifier;
+    int len = get_records_count_in_file(ptr);
+    int counter = 0;
+    int check_field;
+    char temp[30];
+
     for (int i = 0; i < 5; i++) {
-        if (field[i][0] == '*') {
+        if (field[i][0] == '*')
             identifier = 5;
-        } else if (field[i][0] == '1') {
+        if (field[i][0] == '1') {
             identifier = i;
             break;
         }
     }
-    char temp[30];
-    int check_field;
     for (int i = 0; i < 5; i++) {
-        if (strcmp(where[i], "") == 0) {
+        if (!strlen(where[i]))
             continue;
-        } else {
-            check_field = i;
-            for (int j = 0; j < (int)strlen(where[i]); j++) {
-                temp[j] = where[i][j];
-            }
-        }
+        check_field = i;
+        for (int j = 0; j < (int)strlen(where[i]); j++)
+            temp[j] = where[i][j];
     }
-    modules local;
-    int counter = 0;
-    FILE *ptr = fopen(MODULES_PATH, "r");
-    int len = get_records_count_in_file(ptr);
     for (int i = 0; i < len; i++) {
         local = read_record_from_file(ptr, i);
-        if (compare(&local, check_field, temp) == 1) {
+        if (compare(&local, check_field, temp)) {
             print_struct(&local, identifier);
             counter++;
         }
     }
     fclose(ptr);
-    if (counter == 0) error_record_not_found();
+    if (counter == 0)
+        error_record_not_found();
 }
 
 
