@@ -6,8 +6,6 @@
 #include "error.h"
 #include "shared.h"
 #include "modules.h"
-#include "binary.h"
-#include "main.h"
 
 void select_for_modules(char **field, char **where) {
     modules local;
@@ -37,20 +35,20 @@ void select_for_modules(char **field, char **where) {
     }
     for (int i = 0; i < len; i++) {
         local = read_record_from_file_modules(ptr, i);
-        if (compare(&local, check_field, temp)) {
+        if (compare_modules(&local, check_field, temp)) {
             counter++;
             if (counter == 1)
-                print_mask(identifier);
-            print_struct(&local, identifier);
+                print_mask_modules(identifier);
+            print_struct_modules(&local, identifier);
         }
     }
-    print_outro(identifier);
+    print_outro_modules(identifier);
     fclose(ptr);
     if (counter == 0)
         error_record_not_found();
 }
 
-void print_mask(int identifier) {
+void print_mask_modules(int identifier) {
     if (identifier == 0) {
         printf(" --------\n");
         printf("| id     |\n");
@@ -78,7 +76,7 @@ void print_mask(int identifier) {
     }
 }
 
-void print_outro(int identifier) {
+void print_outro_modules(int identifier) {
     if (identifier == 0) {
         printf(" --------\n");
     } else if (identifier == 1) {
@@ -94,7 +92,7 @@ void print_outro(int identifier) {
     }
 }
 
-int compare(modules *local, int check_field, char *temp) {
+int compare_modules(modules *local, int check_field, char *temp) {
     if ((check_field == 0) && (local->id == atoi(temp))) {
         return 1;
     }
@@ -123,7 +121,7 @@ modules read_record_from_file_modules(FILE *pfile, int index) {
     return record;
 }
 
-void print_struct(modules *local, int identifier) {
+void print_struct_modules(modules *local, int identifier) {
     if (identifier == 0) {
         printf("| %-6d |\n", local->id);
     } else if (identifier == 1) {
@@ -162,7 +160,7 @@ void insert_for_modules(char **new_line) {
     local.deletion_flag = atoi(new_line[4]);
     FILE *ptr = fopen(MODULES_PATH, "a");
     int len = get_records_count_in_file_modules(ptr);
-    write_record_in_file(ptr, &local, len);
+    write_record_in_file_modules(ptr, &local, len);
     fclose(ptr);
 }
 
@@ -183,7 +181,7 @@ int check_id(char * id) {
 }
 
 
-void write_record_in_file(FILE *pfile, modules *record_to_write, int index) {
+void write_record_in_file_modules(FILE *pfile, modules *record_to_write, int index) {
     int offset = index * sizeof(modules);
     fseek(pfile, offset, SEEK_SET);
     fwrite(record_to_write, sizeof(modules), 1, pfile);
@@ -264,13 +262,13 @@ void update_for_modules(char **old, char **new) {
     for (int i = 0; i < len; i++) {
         local = read_record_from_file_modules(ptr, i);
         if (compare_for_update(&local, &where) == 1) {
-            update_record(ptr, &local, &change, i);
+            update_record_modules(ptr, &local, &change, i);
         }
     }
     fclose(ptr);
 }
 
-void update_record(FILE *pfile, modules *local, modules *change, int index) {
+void update_record_modules(FILE *pfile, modules *local, modules *change, int index) {
     int offset = index * sizeof(modules);
     fseek(pfile, offset, SEEK_SET);
     if (change->id != -1) {
@@ -315,4 +313,16 @@ int compare_for_update(modules *local, modules *where) {
         return 0;
     }
     return 1;
+}
+
+int get_records_count_in_file_modules(FILE *pfile) {
+    return get_file_size_in_bytes_modules(pfile) / sizeof(modules);
+}
+
+int get_file_size_in_bytes_modules(FILE *pfile) {
+    int size = 0;
+    fseek(pfile, 0, SEEK_END);    // Move the position pointer to the end of the file.
+    size = ftell(pfile);          // Read the number of bytes from the beginning of the file to the current position pointer.
+    rewind(pfile);                // For safety reasons, move the position pointer back to the beginning of the file.
+    return size;
 }
