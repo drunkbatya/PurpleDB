@@ -46,7 +46,7 @@ int assign_modules_select(char **lecs, char **select) {
     }
 }
 
-int assign_modules_where(char *where_col, *where_val, char **where) {
+int assign_modules_where(char *where_col, char *where_val, char **where) {
     if (strcmp(where_col, "*") == 0) {  // if no WHERE
         for (int i = 0; i < 5; i++) {
             where[i] = where_col;
@@ -57,19 +57,51 @@ int assign_modules_where(char *where_col, *where_val, char **where) {
         where[i] = "";
     }
 
-    if (strcmp(lecs[2], "id") == 0) {
+    if (strcmp(where_col, "id") == 0) {
         where[0] = where_val;
         return 1;
-    } else if (strcmp(lecs[2], "module_name") == 0) {
+    } else if (strcmp(where_col, "module_name") == 0) {
         where[1] = where_val;
         return 1;
-    } else if (strcmp(lecs[2], "mem_level_modules") == 0) {
+    } else if (strcmp(where_col, "mem_level_modules") == 0) {
         where[2] = where_val;
         return 1;
-    } else if (strcmp(lecs[2], "cell_num") == 0) {
+    } else if (strcmp(where_col, "cell_num") == 0) {
         where[3] = where_val;
         return 1;
-    } else if (strcmp(lecs[2], "deletion_flag") == 0) {
+    } else if (strcmp(where_col, "deletion_flag") == 0) {
+        where[4] = where_val;
+        return 1;
+    } else {
+        error_unknown_condition(where_val);
+        return 0;
+    }
+}
+
+int assign_modules_where(char *where_col, char *where_val, char **where) {
+    if (strcmp(where_col, "*") == 0) {  // if no WHERE
+        for (int i = 0; i < 5; i++) {
+            where[i] = where_col;
+        }
+        return 1;
+    }
+    for (int i = 0; i < 5; i++) {
+        where[i] = "";
+    }
+
+    if (strcmp(where_col, "id") == 0) {
+        where[0] = where_val;
+        return 1;
+    } else if (strcmp(where_col, "module_name") == 0) {
+        where[1] = where_val;
+        return 1;
+    } else if (strcmp(where_col, "mem_level_modules") == 0) {
+        where[2] = where_val;
+        return 1;
+    } else if (strcmp(where_col, "cell_num") == 0) {
+        where[3] = where_val;
+        return 1;
+    } else if (strcmp(where_col, "deletion_flag") == 0) {
         where[4] = where_val;
         return 1;
     } else {
@@ -153,7 +185,7 @@ void select(char **lecs) {
     }
 }
 
-/*
+
 void update(char **lecs) {
     if (check_if_table_exists(lecs[0]) == 0) {
         error_unknown_db(lecs[0]);
@@ -173,8 +205,6 @@ void update(char **lecs) {
     }
     
 }
-
-*/
 
 
 

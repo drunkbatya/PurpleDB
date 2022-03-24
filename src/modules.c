@@ -43,7 +43,7 @@ void select_for_modules(char **field, char **where) {
 }
 
 
-int compare (modules *local, int check_field, char *temp) {
+int compare(modules *local, int check_field, char *temp) {
     if ((check_field == 0) && (local->id == atoi(temp))) {
         return 1;
     }
