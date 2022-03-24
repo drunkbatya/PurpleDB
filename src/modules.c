@@ -1,3 +1,5 @@
+// Copyright [2022] <griselle, sparelis, laynadre>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -33,10 +35,12 @@ void select_for_modules(char **field, char **where) {
         local = read_record_from_file(ptr, i);
         if (compare(&local, check_field, temp)) {
             counter++;
-            if (counter == 1) print_mask(identifier);
+            if (counter == 1)
+                print_mask(identifier);
             print_struct(&local, identifier);
         }
     }
+    print_outro(identifier);
     fclose(ptr);
     if (counter == 0)
         error_record_not_found();
@@ -44,20 +48,47 @@ void select_for_modules(char **field, char **where) {
 
 void print_mask(int identifier) {
     if (identifier == 0) {
-        printf("ID\n");
+        printf(" --------\n");
+        printf("| id     |\n");
+        printf("|--------|\n");
     } else if (identifier == 1) {
-        printf("MODULE NAME\n");
+        printf(" -------------------\n");
+        printf("| module_name       |\n");
+        printf("|-------------------|\n");
     } else if (identifier == 2) {
-        printf("MEMORY LEVEL MODULES\n");
+        printf(" ------------------\n");
+        printf("| mem_level_module |\n");
+        printf("|------------------|\n");
     } else if (identifier == 3) {
-        printf("CELL NUMBER\n");
+        printf(" ----------\n");
+        printf("| cell_num |\n");
+        printf("|----------|\n");
     } else if (identifier == 4) {
-        printf("DELETION FLAG\n");
+        printf(" ---------------\n");
+        printf("| deletion_flag |\n");
+        printf("|---------------|\n");
     } else if (identifier == 5) {
-        printf("| ID | MODULE NAME | MEMORY LEVEL MODULES | CELL NUMBER | DELETION FLAG |\n");
+        printf(" --------------------------------------------------------------------------\n");
+        printf("| id     | module_name       | mem_level_module | cell_num | deletion_flag |\n");
+        printf("|--------------------------------------------------------------------------|\n");
     }
 }
 
+void print_outro(int identifier) {
+    if (identifier == 0) {
+        printf(" --------\n");
+    } else if (identifier == 1) {
+        printf(" -------------------\n");
+    } else if (identifier == 2) {
+        printf(" ------------------\n");
+    } else if (identifier == 3) {
+        printf(" ----------\n");
+    } else if (identifier == 4) {
+        printf(" ---------------\n");
+    } else if (identifier == 5) {
+        printf(" --------------------------------------------------------------------------\n");
+    }
+}
 
 int compare(modules *local, int check_field, char *temp) {
     if ((check_field == 0) && (local->id == atoi(temp))) {
@@ -104,21 +135,21 @@ modules read_record_from_file(FILE *pfile, int index) {
 
 void print_struct(modules *local, int identifier) {
     if (identifier == 0) {
-        printf("| %d |\n", local->id);
+        printf("| %-6d |\n", local->id);
     } else if (identifier == 1) {
-        printf("| %s |\n", local->module_name);
+        printf("| %-17s |\n", local->module_name);
     } else if (identifier == 2) {
-        printf("| %d |\n", local->mem_level_modules);
+        printf("| %-16d |\n", local->mem_level_modules);
     } else if (identifier == 3) {
-        printf("| %d |\n", local->cell_num);
+        printf("| %-8d |\n", local->cell_num);
     } else if (identifier == 4) {
-        printf("| %d |\n", local->deletion_flag);
+        printf("| %-13d |\n", local->deletion_flag);
     } else if (identifier == 5) {
-        printf("| %d ", local->id);
-        printf("| %s ", local->module_name);
-        printf("| %d ", local->mem_level_modules);
-        printf("| %d ", local->cell_num);
-        printf("| %d |", local->deletion_flag);
+        printf("| %-7d", local->id);
+        printf("| %-18s", local->module_name);
+        printf("| %-17d", local->mem_level_modules);
+        printf("| %-9d", local->cell_num);
+        printf("| %-13d |", local->deletion_flag);
         printf("\n");
     }
 }
@@ -162,29 +193,19 @@ int check_id(char * id) {
 }
 
 
-// Function of writing a record of the specified type to the file at the specified serial number.
 void write_record_in_file(FILE *pfile, modules *record_to_write, int index) {
-    // Calculation of the offset at which the required record should be located from the beginning of the file.
     int offset = index * sizeof(modules);
-    // Move the position pointer to the calculated offset from the beginning of the file.
     fseek(pfile, offset, SEEK_SET);
-
-    // Write a record of the specified type to a file.
     fwrite(record_to_write, sizeof(modules), 1, pfile);
-
-    // Just in case, force the I/O subsystem to write the contents of its buffer to a file right now.
     fflush(pfile);
-
-    // For safety reasons, return the file position pointer to the beginning of the file.
     rewind(pfile);
 }
 
-// Function to get file size in bytes.
 int get_file_size_in_bytes(FILE *pfile) {
     int size = 0;
-    fseek(pfile, 0, SEEK_END);    // Move the position pointer to the end of the file.
-    size = ftell(pfile);          // Read the number of bytes from the beginning of the file to the current position pointer.
-    rewind(pfile);                // For safety reasons, move the position pointer back to the beginning of the file.
+    fseek(pfile, 0, SEEK_END);
+    size = ftell(pfile);
+    rewind(pfile);
     return size;
 }
 
@@ -269,9 +290,7 @@ void update_for_modules(char **old, char **new) {
 }
 
 void update_record(FILE *pfile, modules *local, modules *change, int index) {
-    // Calculation of the offset at which the required record should be located from the beginning of the file.
     int offset = index * sizeof(modules);
-    // Move the position pointer to the calculated offset from the beginning of the file.
     fseek(pfile, offset, SEEK_SET);
     if (change->id != -1) {
         local->id = change->id;
@@ -292,18 +311,13 @@ void update_record(FILE *pfile, modules *local, modules *change, int index) {
     if (change->deletion_flag != -1) {
         local->deletion_flag = change->deletion_flag;
     }
-    // Write a record of the specified type to a file.
     fwrite(local, sizeof(modules), 1, pfile);
-
-    // Just in case, force the I/O subsystem to write the contents of its buffer to a file right now.
     fflush(pfile);
-
-    // For safety reasons, return the file position pointer to the beginning of the file.
     rewind(pfile);
 }
 
 
-int compare_for_update (modules *local, modules *where) {
+int compare_for_update(modules *local, modules *where) {
     if ((where->id != -1) && (local->id != where->id)) {
         return 0;
     }
