@@ -30,10 +30,7 @@ void select_for_status(char **field, char **where) {
         if (!strlen(where[i]))
             continue;
         check_field = i;
-        for (int j = 0; j < (int)strlen(where[i]); j++) {
-            temp[j] = where[i][j];
-        }
-        temp[(int)strlen(where[i])] = '\0';
+        strcpy(temp, where[i]);
     }
     for (int i = 0; i < len; i++) {
         local = read_record_from_file_status(ptr, i);
@@ -108,11 +105,10 @@ int compare_status(status_events *local, int check_field, char *temp) {
     return (0);
 }
 
-
 status_events read_record_from_file_status(FILE *pfile, int index) {
     status_events record;
     int offset;
-    
+
     offset = index * sizeof(status_events);
     fseek(pfile, offset, SEEK_SET);
     fread(&record, sizeof(status_events), 1, pfile);
@@ -140,3 +136,31 @@ void print_struct_status(status_events *local, int identifier) {
         printf("\n");
     }
 }
+
+void insert_for_status(char **new_line) {
+    int len;
+    FILE *ptr;
+    status_events local;
+
+    ptr = fopen(MODULES_PATH, "a");
+    len = get_records_count_in_file_status(ptr);
+    local.event_id = atoi(new_line[0]);
+    local.module_id = atoi(new_line[1]);
+    local.new_status = atoi(new_line[2]);
+    strcpy(local.status_change_date, new_line[3]);
+    strcpy(local.status_change_time, new_line[4]);
+    write_record_in_file_status(ptr, &local, len);
+    fclose(ptr);
+}
+
+void write_record_in_file_status(FILE *pfile, status_events *record_to_write, int index) {
+    int offset;
+
+    offset = index * sizeof(status_events);
+    fseek(pfile, offset, SEEK_SET);
+    fwrite(record_to_write, sizeof(status_events), 1, pfile);
+    fflush(pfile);
+    rewind(pfile);
+}
+
+

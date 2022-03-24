@@ -365,7 +365,7 @@ void insert(char **lecs) {
         inserts[2] = lecs[3];
         inserts[3] = lecs[4];
         inserts[4] = lecs[5];
-      //  insert_for_status(inserts);
+        insert_for_status(inserts);
     }
 }
 
