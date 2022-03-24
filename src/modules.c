@@ -177,3 +177,137 @@ int get_file_size_in_bytes(FILE *pfile) {
     rewind(pfile);                // For safety reasons, move the position pointer back to the beginning of the file.
     return size;
 }
+
+
+void update_for_modules(char **old, char **new) {
+    if (strcmp(new[0], "") != 0) {
+        invalid_id_error();
+        return;
+    }
+    modules where;
+    if (strcmp(old[0], "") != 0) {
+        where.id = atoi(old[0]);
+    } else {
+        where.id = -1;
+    }
+    if (strcmp(old[1], "") != 0) {
+        int i;
+        for (i = 0; i < (int)strlen(old[1]); i++) {
+            where.module_name[i] = old[1][i];
+        }
+        where.module_name[(int)strlen(old[1])] = '\0';
+    } else {
+        where.module_name[0] = '\0';
+    }
+    if (strcmp(old[2], "") != 0) {
+        where.mem_level_modules = atoi(old[2]);
+    } else {
+        where.mem_level_modules = -1;
+    }
+    if (strcmp(old[3], "") != 0) {
+        where.cell_num = atoi(old[3]);
+    } else {
+        where.cell_num = -1;
+    }
+    if (strcmp(old[4], "") != 0) {
+        where.deletion_flag = atoi(old[4]);
+    } else {
+        where.deletion_flag = -1;
+    }
+
+    modules change;
+    if (strcmp(new[0], "") != 0) {
+        change.id = atoi(new[0]);
+    } else {
+        change.id = -1;
+    }
+    if (strcmp(new[1], "") != 0) {
+        int i;
+        for (i = 0; i < (int)strlen(new[1]); i++) {
+            change.module_name[i] = new[1][i];
+        }
+        change.module_name[(int)strlen(new[1])] = '\0';
+    } else {
+        change.module_name[0] = '\0';
+    }
+    if (strcmp(new[2], "") != 0) {
+        change.mem_level_modules = atoi(new[2]);
+    } else {
+        change.mem_level_modules = -1;
+    }
+    if (strcmp(new[3], "") != 0) {
+        change.cell_num = atoi(new[3]);
+    } else {
+        change.cell_num = -1;
+    }
+    if (strcmp(new[4], "") != 0) {
+        change.deletion_flag = atoi(new[4]);
+    } else {
+        change.deletion_flag = -1;
+    }
+
+    FILE *ptr = fopen("../materials/master_modules.db", "r+b");
+    modules local;
+    int len = get_records_count_in_file(ptr);
+    for (int i = 0; i < len; i++) {
+        local = read_record_from_file(ptr, i);
+        if (compare_for_update(&local, &where) == 1) {
+            update_record(ptr, &local, &change, i);
+        }
+    }
+    fclose(ptr);
+}
+
+void update_record(FILE *pfile, modules *local, modules *change, int index) {
+    // Calculation of the offset at which the required record should be located from the beginning of the file.
+    int offset = index * sizeof(modules);
+    // Move the position pointer to the calculated offset from the beginning of the file.
+    fseek(pfile, offset, SEEK_SET);
+    if (change->id != -1) {
+        local->id = change->id;
+    }
+    if (change->module_name[0] != '\0') {
+        int i;
+        for (i = 0; i < (int)strlen(change->module_name); i++) {
+            local->module_name[i] = change->module_name[i];
+        }
+        local->module_name[i] = '\0';
+    }
+    if (change->mem_level_modules != -1) {
+        local->mem_level_modules = change->mem_level_modules;
+    }
+    if (change->cell_num != -1) {
+        local->cell_num = change->cell_num;
+    }
+    if (change->deletion_flag != -1) {
+        local->deletion_flag = change->deletion_flag;
+    }
+    // Write a record of the specified type to a file.
+    fwrite(local, sizeof(modules), 1, pfile);
+
+    // Just in case, force the I/O subsystem to write the contents of its buffer to a file right now.
+    fflush(pfile);
+
+    // For safety reasons, return the file position pointer to the beginning of the file.
+    rewind(pfile);
+}
+
+
+int compare_for_update (modules *local, modules *where) {
+    if ((where->id != -1) && (local->id != where->id)) {
+        return 0;
+    }
+    if ((where->module_name[0] != '\0') && (strcmp(local->module_name, where->module_name) != 0)) {
+        return 0;
+    }
+    if ((where->mem_level_modules != -1) && (local->mem_level_modules != where->mem_level_modules)) {
+        return 0;
+    }
+    if ((where->cell_num != -1) && (local->cell_num != where->cell_num)) {
+        return 0;
+    }
+    if ((where->deletion_flag != -1) && (local->deletion_flag != where->deletion_flag)) {
+        return 0;
+    }
+    return 1;
+}
