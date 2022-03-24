@@ -26,8 +26,10 @@ void select_for_modules(char **field, char **where) {
         if (!strlen(where[i]))
             continue;
         check_field = i;
-        for (int j = 0; j < (int)strlen(where[i]); j++)
+        for (int j = 0; j < (int)strlen(where[i]); j++) {
             temp[j] = where[i][j];
+        }
+        temp[(int)strlen(where[i])] = '\0';
     }
     for (int i = 0; i < len; i++) {
         local = read_record_from_file(ptr, i);
