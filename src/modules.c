@@ -32,7 +32,6 @@ void select_for_modules(char **field, char **where) {
     for (int i = 0; i < len; i++) {
         local = read_record_from_file(ptr, i);
         if (compare(&local, check_field, temp)) {
-            print_struct(&local, identifier);
             counter++;
             if (counter == 1) print_mask(identifier);
             print_struct(&local, identifier);
