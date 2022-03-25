@@ -36,7 +36,7 @@ WHERE
 | 98     | Some module 98    | 4                 | 2        | 0             |
  ---------------------------------------------------------------------------
 ```
-## List of valiable commands
+## List of avaliable commands
 - show tables;
 - describe table [table];
 - select [column] from [table];
