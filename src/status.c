@@ -348,3 +348,38 @@ int compare_for_update_status(status_events *local, status_events *where) {
     return 0;
 }
 
+void delete_for_status (char **array) 
+{
+    int check_field = 5;
+    char temp[40];
+    temp[0] = '-';
+    temp[1] = '\0';
+    for (int i = 0; i < 5; i++) {
+        if (strlen(array[i]) == 0) {
+            continue;
+        } else if (!strcmp(array[i], "*")) {
+            continue;
+        } else {
+            check_field = i;
+            strcpy(temp, array[i]);
+        }
+    }
+    FILE *stream = fopen(STATUS_PATH, "rb+");
+    int size = get_records_count_in_file_status(stream);
+    int counter = 0;
+    int top_index;
+    status_events previous, local;
+    for (int i = 0; i < size; i++) {
+        local = read_record_from_file_status(stream, i);
+        if (compare_status(&local, check_field, temp)) {
+            top_index = get_records_count_in_file_status(stream);
+            for (int j = i; j < top_index - 1; j++) {
+                previous = read_record_from_file_status(stream, j + 1);
+                write_record_in_file_status(stream, &previous, j);
+            }
+            counter++;
+            size--;
+        }
+    }
+    fclose(stream);
+}

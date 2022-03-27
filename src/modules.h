@@ -8,6 +8,7 @@
 void select_for_modules(char **field, char **where);
 void insert_for_modules(char **new_line);
 void update_for_modules(char **old, char **new);
+void delete_for_modules(char **array);
 
 void print_mask_modules(int identifier);
 void print_struct_modules(modules *local, int identifier);

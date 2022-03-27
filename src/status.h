@@ -8,6 +8,7 @@
 void select_for_status(char **field, char **where);
 void insert_for_status(char **new_line);
 void update_for_status(char **where_ar, char **new_values);
+void delete_for_status (char **array);
 
 void print_mask_status(int identifier);
 void print_struct_status(status_events *local, int identifier);

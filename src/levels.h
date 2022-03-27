@@ -8,6 +8,7 @@
 void select_for_levels(char **field, char **where);
 void insert_for_levels(char **new_line);
 void update_for_levels(char **where_ar, char **new_values);
+void delete_for_levels (char **array);
 
 void print_mask_levels(int identifier);
 void print_struct_levels(levels *local, int identifier);
