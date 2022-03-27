@@ -34,7 +34,6 @@ uint8_t write_column_count(char *file_path, uint8_t column_count)
     return (1);
 }
 
-// create table test (id integer, name string)
 uint8_t create_table(char **arr, int column_count)
 {
     int count;
