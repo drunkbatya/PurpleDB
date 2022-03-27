@@ -282,8 +282,9 @@ int get_records_count_in_file_levels(FILE *pfile) {
     return (get_file_size_in_bytes_levels(pfile) / sizeof(levels));
 }
 
-void delete_for_levels (char **array) 
+void delete_for_levels(char **array) 
 {
+    FILE *stream;
     int check_field = 3;
     char temp[30];
     temp[0] = '-';
@@ -298,7 +299,7 @@ void delete_for_levels (char **array)
             strcpy(temp, array[i]);
         }
     }
-    FILE *stream = fopen(LEVELS_PATH, "rb+");
+    stream = fopen(LEVELS_PATH, "rb+");
     int size = get_records_count_in_file_levels (stream);
     int counter = 0;
     int top_index;

@@ -329,8 +329,9 @@ int get_file_size_in_bytes_modules(FILE *pfile) {
     return (size);
 }
 
-void delete_for_modules (char **array) 
+void delete_for_modules(char **array) 
 {
+    FILE *stream;
     int check_field = 5;
     char temp[30];
     temp[0] = '-';
@@ -345,7 +346,7 @@ void delete_for_modules (char **array)
             strcpy(temp, array[i]);
         }
     }
-    FILE *stream = fopen(MODULES_PATH, "rb+");
+    stream = fopen(MODULES_PATH, "rb+");
     int size = get_records_count_in_file_modules(stream);
     int counter = 0;
     int top_index;

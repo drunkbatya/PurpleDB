@@ -348,8 +348,9 @@ int compare_for_update_status(status_events *local, status_events *where) {
     return 0;
 }
 
-void delete_for_status (char **array) 
+void delete_for_status(char **array) 
 {
+    FILE *stream;
     int check_field = 5;
     char temp[40];
     temp[0] = '-';
@@ -364,7 +365,7 @@ void delete_for_status (char **array)
             strcpy(temp, array[i]);
         }
     }
-    FILE *stream = fopen(STATUS_PATH, "rb+");
+    stream = fopen(STATUS_PATH, "rb+");
     int size = get_records_count_in_file_status(stream);
     int counter = 0;
     int top_index;
