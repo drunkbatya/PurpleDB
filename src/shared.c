@@ -453,6 +453,6 @@ void update(char **lecs) {
         if (assign_status_where(lecs[3], lecs[4], where) == 0) {
             return;
         }
-      //  update_for_status(where, update);
+        update_for_status(where, update_ar);
     }
 }

@@ -299,22 +299,22 @@ void update_record_modules(FILE *pfile, modules *local, modules *change, int ind
 
 
 int compare_for_update(modules *local, modules *where) {
-    if ((where->id != -1) && (local->id != where->id)) {
-        return 0;
+    if ((where->id != -1) && (local->id == where->id)) {
+        return 1;
     }
-    if ((where->module_name[0] != '\0') && (strcmp(local->module_name, where->module_name) != 0)) {
-        return 0;
+    if ((where->module_name[0] != '\0') && (strcmp(local->module_name, where->module_name) == 0)) {
+        return 1;
     }
-    if ((where->mem_level_modules != -1) && (local->mem_level_modules != where->mem_level_modules)) {
-        return 0;
+    if ((where->mem_level_modules != -1) && (local->mem_level_modules == where->mem_level_modules)) {
+        return 1;
     }
-    if ((where->cell_num != -1) && (local->cell_num != where->cell_num)) {
-        return 0;
+    if ((where->cell_num != -1) && (local->cell_num == where->cell_num)) {
+        return 1;
     }
-    if ((where->deletion_flag != -1) && (local->deletion_flag != where->deletion_flag)) {
-        return 0;
+    if ((where->deletion_flag != -1) && (local->deletion_flag == where->deletion_flag)) {
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 int get_records_count_in_file_modules(FILE *pfile) {

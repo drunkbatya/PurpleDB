@@ -11,7 +11,7 @@ int get_records_count_in_file_status(FILE *pfile) {
 
 int get_file_size_in_bytes(FILE *pfile) {
     int size;
-    
+
     size = 0;
     fseek(pfile, 0, SEEK_END);
     size = ftell(pfile);
