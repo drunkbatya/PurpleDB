@@ -15,7 +15,7 @@ int client(void) {
 
     shell_buf[0] = 0;
     while (shell_buf[0] != EOF) {
-        printf(PS1);
+        printf(PURPLE PS1 NC);
         if (!getstr(shell_buf)) {
             error_shell_buff_overflow();
             continue;

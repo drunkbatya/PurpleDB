@@ -35,7 +35,7 @@ int assign_levels_select(char **lecs, char **select) {
     } else if (strcmp(lecs[1], "cell_amount") == 0) {
         select[1] = "1";
         return 1;
-    } else if (strcmp(lecs[1], "protec_flag") == 0) {
+    } else if (strcmp(lecs[1], "protect_flag") == 0) {
         select[2] = "1";
         return 1;
     } else {
@@ -229,7 +229,7 @@ int assign_status_where(char *where_col, char *where_val, char **where) {
     } else if (strcmp(where_col, "status_change_date") == 0) {
         where[3] = where_val;
         return 1;
-    } else if (strcmp(where_col, "dstatus_change_time") == 0) {
+    } else if (strcmp(where_col, "status_change_time") == 0) {
         where[4] = where_val;
         return 1;
     } else {
