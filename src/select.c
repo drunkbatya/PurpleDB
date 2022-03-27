@@ -4,6 +4,7 @@
 
 uint8_t select(char **arr)
 {
+    FILE *ptr;
     char file_path[strlen(arr[0]) + 2];
 
     strcpy(file_path, arr[0]);

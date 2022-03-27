@@ -14,6 +14,11 @@ int main(void)
     if (!create_table(arr, 2))
     {
         printf("Create table error!\n");
+        // return (1);
+    }
+    if (!insert(arr))
+    {
+        printf("Insert error!\n");
         return (1);
     }
     return (0);
