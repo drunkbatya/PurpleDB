@@ -64,25 +64,31 @@ void select_for_levels(char **field, char **where)
 
 void print_mask_levels(int identifier)
 {
-    if (identifier == 0) {
+    if (identifier == 0)
+    {
         printf(" ------------------\n");
         printf("| mem_level_levels |\n");
         printf("|------------------|\n");
-    } else if (identifier == 1) {
+    } else if (identifier == 1)
+    {
         printf(" -------------\n");
         printf("| cell_amount |\n");
         printf(" -------------\n");
-    } else if (identifier == 2) {
+    } else if (identifier == 2)
+    {
         printf(" --------------\n");
         printf("| protect_flag |\n");
         printf(" --------------\n");
-    } else if (identifier == 3) {
+    } else if (identifier == 3)
+    {
         printf(" -----------------------------------------------\n");
         printf("| mem_level_levels | cell_amount | protect_flag |\n");
         printf("|-----------------------------------------------|\n");
     }
 }
-void print_outro_levels(int identifier) {
+
+void print_outro_levels(int identifier)
+{
     if (identifier == 0)
         printf(" ------------------\n");
     if (identifier == 1)
@@ -93,7 +99,8 @@ void print_outro_levels(int identifier) {
         printf(" -----------------------------------------------\n");
 }
 
-int compare_levels(levels *local, int check_field, char *temp) {
+int compare_levels(levels *local, int check_field, char *temp)
+{
     if ((check_field == 5) && (temp[0] == '-'))
         return (1);
     if ((check_field == 0) && (local->mem_level_levels == atoi(temp)))
@@ -106,7 +113,8 @@ int compare_levels(levels *local, int check_field, char *temp) {
 }
 
 
-levels read_record_from_file_levels(FILE *pfile, int index) {
+levels read_record_from_file_levels(FILE *pfile, int index)
+{
     int offset;
 
     offset = index * sizeof(levels);
@@ -117,7 +125,8 @@ levels read_record_from_file_levels(FILE *pfile, int index) {
     return (record);
 }
 
-int get_file_size_in_bytes_levels(FILE *pfile) {
+int get_file_size_in_bytes_levels(FILE *pfile)
+{
     int size;
 
     size = 0;
@@ -127,14 +136,19 @@ int get_file_size_in_bytes_levels(FILE *pfile) {
     return (size);
 }
 
-void print_struct_levels(levels *local, int identifier) {
-    if (identifier == 0) {
+void print_struct_levels(levels *local, int identifier)
+{
+    if (identifier == 0)
+    {
         printf("| %-16d |\n", local->mem_level_levels);
-    } else if (identifier == 1) {
+    } else if (identifier == 1)
+    {
         printf("| %-11d |\n", local->cell_amount);
-    } else if (identifier == 2) {
+    } else if (identifier == 2)
+    {
         printf("| %-12d |\n", local->protect_flag);
-    } else if (identifier == 3) {
+    } else if (identifier == 3)
+    {
         printf("| %-16d ", local->mem_level_levels);
         printf("| %-11d ", local->cell_amount);
         printf("| %-12d |", local->protect_flag);
@@ -142,7 +156,8 @@ void print_struct_levels(levels *local, int identifier) {
     }
 }
 
-void insert_for_levels(char **new_line) {
+void insert_for_levels(char **new_line)
+{
     int len;
     FILE *ptr;
 
@@ -156,7 +171,8 @@ void insert_for_levels(char **new_line) {
     fclose(ptr);
 }
 
-void write_record_in_file_levels(FILE *pfile, levels *record_to_write, int index) {
+void write_record_in_file_levels(FILE *pfile, levels *record_to_write, int index)
+{
     int offset;
 
     offset = index * sizeof(levels);
@@ -166,7 +182,8 @@ void write_record_in_file_levels(FILE *pfile, levels *record_to_write, int index
     rewind(pfile);
 }
 
-void update_for_levels(char **old, char **new) {
+void update_for_levels(char **where_ar, char **new_values)
+{
     int len;
     FILE *ptr;
     levels where;
@@ -175,33 +192,33 @@ void update_for_levels(char **old, char **new) {
 
     ptr = fopen(LEVELS_PATH, "r+b");
     len = get_records_count_in_file_levels(ptr);
-    if (strcmp(old[0], "") != 0)
-        where.mem_level_levels = atoi(old[0]);
+    if (strcmp(where_ar[0], "") != 0)
+        where.mem_level_levels = atoi(where_ar[0]);
     else
         where.mem_level_levels = -1;
 
-    if (strcmp(old[1], "") != 0)
-        where.cell_amount = atoi(old[1]);
+    if (strcmp(where_ar[1], "") != 0)
+        where.cell_amount = atoi(where_ar[1]);
     else
         where.cell_amount = -1;
 
-    if (strcmp(old[2], "") != 0)
-        where.protect_flag = atoi(old[2]);
+    if (strcmp(where_ar[2], "") != 0)
+        where.protect_flag = atoi(where_ar[2]);
     else
         where.protect_flag = -1;
 
-    if (strcmp(new[0], "") != 0)
-        change.mem_level_levels = atoi(new[0]);
+    if (strcmp(new_values[0], "") != 0)
+        change.mem_level_levels = atoi(new_values[0]);
     else
         change.mem_level_levels = -1;
 
-    if (strcmp(new[1], "") != 0)
-        change.cell_amount = atoi(new[1]);
+    if (strcmp(new_values[1], "") != 0)
+        change.cell_amount = atoi(new_values[1]);
     else
         change.cell_amount = -1;
 
-    if (strcmp(new[2], "") != 0)
-        change.protect_flag = atoi(new[2]);
+    if (strcmp(new_values[2], "") != 0)
+        change.protect_flag = atoi(new_values[2]);
     else
         change.protect_flag = -1;
 
@@ -230,13 +247,13 @@ void update_record_levels(FILE *pfile, levels *local, levels *change, int index)
 }
 
 int compare_for_update_levels(levels *local, levels *where) {
-    if ((where->mem_level_levels != -1) && (local->mem_level_levels != where->mem_level_levels))
-        return (0);
-    if ((where->cell_amount != -1) && (local->cell_amount != where->cell_amount))
-        return (0);
-    if ((where->protect_flag != -1) && (local->protect_flag != where->protect_flag))
-        return (0);
-    return (1);
+    if ((where->mem_level_levels != -1) && (local->mem_level_levels == where->mem_level_levels))
+        return (1);
+    if ((where->cell_amount != -1) && (local->cell_amount == where->cell_amount))
+        return (1);
+    if ((where->protect_flag != -1) && (local->protect_flag == where->protect_flag))
+        return (1);
+    return (0);
 }
 
 int get_records_count_in_file_levels(FILE *pfile) {

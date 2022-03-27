@@ -408,7 +408,6 @@ void select(char **lecs) {
         if (assign_levels_where(lecs[2], lecs[3], where) == 0) {
             return;
         }
-        //print_mock(select_ar, where);
         select_for_levels(select_ar, where);
     }
     if (strcmp(lecs[0], STATUS) == 0) {
