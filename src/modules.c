@@ -30,10 +30,7 @@ void select_for_modules(char **field, char **where) {
         if (!strlen(where[i]))
             continue;
         check_field = i;
-        for (int j = 0; j < (int)strlen(where[i]); j++) {
-            temp[j] = where[i][j];
-        }
-        temp[(int)strlen(where[i])] = '\0';
+        strcpy(temp, where[i]);
     }
     for (int i = 0; i < len; i++) {
         local = read_record_from_file_modules(ptr, i);
@@ -50,7 +47,8 @@ void select_for_modules(char **field, char **where) {
         error_record_not_found();
 }
 
-void print_mask_modules(int identifier) {
+void print_mask_modules(int identifier)
+{
     if (identifier == 0) {
         printf(" --------\n");
         printf("| id     |\n");
@@ -78,65 +76,63 @@ void print_mask_modules(int identifier) {
     }
 }
 
-void print_outro_modules(int identifier) {
-    if (identifier == 0) {
+void print_outro_modules(int identifier)
+{
+    if (identifier == 0)
         printf(" --------\n");
-    } else if (identifier == 1) {
+    if (identifier == 1)
         printf(" -------------------\n");
-    } else if (identifier == 2) {
+    if (identifier == 2)
         printf(" -------------------\n");
-    } else if (identifier == 3) {
+    if (identifier == 3)
         printf(" ----------\n");
-    } else if (identifier == 4) {
+    if (identifier == 4)
         printf(" ---------------\n");
-    } else if (identifier == 5) {
+    if (identifier == 5)
         printf(" ---------------------------------------------------------------------------\n");
-    }
 }
 
 int compare_modules(modules *local, int check_field, char *temp) {
     if ((check_field == 5) && (temp[0] == '-'))
         return (1);
-    if ((check_field == 0) && (local->id == atoi(temp))) {
-        return 1;
-    }
-    if ((check_field == 1) && (strcmp(local->module_name, temp) == 0)) {
-        return 1;
-    }
-    if ((check_field == 2) && (local->mem_level_modules == atoi(temp))) {
-        return 1;
-    }
-    if ((check_field == 3) && (local->cell_num == atoi(temp))) {
-        return 1;
-    }
-    if ((check_field == 4) && (local->deletion_flag == atoi(temp))) {
-        return 1;
-    }
-
-    return 0;
+    if ((check_field == 0) && (local->id == atoi(temp)))
+        return (1);
+    if ((check_field == 1) && (strcmp(local->module_name, temp) == 0))
+        return (1);
+    if ((check_field == 2) && (local->mem_level_modules == atoi(temp)))
+        return (1);
+    if ((check_field == 3) && (local->cell_num == atoi(temp)))
+        return (1);
+    if ((check_field == 4) && (local->deletion_flag == atoi(temp)))
+        return (1);
+    return (0);
 }
 
 modules read_record_from_file_modules(FILE *pfile, int index) {
-    int offset = index * sizeof(modules);          // оффсет - сдвиг??
+    int offset;
+    
+    offset = index * sizeof(modules);
     fseek(pfile, offset, SEEK_SET);
     modules record;
     fread(&record, sizeof(modules), 1, pfile);
     rewind(pfile);
-    return record;
+    return (record);
 }
 
-void print_struct_modules(modules *local, int identifier) {
-    if (identifier == 0) {
+void print_struct_modules(modules *local, int identifier)
+{
+    if (identifier == 0)
         printf("| %-6d |\n", local->id);
-    } else if (identifier == 1) {
+    if (identifier == 1)
         printf("| %-17s |\n", local->module_name);
-    } else if (identifier == 2) {
+    if (identifier == 2)
         printf("| %-17d |\n", local->mem_level_modules);
-    } else if (identifier == 3) {
+    if (identifier == 3)
         printf("| %-8d |\n", local->cell_num);
-    } else if (identifier == 4) {
+    if (identifier == 4)
         printf("| %-13d |\n", local->deletion_flag);
-    } else if (identifier == 5) {
+    if (identifier == 5)
+    {
         printf("| %-7d", local->id);
         printf("| %-18s", local->module_name);
         printf("| %-18d", local->mem_level_modules);
@@ -146,45 +142,50 @@ void print_struct_modules(modules *local, int identifier) {
     }
 }
 
-void insert_for_modules(char **new_line) {
-    int flag = check_id(new_line[0]);
-    if (flag == 0) {
-        invalid_id_error();
-        return;
-    }
+void insert_for_modules(char **new_line)
+{
+    FILE *ptr;
+    int len;
+
+    ptr = fopen(MODULES_PATH, "a");
+    len = get_records_count_in_file_modules(ptr);
     modules local;
+    if (check_id_modules(new_line[0]) == 0)
+        return (invalid_id_error());
     local.id = atoi(new_line[0]);
-    int i;
-    for (i = 0; i < (int)strlen(new_line[1]); i++) {
-        local.module_name[i] = new_line[1][i];
-    }
-    local.module_name[i] = '\0';
+    strcpy(local.module_name, new_line[1]);
     local.mem_level_modules = atoi(new_line[2]);
     local.cell_num = atoi(new_line[3]);
     local.deletion_flag = atoi(new_line[4]);
-    FILE *ptr = fopen(MODULES_PATH, "a");
-    int len = get_records_count_in_file_modules(ptr);
     write_record_in_file_modules(ptr, &local, len);
     fclose(ptr);
 }
 
-int check_id(char * id) {
+int check_id_modules(char *id)
+{
     modules local;
-    FILE *ptr = fopen(MODULES_PATH, "r");
-    int len = get_records_count_in_file_modules(ptr);
-    for (int i = 0; i < len; i++) {
+    FILE *ptr;
+    int len;
+
+    ptr = fopen(MODULES_PATH, "r");
+    len = get_records_count_in_file_modules(ptr);
+    for (int i = 0; i < len; i++)
+    {
         local = read_record_from_file_modules(ptr, i);
-        if (local.id == atoi(id)) {
+        if (local.id == atoi(id))
+        {
             fclose(ptr);
-            return 0;
+            return (0);
         }
     }
     fclose(ptr);
-    return 1;
+    return (1);
 }
 
 void write_record_in_file_modules(FILE *pfile, modules *record_to_write, int index) {
-    int offset = index * sizeof(modules);
+    int offset;
+    
+    offset = index * sizeof(modules);
     fseek(pfile, offset, SEEK_SET);
     fwrite(record_to_write, sizeof(modules), 1, pfile);
     fflush(pfile);
@@ -192,11 +193,10 @@ void write_record_in_file_modules(FILE *pfile, modules *record_to_write, int ind
 }
 
 void update_for_modules(char **old, char **new) {
-    if (strcmp(new[0], "") != 0) {
-        invalid_id_error();
-        return;
-    }
     modules where;
+
+    if (strcmp(new[0], "") != 0)
+        return (invalid_id_error());
     if (strcmp(old[0], "") != 0) {
         where.id = atoi(old[0]);
     } else {
@@ -299,22 +299,22 @@ void update_record_modules(FILE *pfile, modules *local, modules *change, int ind
 
 
 int compare_for_update(modules *local, modules *where) {
-    if ((where->id != -1) && (local->id != where->id)) {
-        return 0;
+    if ((where->id != -1) && (local->id == where->id)) {
+        return 1;
     }
-    if ((where->module_name[0] != '\0') && (strcmp(local->module_name, where->module_name) != 0)) {
-        return 0;
+    if ((where->module_name[0] != '\0') && (strcmp(local->module_name, where->module_name) == 0)) {
+        return 1;
     }
-    if ((where->mem_level_modules != -1) && (local->mem_level_modules != where->mem_level_modules)) {
-        return 0;
+    if ((where->mem_level_modules != -1) && (local->mem_level_modules == where->mem_level_modules)) {
+        return 1;
     }
-    if ((where->cell_num != -1) && (local->cell_num != where->cell_num)) {
-        return 0;
+    if ((where->cell_num != -1) && (local->cell_num == where->cell_num)) {
+        return 1;
     }
-    if ((where->deletion_flag != -1) && (local->deletion_flag != where->deletion_flag)) {
-        return 0;
+    if ((where->deletion_flag != -1) && (local->deletion_flag == where->deletion_flag)) {
+        return 1;
     }
-    return 1;
+    return 0;
 }
 
 int get_records_count_in_file_modules(FILE *pfile) {

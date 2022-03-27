@@ -11,33 +11,52 @@
 
 void select_for_status(char **field, char **where) {
     status_events local;
-    FILE *ptr = fopen(STATUS_PATH, "r");
     int identifier;
-    int len = get_records_count_in_file_status(ptr);
-    int counter = 0;
+    int len; 
+    int counter;
     int check_field;
     char temp[30];
+    int check_id_levels(char *id);    
 
-    for (int i = 0; i < 5; i++) {
+    counter = 0;
+    check_field = 5;
+    temp[0] = '-';
+    FILE *ptr = fopen(STATUS_PATH, "r");
+    len = get_records_count_in_file_status(ptr);
+    for (int i = 0; i < 5; i++)
+    {
         if (field[i][0] == '*')
+        {
             identifier = 5;
-        if (field[i][0] == '1') {
+            break;
+        }
+        if (field[i][0] == '1')
+        {
             identifier = i;
             break;
         }
     }
-    for (int i = 0; i < 5; i++) {
-        if (!strlen(where[i]))
+    for (int i = 0; i < 5; i++)
+    {
+        if (strcmp(where[i], "") == 0)
+        {
             continue;
-        check_field = i;
-        strcpy(temp, where[i]);
+        } else
+        {
+            check_field = i;
+            strcpy(temp, where[i]);
+        }
     }
+
     for (int i = 0; i < len; i++) {
         local = read_record_from_file_status(ptr, i);
-        if (compare_status(&local, check_field, temp)) {
+        if (compare_status(&local, check_field, temp))
+        {
             counter++;
             if (counter == 1)
+            {
                 print_mask_status(identifier);
+            }
             print_struct_status(&local, identifier);
         }
     }
@@ -47,7 +66,8 @@ void select_for_status(char **field, char **where) {
         error_record_not_found();
 }
 
-void print_mask_status(int identifier) {
+void print_mask_status(int identifier)
+{
     if (identifier == 0) {
         printf(" ----------\n");
         printf("| event_id |\n");
@@ -75,7 +95,8 @@ void print_mask_status(int identifier) {
     }
 }
 
-void print_outro_status(int identifier) {
+void print_outro_status(int identifier)
+{
     if (identifier == 0) {
         printf(" ----------\n");
     } else if (identifier == 1) {
@@ -92,6 +113,8 @@ void print_outro_status(int identifier) {
 }
 
 int compare_status(status_events *local, int check_field, char *temp) {
+    if ((check_field == 5) && (temp[0] == '-'))
+        return (1);
     if ((check_field == 0) && (local->event_id == atoi(temp)))
         return (1);
     if ((check_field == 1) && (local->module_id == atoi(temp)))
@@ -118,32 +141,56 @@ status_events read_record_from_file_status(FILE *pfile, int index) {
 
 void print_struct_status(status_events *local, int identifier) {
     if (identifier == 0) {
-        printf("| %-6d |\n", local->event_id);
+        printf("| %-9d |\n", local->event_id);
     } else if (identifier == 1) {
-        printf("| %-17d |\n", local->module_id);
+        printf("| %-10d |\n", local->module_id);
     } else if (identifier == 2) {
-        printf("| %-17d |\n", local->new_status);
+        printf("| %-11d |\n", local->new_status);
     } else if (identifier == 3) {
-        printf("| %-8s |\n", local->status_change_date);
+        printf("| %-19s |\n", local->status_change_date);
     } else if (identifier == 4) {
-        printf("| %-13s |\n", local->status_change_time);
+        printf("| %-18s |\n", local->status_change_time);
     } else if (identifier == 5) {
-        printf("| %-7d", local->event_id);
-        printf("| %-18d", local->module_id);
-        printf("| %-18d", local->new_status);
-        printf("| %-9s", local->status_change_date);
-        printf("| %-13s |", local->status_change_time);
+        printf("| %-9d", local->event_id);
+        printf("| %-10d", local->module_id);
+        printf("| %-11d", local->new_status);
+        printf("| %-19s", local->status_change_date);
+        printf("| %-18s |", local->status_change_time);
         printf("\n");
     }
+}
+
+int check_id_status(char *id)
+{
+    status_events local;
+    FILE *ptr;
+    int len;
+
+    ptr = fopen(STATUS_PATH, "r");
+    len = get_records_count_in_file_status(ptr);
+    for (int i = 0; i < len; i++)
+    {
+        local = read_record_from_file_status(ptr, i);
+        if (local.event_id == atoi(id))
+        {
+            fclose(ptr);
+            return (0);
+        }
+    }
+    fclose(ptr);
+    return (1);
 }
 
 void insert_for_status(char **new_line) {
     int len;
     FILE *ptr;
-    status_events local;
 
-    ptr = fopen(MODULES_PATH, "a");
+    ptr = fopen(STATUS_PATH, "a");
     len = get_records_count_in_file_status(ptr);
+    status_events local;
+    if (check_id_status(new_line[0]) == 0)
+        return (invalid_id_error());
+
     local.event_id = atoi(new_line[0]);
     local.module_id = atoi(new_line[1]);
     local.new_status = atoi(new_line[2]);
@@ -153,7 +200,8 @@ void insert_for_status(char **new_line) {
     fclose(ptr);
 }
 
-void write_record_in_file_status(FILE *pfile, status_events *record_to_write, int index) {
+void write_record_in_file_status(FILE *pfile, status_events *record_to_write, int index)
+{
     int offset;
 
     offset = index * sizeof(status_events);
@@ -163,4 +211,140 @@ void write_record_in_file_status(FILE *pfile, status_events *record_to_write, in
     rewind(pfile);
 }
 
+void update_for_status(char **where_ar, char **new_values)
+{
+    int len;
+    FILE *ptr;
+    status_events where;
+    status_events local;
+    status_events change;
+
+    ptr = fopen(STATUS_PATH, "r+b");
+    len = get_records_count_in_file_status(ptr);
+    if (strcmp(where_ar[0], "") != 0)
+        where.event_id = atoi(where_ar[0]);
+    else
+        where.event_id = -1;
+
+    if (strcmp(where_ar[1], "") != 0)
+        where.module_id = atoi(where_ar[1]);
+    else
+        where.module_id = -1;
+
+    if (strcmp(where_ar[2], "") != 0)
+        where.new_status = atoi(where_ar[2]);
+    else
+        where.new_status = -1;
+    
+    if (strcmp(where_ar[3], "") != 0) {
+        for (int i = 0; i < (int)strlen(where_ar[3]); i++) {
+            where.status_change_date[i] = where_ar[3][i];
+        }
+        where.status_change_date[(int)strlen(where_ar[1])] = '\0';
+    } else {
+        where.status_change_date[0] = '\0';
+    }
+
+    if (strcmp(where_ar[4], "") != 0) {
+        for (int i = 0; i < (int)strlen(where_ar[4]); i++) {
+            where.status_change_time[i] = where_ar[4][i];
+        }
+        where.status_change_time[(int)strlen(where_ar[1])] = '\0';
+    } else {
+        where.status_change_time[0] = '\0';
+    }
+
+
+    if (strcmp(new_values[0], "") != 0)
+        change.event_id = atoi(new_values[0]);
+    else
+        change.event_id = -1;
+
+    if (strcmp(new_values[1], "") != 0)
+        change.module_id = atoi(new_values[1]);
+    else
+        change.module_id = -1;
+
+    if (strcmp(new_values[2], "") != 0)
+        change.new_status = atoi(new_values[2]);
+    else
+        change.new_status = -1;
+
+    if (strcmp(new_values[3], "") != 0) {
+        int i;
+        for (i = 0; i < (int)strlen(new_values[3]); i++) {
+            change.status_change_date[i] = new_values[3][i];
+        }
+        change.status_change_date[(int)strlen(new_values[3])] = '\0';
+    } else {
+        change.status_change_date[0] = '\0';
+    }
+
+    if (strcmp(new_values[4], "") != 0) {
+        int i;
+        for (i = 0; i < (int)strlen(new_values[4]); i++) {
+            change.status_change_time[i] = new_values[4][i];
+        }
+        change.status_change_time[(int)strlen(new_values[4])] = '\0';
+    } else {
+        change.status_change_time[0] = '\0';
+    }
+
+    for (int i = 0; i < len; i++) {
+        local = read_record_from_file_status(ptr, i);
+        if (compare_for_update_status(&local, &where))
+            update_record_status(ptr, &local, &change, i);
+    }
+    fclose(ptr);
+}
+
+void update_record_status(FILE *pfile, status_events *local, status_events *change, int index) {
+    int offset = index * sizeof(status_events);
+    fseek(pfile, offset, SEEK_SET);
+    if (change->event_id != -1) {
+        local->event_id = change->event_id;
+    }
+    if (change->module_id != -1) {
+        local->module_id = change->module_id;
+    }
+    if (change->new_status != -1) {
+        local->new_status = change->new_status;
+    }
+    if (change->status_change_date[0] != '\0') {
+        int i = 0;
+        for (i = 0; i < (int)strlen(change->status_change_date); i++) {
+            local->status_change_date[i] = change->status_change_date[i];
+        }
+        local->status_change_date[i] = '\0';
+    }
+    if (change->status_change_time[0] != '\0') {
+        int i = 0;
+        for (i = 0; i < (int)strlen(change->status_change_time); i++) {
+            local->status_change_time[i] = change->status_change_time[i];
+        }
+        local->status_change_time[i] = '\0';
+    }
+    fwrite(local, sizeof(modules), 1, pfile);
+    fflush(pfile);
+    rewind(pfile);
+}
+
+int compare_for_update_status(status_events *local, status_events *where) {
+    if ((where->event_id != -1) && (local->event_id == where->event_id)) {
+        return 1;
+    }
+    if ((where->module_id != -1) && (local->module_id == where->module_id)) {
+        return 1;
+    }
+    if ((where->new_status != -1) && (local->new_status == where->new_status)) {
+        return 1;
+    }
+    if ((where->status_change_date[0] != '\0') && (strcmp(local->status_change_date, where->status_change_date) == 0)) {
+        return 1;
+    }
+    if ((where->status_change_time[0] != '\0') && (strcmp(local->status_change_time, where->status_change_time) == 0)) {
+        return 1;
+    }
+    return 0;
+}
 

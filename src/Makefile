@@ -1,5 +1,6 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = 
+CFLAGS_DBG = -Wall -Wextra -Werror
 OUT_DIR = $(shell cd ../build && pwd)
 
 all: clean build

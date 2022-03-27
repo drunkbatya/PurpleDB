@@ -9,7 +9,8 @@
 #include "levels.h"
 #include "status.h"
 
-int check_if_table_exists(char *table_name) {
+int check_if_table_exists(char *table_name)
+{
     if (strcmp(table_name, LEVELS) == 0 || strcmp(table_name, MODULES) == 0
            || strcmp(table_name, STATUS) == 0) {
         return 1;
@@ -26,7 +27,7 @@ int assign_levels_select(char **lecs, char **select) {
         return 1;
     }
     for (int i = 0; i < 3; i++) {
-        select[i] = "0";
+        select[i] = "";
     }
 
     if (strcmp(lecs[1], "mem_level_levels") == 0) {
@@ -35,7 +36,7 @@ int assign_levels_select(char **lecs, char **select) {
     } else if (strcmp(lecs[1], "cell_amount") == 0) {
         select[1] = "1";
         return 1;
-    } else if (strcmp(lecs[1], "protec_flag") == 0) {
+    } else if (strcmp(lecs[1], "protect_flag") == 0) {
         select[2] = "1";
         return 1;
     } else {
@@ -52,7 +53,7 @@ int assign_status_select(char **lecs, char **select) {
         return 1;
     }
     for (int i = 0; i < 5; i++) {
-        select[i] = "0";
+        select[i] = "";
     }
 
     if (strcmp(lecs[1], "event_id") == 0) {
@@ -84,7 +85,7 @@ int assign_modules_select(char **lecs, char **select) {
         return 1;
     }
     for (int i = 0; i < 5; i++) {
-        select[i] = "0";
+        select[i] = "";
     }
 
     if (strcmp(lecs[1], "id") == 0) {
@@ -183,12 +184,12 @@ int assign_modules_update(char *update_col, char *update_val, char **update) {
 int assign_levels_where(char *where_col, char *where_val, char **where) {
     if (strcmp(where_col, "*") == 0) {  // if no WHERE
         for (int i = 0; i < 3; i++) {
-            where[i] = where_col;
+            where[i] = "";
         }
         return 1;
     }
     for (int i = 0; i < 3; i++) {
-        where[i] = "0";
+        where[i] = "";
     }
 
     if (strcmp(where_col, "mem_level_levels") == 0) {
@@ -209,7 +210,7 @@ int assign_levels_where(char *where_col, char *where_val, char **where) {
 int assign_status_where(char *where_col, char *where_val, char **where) {
     if (strcmp(where_col, "*") == 0) {  // if no WHERE
         for (int i = 0; i < 5; i++) {
-            where[i] = where_col;
+            where[i] = "";
         }
         return 1;
     }
@@ -229,7 +230,7 @@ int assign_status_where(char *where_col, char *where_val, char **where) {
     } else if (strcmp(where_col, "status_change_date") == 0) {
         where[3] = where_val;
         return 1;
-    } else if (strcmp(where_col, "dstatus_change_time") == 0) {
+    } else if (strcmp(where_col, "status_change_time") == 0) {
         where[4] = where_val;
         return 1;
     } else {
@@ -241,7 +242,7 @@ int assign_status_where(char *where_col, char *where_val, char **where) {
 int assign_modules_where(char *where_col, char *where_val, char **where) {
     if (strcmp(where_col, "*") == 0) {  // if no WHERE
         for (int i = 0; i < 5; i++) {
-            where[i] = where_col;
+            where[i] = "";
         }
         return 1;
     }
@@ -278,12 +279,6 @@ int validate_status(char **lecs) {
         return 0;
     }
     if (validate_int(lecs[3]) == 0) {
-        return 0;
-    }
-    if (validate_int(lecs[4]) == 0) {
-        return 0;
-    }
-    if (validate_int(lecs[5]) == 0) {
         return 0;
     }
     return 1;
@@ -369,20 +364,18 @@ void insert(char **lecs) {
     }
 }
 
-/*
 void print_mock(char **select, char **where) {
     printf("select ");
-    for (int i= 0; i < 5; i++) {
+    for (int i= 0; i < 3; i++) {
         printf("%s ", select[i]);
     }
     printf("\n");
     printf("where ");
-    for (int i= 0; i < 5; i++) {
+    for (int i= 0; i < 3; i++) {
         printf("%s ", where[i]);
     }
     printf("\n");
 }
-*/
 
 void select(char **lecs) {
     if (check_if_table_exists(lecs[0]) == 0) {
@@ -460,6 +453,6 @@ void update(char **lecs) {
         if (assign_status_where(lecs[3], lecs[4], where) == 0) {
             return;
         }
-      //  update_for_status(where, update);
+        update_for_status(where, update_ar);
     }
 }
