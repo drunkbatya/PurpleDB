@@ -9,7 +9,8 @@
 #include "levels.h"
 #include "status.h"
 
-int check_if_table_exists(char *table_name) {
+int check_if_table_exists(char *table_name)
+{
     if (strcmp(table_name, LEVELS) == 0 || strcmp(table_name, MODULES) == 0
            || strcmp(table_name, STATUS) == 0) {
         return 1;
@@ -26,7 +27,7 @@ int assign_levels_select(char **lecs, char **select) {
         return 1;
     }
     for (int i = 0; i < 3; i++) {
-        select[i] = "0";
+        select[i] = "";
     }
 
     if (strcmp(lecs[1], "mem_level_levels") == 0) {
@@ -52,7 +53,7 @@ int assign_status_select(char **lecs, char **select) {
         return 1;
     }
     for (int i = 0; i < 5; i++) {
-        select[i] = "0";
+        select[i] = "";
     }
 
     if (strcmp(lecs[1], "event_id") == 0) {
@@ -84,7 +85,7 @@ int assign_modules_select(char **lecs, char **select) {
         return 1;
     }
     for (int i = 0; i < 5; i++) {
-        select[i] = "0";
+        select[i] = "";
     }
 
     if (strcmp(lecs[1], "id") == 0) {
@@ -188,7 +189,7 @@ int assign_levels_where(char *where_col, char *where_val, char **where) {
         return 1;
     }
     for (int i = 0; i < 3; i++) {
-        where[i] = "0";
+        where[i] = "";
     }
 
     if (strcmp(where_col, "mem_level_levels") == 0) {
@@ -369,20 +370,18 @@ void insert(char **lecs) {
     }
 }
 
-/*
 void print_mock(char **select, char **where) {
     printf("select ");
-    for (int i= 0; i < 5; i++) {
+    for (int i= 0; i < 3; i++) {
         printf("%s ", select[i]);
     }
     printf("\n");
     printf("where ");
-    for (int i= 0; i < 5; i++) {
+    for (int i= 0; i < 3; i++) {
         printf("%s ", where[i]);
     }
     printf("\n");
 }
-*/
 
 void select(char **lecs) {
     if (check_if_table_exists(lecs[0]) == 0) {
@@ -409,6 +408,7 @@ void select(char **lecs) {
         if (assign_levels_where(lecs[2], lecs[3], where) == 0) {
             return;
         }
+        //print_mock(select_ar, where);
         select_for_levels(select_ar, where);
     }
     if (strcmp(lecs[0], STATUS) == 0) {

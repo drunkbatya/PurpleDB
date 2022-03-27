@@ -7,7 +7,8 @@
 #include "shared.h"
 #include "levels.h"
 
-void select_for_levels(char **field, char **where) {
+void select_for_levels(char **field, char **where)
+{
     int identifier;
     int counter;
     int check_field;
@@ -21,26 +22,39 @@ void select_for_levels(char **field, char **where) {
     temp[0] = '-';
     ptr = fopen(LEVELS_PATH, "r");
     len = get_records_count_in_file_levels(ptr);
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++)  // Identifier = num of column to display
+    {
         if (field[i][0] == '*')
+        {
             identifier = 3;
-        if (field[i][0] == '1') {
+            break;
+        }
+        if (field[i][0] == '1')
+        {
             identifier = i;
             break;
         }
     }
-    for (int i = 0; i < 3; i++) {
+    for (int i = 0; i < 3; i++)
+    {
         if (strcmp(where[i], "") == 0)
+        {
             continue;
-        check_field = i;
-        strcpy(temp, where[i]);
+        } else
+        {
+            check_field = i;
+            strcpy(temp, where[i]);
+        }
     }
     for (int i = 0; i < len; i++) {
         local = read_record_from_file_levels(ptr, i);
-        if (compare_levels(&local, check_field, temp)) {
+        if (compare_levels(&local, check_field, temp))
+        {
             counter++;
             if (counter == 1)
+            {
                 print_mask_levels(identifier);
+            }            
             print_struct_levels(&local, identifier);
         }
     }
@@ -48,7 +62,8 @@ void select_for_levels(char **field, char **where) {
     fclose(ptr);
 }
 
-void print_mask_levels(int identifier) {
+void print_mask_levels(int identifier)
+{
     if (identifier == 0) {
         printf(" ------------------\n");
         printf("| mem_level_levels |\n");
