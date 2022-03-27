@@ -184,7 +184,7 @@ int assign_modules_update(char *update_col, char *update_val, char **update) {
 int assign_levels_where(char *where_col, char *where_val, char **where) {
     if (strcmp(where_col, "*") == 0) {  // if no WHERE
         for (int i = 0; i < 3; i++) {
-            where[i] = where_col;
+            where[i] = "";
         }
         return 1;
     }
@@ -210,7 +210,7 @@ int assign_levels_where(char *where_col, char *where_val, char **where) {
 int assign_status_where(char *where_col, char *where_val, char **where) {
     if (strcmp(where_col, "*") == 0) {  // if no WHERE
         for (int i = 0; i < 5; i++) {
-            where[i] = where_col;
+            where[i] = "";
         }
         return 1;
     }
@@ -242,7 +242,7 @@ int assign_status_where(char *where_col, char *where_val, char **where) {
 int assign_modules_where(char *where_col, char *where_val, char **where) {
     if (strcmp(where_col, "*") == 0) {  // if no WHERE
         for (int i = 0; i < 5; i++) {
-            where[i] = where_col;
+            where[i] = "";
         }
         return 1;
     }
@@ -279,12 +279,6 @@ int validate_status(char **lecs) {
         return 0;
     }
     if (validate_int(lecs[3]) == 0) {
-        return 0;
-    }
-    if (validate_int(lecs[4]) == 0) {
-        return 0;
-    }
-    if (validate_int(lecs[5]) == 0) {
         return 0;
     }
     return 1;

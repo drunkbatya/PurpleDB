@@ -11,33 +11,52 @@
 
 void select_for_status(char **field, char **where) {
     status_events local;
-    FILE *ptr = fopen(STATUS_PATH, "r");
     int identifier;
-    int len = get_records_count_in_file_status(ptr);
-    int counter = 0;
+    int len; 
+    int counter;
     int check_field;
     char temp[30];
+    int check_id_levels(char *id);    
 
-    for (int i = 0; i < 5; i++) {
+    counter = 0;
+    check_field = 5;
+    temp[0] = '-';
+    FILE *ptr = fopen(STATUS_PATH, "r");
+    len = get_records_count_in_file_status(ptr);
+    for (int i = 0; i < 5; i++)
+    {
         if (field[i][0] == '*')
+        {
             identifier = 5;
-        if (field[i][0] == '1') {
+            break;
+        }
+        if (field[i][0] == '1')
+        {
             identifier = i;
             break;
         }
     }
-    for (int i = 0; i < 5; i++) {
-        if (!strlen(where[i]))
+    for (int i = 0; i < 5; i++)
+    {
+        if (strcmp(where[i], "") == 0)
+        {
             continue;
-        check_field = i;
-        strcpy(temp, where[i]);
+        } else
+        {
+            check_field = i;
+            strcpy(temp, where[i]);
+        }
     }
+
     for (int i = 0; i < len; i++) {
         local = read_record_from_file_status(ptr, i);
-        if (compare_status(&local, check_field, temp)) {
+        if (compare_status(&local, check_field, temp))
+        {
             counter++;
             if (counter == 1)
+            {
                 print_mask_status(identifier);
+            }
             print_struct_status(&local, identifier);
         }
     }
@@ -47,7 +66,8 @@ void select_for_status(char **field, char **where) {
         error_record_not_found();
 }
 
-void print_mask_status(int identifier) {
+void print_mask_status(int identifier)
+{
     if (identifier == 0) {
         printf(" ----------\n");
         printf("| event_id |\n");
@@ -75,7 +95,8 @@ void print_mask_status(int identifier) {
     }
 }
 
-void print_outro_status(int identifier) {
+void print_outro_status(int identifier)
+{
     if (identifier == 0) {
         printf(" ----------\n");
     } else if (identifier == 1) {
@@ -92,6 +113,8 @@ void print_outro_status(int identifier) {
 }
 
 int compare_status(status_events *local, int check_field, char *temp) {
+    if ((check_field == 5) && (temp[0] == '-'))
+        return (1);
     if ((check_field == 0) && (local->event_id == atoi(temp)))
         return (1);
     if ((check_field == 1) && (local->module_id == atoi(temp)))
@@ -137,13 +160,37 @@ void print_struct_status(status_events *local, int identifier) {
     }
 }
 
+int check_id_status(char *id)
+{
+    status_events local;
+    FILE *ptr;
+    int len;
+
+    ptr = fopen(STATUS_PATH, "r");
+    len = get_records_count_in_file_status(ptr);
+    for (int i = 0; i < len; i++)
+    {
+        local = read_record_from_file_status(ptr, i);
+        if (local.event_id == atoi(id))
+        {
+            fclose(ptr);
+            return (0);
+        }
+    }
+    fclose(ptr);
+    return (1);
+}
+
 void insert_for_status(char **new_line) {
     int len;
     FILE *ptr;
-    status_events local;
 
-    ptr = fopen(MODULES_PATH, "a");
+    ptr = fopen(STATUS_PATH, "a");
     len = get_records_count_in_file_status(ptr);
+    status_events local;
+    if (check_id_status(new_line[0]) == 0)
+        return (invalid_id_error());
+
     local.event_id = atoi(new_line[0]);
     local.module_id = atoi(new_line[1]);
     local.new_status = atoi(new_line[2]);
@@ -153,7 +200,8 @@ void insert_for_status(char **new_line) {
     fclose(ptr);
 }
 
-void write_record_in_file_status(FILE *pfile, status_events *record_to_write, int index) {
+void write_record_in_file_status(FILE *pfile, status_events *record_to_write, int index)
+{
     int offset;
 
     offset = index * sizeof(status_events);
@@ -162,5 +210,3 @@ void write_record_in_file_status(FILE *pfile, status_events *record_to_write, in
     fflush(pfile);
     rewind(pfile);
 }
-
-

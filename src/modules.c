@@ -47,7 +47,8 @@ void select_for_modules(char **field, char **where) {
         error_record_not_found();
 }
 
-void print_mask_modules(int identifier) {
+void print_mask_modules(int identifier)
+{
     if (identifier == 0) {
         printf(" --------\n");
         printf("| id     |\n");
@@ -75,7 +76,8 @@ void print_mask_modules(int identifier) {
     }
 }
 
-void print_outro_modules(int identifier) {
+void print_outro_modules(int identifier)
+{
     if (identifier == 0)
         printf(" --------\n");
     if (identifier == 1)
@@ -117,7 +119,8 @@ modules read_record_from_file_modules(FILE *pfile, int index) {
     return (record);
 }
 
-void print_struct_modules(modules *local, int identifier) {
+void print_struct_modules(modules *local, int identifier)
+{
     if (identifier == 0)
         printf("| %-6d |\n", local->id);
     if (identifier == 1)
@@ -128,7 +131,8 @@ void print_struct_modules(modules *local, int identifier) {
         printf("| %-8d |\n", local->cell_num);
     if (identifier == 4)
         printf("| %-13d |\n", local->deletion_flag);
-    if (identifier == 5) {
+    if (identifier == 5)
+    {
         printf("| %-7d", local->id);
         printf("| %-18s", local->module_name);
         printf("| %-18d", local->mem_level_modules);
@@ -138,14 +142,15 @@ void print_struct_modules(modules *local, int identifier) {
     }
 }
 
-void insert_for_modules(char **new_line) {
+void insert_for_modules(char **new_line)
+{
     FILE *ptr;
     int len;
 
     ptr = fopen(MODULES_PATH, "a");
     len = get_records_count_in_file_modules(ptr);
     modules local;
-    if (check_id(new_line[0]))
+    if (check_id_modules(new_line[0]) == 0)
         return (invalid_id_error());
     local.id = atoi(new_line[0]);
     strcpy(local.module_name, new_line[1]);
@@ -156,16 +161,19 @@ void insert_for_modules(char **new_line) {
     fclose(ptr);
 }
 
-int check_id(char * id) {
+int check_id_modules(char *id)
+{
     modules local;
     FILE *ptr;
     int len;
 
     ptr = fopen(MODULES_PATH, "r");
     len = get_records_count_in_file_modules(ptr);
-    for (int i = 0; i < len; i++) {
+    for (int i = 0; i < len; i++)
+    {
         local = read_record_from_file_modules(ptr, i);
-        if (local.id == atoi(id)) {
+        if (local.id == atoi(id))
+        {
             fclose(ptr);
             return (0);
         }

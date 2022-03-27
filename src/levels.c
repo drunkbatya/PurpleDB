@@ -112,7 +112,6 @@ int compare_levels(levels *local, int check_field, char *temp)
     return (0);
 }
 
-
 levels read_record_from_file_levels(FILE *pfile, int index)
 {
     int offset;
@@ -156,6 +155,27 @@ void print_struct_levels(levels *local, int identifier)
     }
 }
 
+int check_id_levels(char *id)
+{
+    levels local;
+    FILE *ptr;
+    int len;
+
+    ptr = fopen(LEVELS_PATH, "r");
+    len = get_records_count_in_file_levels(ptr);
+    for (int i = 0; i < len; i++)
+    {
+        local = read_record_from_file_levels(ptr, i);
+        if (local.mem_level_levels == atoi(id))
+        {
+            fclose(ptr);
+            return (0);
+        }
+    }
+    fclose(ptr);
+    return (1);
+}
+
 void insert_for_levels(char **new_line)
 {
     int len;
@@ -164,6 +184,8 @@ void insert_for_levels(char **new_line)
     ptr = fopen(LEVELS_PATH, "a");
     len = get_records_count_in_file_levels(ptr);
     levels local;
+    if (check_id_levels(new_line[0]) == 0)
+        return (invalid_id_error());
     local.mem_level_levels = atoi(new_line[0]);
     local.cell_amount = atoi(new_line[1]);
     local.protect_flag = atoi(new_line[2]);
