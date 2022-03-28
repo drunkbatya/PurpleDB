@@ -33,7 +33,6 @@ uint8_t insert_integer(char *str, FILE *fptr, uint16_t *offset)
 {
     INTEGER integer;
 
-    printf("Inserting INTEGER\n");
     integer = atoi(str);
     if (!write_record_in_file(fptr, *offset, sizeof(INTEGER), &integer))
         return (0);
@@ -49,7 +48,6 @@ uint8_t insert_string(char *str, FILE *fptr, uint16_t *offset)
 {
     char arr[STRING_SIZE];
 
-    printf("Inserting STRING\n");
     if (strlen(str) > STRING_SIZE - 1)
         return (0);  // TODO(drunkbatya): add exeption
     memset(arr, 0, STRING_SIZE);
@@ -69,7 +67,7 @@ uint8_t make_insert_free(FILE *fptr, t_header *hptr, uint8_t return_code)
 }
 
 // Insert data to existing table.
-// Expected size of arr = 1 + column_count.
+// Expected count of array in arr = 1 + column_count.
 // Column count value is located in first byte (prob. bytes)
 // in the beginning of the file. Column count must be > 0.
 // Arr format: [table_name] [column 1 value] ([column 2 value]) (etc..).

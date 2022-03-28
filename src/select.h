@@ -3,6 +3,7 @@
 #ifndef SRC_SELECT_H_
 #define SRC_SELECT_H_
 
+#include <stdint.h>
 #include "file.h"
 #include "structure.h"
 
