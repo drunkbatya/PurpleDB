@@ -3,7 +3,9 @@
 #ifndef SRC_STRUCTURE_H_
 #define SRC_STRUCTURE_H_
 
-#define COLUMN_COUNT_SHIFT sizeof(uint8_t)
+// data types
+#define COLUMN_COUNTER uint8_t
+#define INTEGER int32_t
 #define STRING_SIZE 100
 
 typedef enum e_datatype
@@ -15,7 +17,7 @@ typedef enum e_datatype
 
 typedef struct s_header
 {
-    char column_name[STRING_SIZE];
+    char column_name[30];
     t_datatype datatype;
 } t_header;
 

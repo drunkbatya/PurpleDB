@@ -16,6 +16,9 @@ int main(void)
         printf("Create table error!\n");
         // return (1);
     }
+    arr[0] = "my_table";
+    arr[1] = "65535";
+    arr[2] = "Test string";
     if (!insert(arr))
     {
         printf("Insert error!\n");

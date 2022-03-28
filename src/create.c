@@ -4,10 +4,16 @@
 
 t_datatype parse_datatype(char *str)
 {
-    if (strcmp(str, "integer"))
+    if (strcmp(str, "integer") == 0)
+    {
+        printf("parsed int\n");
         return (integer);
-    if (strcmp(str, "string"))
+    }
+    if (strcmp(str, "string") == 0)
+    {
+        printf("parsed str\n");
         return (string);
+    }
     return (error);
 }
 
@@ -60,7 +66,8 @@ uint8_t create_table(char **arr, int column_count)
         header->datatype = parse_datatype(arr[index + 1]);
         if (header->datatype == error)
             return (make_create_table_free(ptr, header, 0));
-        if (!write_record_in_file(ptr, count + COLUMN_COUNT_SHIFT, sizeof(t_header), header))
+        if (!write_record_in_file(ptr, ((count + sizeof(COLUMN_COUNTER)) \
+                        * sizeof(t_header)), sizeof(t_header), header))
             return (make_create_table_free(ptr, header, 0));
         safe_free(header);
         count++;
