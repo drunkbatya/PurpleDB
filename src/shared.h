@@ -14,6 +14,7 @@
 void select(char **lecs);
 void insert(char **lecs);
 void update(char **lecs);
+void delete(char **lecs);
 
 int check_if_table_exists(char *table_name);
 int validate_int(char *strint);

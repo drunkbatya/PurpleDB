@@ -372,7 +372,7 @@ void delete_for_status(char **array)
     status_events previous, local;
     for (int i = 0; i < size; i++) {
         local = read_record_from_file_status(stream, i);
-        if (compare_status(&local, check_field, temp)) {
+        if (compare_status(&local, check_field, temp) == 1) {
             top_index = get_records_count_in_file_status(stream);
             for (int j = i; j < top_index - 1; j++) {
                 previous = read_record_from_file_status(stream, j + 1);

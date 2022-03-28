@@ -300,13 +300,13 @@ void delete_for_levels(char **array)
         }
     }
     stream = fopen(LEVELS_PATH, "rb+");
-    int size = get_records_count_in_file_levels (stream);
+    int size = get_records_count_in_file_levels(stream);
     int counter = 0;
     int top_index;
     levels previous, local;
     for (int i = 0; i < size; i++) {
         local = read_record_from_file_levels(stream, i);
-        if (compare_levels(&local, check_field, temp)) {
+        if (compare_levels(&local, check_field, temp) == 1) {
             top_index = get_records_count_in_file_levels(stream);
             for (int j = i; j < top_index - 1; j++) {
                 previous = read_record_from_file_levels(stream, j + 1);

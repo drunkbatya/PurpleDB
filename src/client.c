@@ -142,8 +142,7 @@ int parse_insert_query(char *str) {
 }
 
 int parse_delete_query(char *str) {
-    // table_name, where_op, where,
-    // equal_op, where_val
+    // table_name, where, where_val
     char *lecs[5];
     int lecs_counter;
 
@@ -160,7 +159,7 @@ int parse_delete_query(char *str) {
     lecs[1] = lecs[2];  // where this
     lecs[2] = lecs[4];  // equal this
     pretty_print_delete(lecs);
-    // delete(lecs);
+    delete(lecs);
     return (1);
 }
 
