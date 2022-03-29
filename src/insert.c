@@ -2,30 +2,6 @@
 
 #include "insert.h"
 
-// Read first byte of file to get number of columns in table.
-// Max size is sizeof(uint8_t) - 255 columns.
-// Type defined by COLUMN_COUNTER in structure.h .
-COLUMN_COUNTER read_column_count(char *file_path)
-{
-    FILE *ptr;
-    COLUMN_COUNTER *column_count_ptr;
-    COLUMN_COUNTER column_count;
-
-    ptr = fopen(file_path, "r");
-    if (ptr == NULL)
-        return (0);
-    column_count_ptr = read_record_from_file(ptr, 0, sizeof(COLUMN_COUNTER));
-    if (column_count_ptr == NULL)
-    {
-        safe_fclose(ptr);
-        return (0);
-    }
-    column_count = *column_count_ptr;
-    safe_fclose(ptr);
-    safe_free(column_count_ptr);
-    return (column_count);
-}
-
 // Convert string str to int value, and insert to table via fptr.
 // Ranges - sizeof(int32_t) / 2 - from -2147483648 to +2147483647.
 // Type of int defined by INTEGER in structure.h .
@@ -75,9 +51,9 @@ uint8_t insert(char **arr)
 {
     FILE *fptr;
     char file_path[strlen(arr[0]) + 2];
-    uint8_t count;
-    uint8_t column_count;
     uint16_t offset;
+    COLUMN_COUNTER count;
+    COLUMN_COUNTER column_count;
     t_header *column;
 
     count = 0;
@@ -110,6 +86,7 @@ uint8_t insert(char **arr)
         count++;
     }
     printf("Column count: %d\n", column_count);
+    printf("%d", get_file_size(fptr));
     safe_fclose(fptr);
     return (1);
 }

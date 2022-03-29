@@ -24,5 +24,11 @@ int main(void)
         printf("Insert error!\n");
         return (1);
     }
+    printf("Rows: %d\n", get_rows_count("my_table.db"));
+    if (!p_select(arr))
+    {
+        printf("Select error!\n");
+        return (1);
+    }
     return (0);
 }
