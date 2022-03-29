@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h> 
+#include <sys/stat.h>
+#include <unistd.h>
 #include "error.h"
 #include "shared.h"
 #include "modules.h"
@@ -12,6 +15,11 @@ void select_for_modules(char **field, char **where) {
     FILE *ptr = fopen(MODULES_PATH, "r");
     int identifier;
     int len = get_records_count_in_file_modules(ptr);
+    if (len == 0) {
+        fclose(ptr);
+        all_records_deleted_error();
+        return;
+    }
     int counter = 0;
     int check_field;
     char temp[30];
@@ -349,19 +357,31 @@ void delete_for_modules(char **array)
     stream = fopen(MODULES_PATH, "rb+");
     int size = get_records_count_in_file_modules(stream);
     int counter = 0;
-    int top_index;
     modules previous, local;
     for (int i = 0; i < size; i++) {
         local = read_record_from_file_modules(stream, i);
         if (compare_modules(&local, check_field, temp) == 1) {
-            top_index = get_records_count_in_file_modules(stream);
-            for (int j = i; j < top_index - 1; j++) {
+            if (i == size - 1) {
+                counter++;
+                break;
+            }
+            for (int j = i; j < size - 1; j++) {
                 previous = read_record_from_file_modules(stream, j + 1);
                 write_record_in_file_modules(stream, &previous, j);
             }
             counter++;
             size--;
+            i--;
         }
+    }
+    if (counter > 0) {
+        struct stat one;
+        fstat(fileno(stream), &one);
+        long long unsigned int shift = sizeof(modules) * (counter);
+        long long unsigned int res = one.st_size - shift;
+        ftruncate(fileno(stream), res);
+    } else {
+        nothing_to_delete_error();
     }
     fclose(stream);
 }

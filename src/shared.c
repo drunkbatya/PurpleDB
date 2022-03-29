@@ -377,7 +377,7 @@ void print_mock(char **select, char **where) {
     printf("\n");
 }
 
-void select(char **lecs) {
+void select_local(char **lecs) {
     if (check_if_table_exists(lecs[0]) == 0) {
         error_unknown_db(lecs[0]);
         return;
@@ -470,7 +470,6 @@ void delete(char **lecs)
         char *where[5];
         if (assign_modules_where(lecs[1], lecs[2], where) == 0)
             return;
-        printf("\n where is: %s %s %s %s %s", where[0], where[1], where[2], where[3], where[4]);
         delete_for_modules(where);
     }
     if (strcmp(lecs[0], LEVELS) == 0)
@@ -478,14 +477,12 @@ void delete(char **lecs)
         char *where[3];
         if (assign_levels_where(lecs[1], lecs[2], where) == 0)
             return;
-        printf("\n where is: %s %s %s", where[0], where[1], where[2]);
         delete_for_levels(where);
     }
     if (strcmp(lecs[0], STATUS) == 0) {
         char *where[5];
         if (assign_status_where(lecs[1], lecs[2], where) == 0)
             return;
-        printf("\n where is: %s %s %s %s %s", where[0], where[1], where[2], where[3], where[4]);
         delete_for_status(where);
     }
 }

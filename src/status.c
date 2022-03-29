@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h> 
+#include <sys/stat.h>
+#include <unistd.h>
 #include "status.h"
 #include "shared.h"
 #include "main.h"
@@ -23,6 +26,11 @@ void select_for_status(char **field, char **where) {
     temp[0] = '-';
     FILE *ptr = fopen(STATUS_PATH, "r");
     len = get_records_count_in_file_status(ptr);
+    if (len == 0) {
+        fclose(ptr);
+        all_records_deleted_error();
+        return;
+    }
     for (int i = 0; i < 5; i++)
     {
         if (field[i][0] == '*')
@@ -367,20 +375,43 @@ void delete_for_status(char **array)
     }
     stream = fopen(STATUS_PATH, "rb+");
     int size = get_records_count_in_file_status(stream);
-    int counter = 0;
-    int top_index;
+    int counter_loc = 0;
+    int counter_glob = 0;
     status_events previous, local;
     for (int i = 0; i < size; i++) {
         local = read_record_from_file_status(stream, i);
         if (compare_status(&local, check_field, temp) == 1) {
-            top_index = get_records_count_in_file_status(stream);
-            for (int j = i; j < top_index - 1; j++) {
-                previous = read_record_from_file_status(stream, j + 1);
-                write_record_in_file_status(stream, &previous, j);
+            if (i == size - 1) {
+                counter_glob++;
+                break;
             }
-            counter++;
-            size--;
+            int j;
+            counter_loc = 0;
+            for (j = i + 1; j < size; j++) {
+                previous = read_record_from_file_status(stream, j);
+                if (compare_status(&previous, check_field, temp) == 0) {
+                    counter_loc++;
+                    break;
+                }
+                counter_loc++;
+            }
+            for (int k = i; k < size - counter_loc; k++) {
+                previous = read_record_from_file_status(stream, j);
+                write_record_in_file_status(stream, &previous, k);
+                j++;
+            }
+            if (size - counter_loc > i) size -= counter_loc;
+            counter_glob += counter_loc;
         }
+    }
+    if (counter_glob > 0) {
+        struct stat one;
+        fstat(fileno(stream), &one);
+        long long unsigned int shift = sizeof(status_events) * counter_glob;
+        long long unsigned int res = one.st_size - shift;
+        ftruncate(fileno(stream), res);
+    } else {
+        nothing_to_delete_error();
     }
     fclose(stream);
 }

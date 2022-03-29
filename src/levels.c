@@ -3,6 +3,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h> 
+#include <sys/stat.h>
+#include <unistd.h>
 #include "error.h"
 #include "shared.h"
 #include "levels.h"
@@ -22,6 +25,11 @@ void select_for_levels(char **field, char **where)
     temp[0] = '-';
     ptr = fopen(LEVELS_PATH, "r");
     len = get_records_count_in_file_levels(ptr);
+    if (len == 0) {
+        fclose(ptr);
+        all_records_deleted_error();
+        return;
+    }
     for (int i = 0; i < 3; i++)  // Identifier = num of column to display
     {
         if (field[i][0] == '*')
@@ -292,13 +300,14 @@ void delete_for_levels(char **array)
     for (int i = 0; i < 3; i++) {
         if (strlen(array[i]) == 0) {
             continue;
-        } else if (!strcmp(array[i], "*")) {
+        } else if (strcmp(array[i], "*") == 0) {
             continue;
         } else {
             check_field = i;
             strcpy(temp, array[i]);
         }
     }
+    temp[(int)strlen(array[check_field])] = '\0';
     stream = fopen(LEVELS_PATH, "rb+");
     int size = get_records_count_in_file_levels(stream);
     int counter = 0;
@@ -307,14 +316,27 @@ void delete_for_levels(char **array)
     for (int i = 0; i < size; i++) {
         local = read_record_from_file_levels(stream, i);
         if (compare_levels(&local, check_field, temp) == 1) {
-            top_index = get_records_count_in_file_levels(stream);
-            for (int j = i; j < top_index - 1; j++) {
+            if (i == size - 1) {
+                counter++;
+                break;
+            }
+            for (int j = i; j < size - 1; j++) {
                 previous = read_record_from_file_levels(stream, j + 1);
                 write_record_in_file_levels(stream, &previous, j);
             }
             counter++;
             size--;
+            i--;
         }
+    }
+    if (counter > 0) {
+        struct stat one;
+        fstat(fileno(stream), &one);
+        long long unsigned int shift = sizeof(levels) * (counter);
+        long long unsigned int res = one.st_size - shift;
+        ftruncate(fileno(stream), res);
+    } else {
+        nothing_to_delete_error();
     }
     fclose(stream);
 }

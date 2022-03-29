@@ -11,7 +11,7 @@
 #define MODULES_PATH "../materials/master_modules.db"
 #define STATUS_PATH "../materials/master_status_events.db"
 
-void select(char **lecs);
+void select_local(char **lecs);
 void insert(char **lecs);
 void update(char **lecs);
 void delete(char **lecs);

@@ -24,21 +24,29 @@ int error_unknown_db(char *table_name) {
 }
 
 void error_record_not_found() {
-    printf("Error! Record not found\n");
+    printf("\nError! Record not found\n");
 }
 
 void error_unknown_column(char *column, char *table_name) {
-    printf("Error! No column '%s' in table '%s' found\n", column, table_name);
+    printf("\nError! No column '%s' in table '%s' found\n", column, table_name);
 }
 
 void error_unknown_condition(char *column) {
-    printf("Error! Cannot assign condition: no column '%s' found\n", column);
+    printf("\nError! Cannot assign condition: no column '%s' found\n", column);
 }
 
 void error_not_int(char *strint) {
-    printf("Error! '%s' is not an integer\n", strint);
+    printf("\nError! '%s' is not an integer\n", strint);
 }
 
 void invalid_id_error() {
-    printf("Id already exists\n");
+    printf("\nId already exists\n");
+}
+
+void nothing_to_delete_error() {
+    printf("\nNo record matches your query\n");
+}
+
+void all_records_deleted_error() {
+    printf("\nAll records were deleted previously\n");
 }

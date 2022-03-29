@@ -100,7 +100,7 @@ int parse_select_query(char *str) {
     lecs[2] = lecs[4];  // where
     lecs[3] = lecs[6];  // where_val
     pretty_print_select(lecs);
-    select(lecs);
+    select_local(lecs);
     return (1);
 }
 
