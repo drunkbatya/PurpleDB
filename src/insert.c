@@ -86,7 +86,7 @@ uint8_t insert(char **arr)
         count++;
     }
     printf("Column count: %d\n", column_count);
-    printf("%d", get_file_size(fptr));
+    printf("File size: %d\n", get_file_size(fptr));
     safe_fclose(fptr);
     return (1);
 }

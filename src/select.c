@@ -21,9 +21,11 @@ void print_describe_table_select(char **arr, COLUMN_COUNTER columns)
                 + (column_count * sizeof(t_header)), sizeof(t_header));
         if (column == NULL)
             return;
-        printf("%s ", column->column_name);
+        printf("%s", column->column_name);
         if (column_count == columns - 1)
-            printf("\n");
+            printf("\n---\n");
+        else
+            printf("|");
         column_count++;
     }
 }
@@ -38,13 +40,22 @@ void print_describe_table_select(char **arr, COLUMN_COUNTER columns)
 uint8_t p_select(char **arr)
 {
     char file_path[strlen(arr[0]) + 2];
+    char *string_ptr;
+    FILE *fptr;
     uint16_t rows;
+    uint16_t offset;
     uint16_t row_count;
+    t_header *column;
+    INTEGER *integer_ptr;
     COLUMN_COUNTER columns;
+    COLUMN_COUNTER column_count;
 
     row_count = 0;
     strcpy(file_path, arr[0]);
     strcat(file_path, ".db");
+    fptr = fopen(file_path, "a+");
+    if (fptr == NULL)
+        return (0);
     rows = get_rows_count(file_path);
     columns = read_column_count(file_path);
     if (!rows)
@@ -52,10 +63,39 @@ uint8_t p_select(char **arr)
     if (!columns)
         return (0);
     // check_column_name_exit(arr[1]); TODO(drunkbatya)
+    offset = sizeof(COLUMN_COUNTER) + (sizeof(t_header) * columns);
     while (row_count < rows)
     {
+        column_count = 0;
         if (row_count == 0)
             print_describe_table_select(arr, columns);
+        while (column_count < columns)
+        {
+            column = read_record_from_file(fptr, sizeof(COLUMN_COUNTER) \
+                    + (column_count * sizeof(t_header)), sizeof(t_header));
+            if (column == NULL)
+                return (0);
+            if (column->datatype == integer)
+            {
+                integer_ptr = read_record_from_file(fptr, offset, sizeof(INTEGER));
+                printf("%d", *integer_ptr);
+                offset += sizeof(INTEGER);
+                safe_free(integer_ptr);
+            }
+            if (column->datatype == string)
+            {
+                string_ptr = read_record_from_file(fptr, offset, STRING_SIZE);
+                printf("%s", string_ptr);
+                offset += STRING_SIZE;
+                safe_free(string_ptr);
+            }
+            if (column_count == columns - 1)
+                printf("\n");
+            else
+                printf("|");
+            safe_free(column);
+            column_count++;
+        }
         row_count++;
     }
     return (1);

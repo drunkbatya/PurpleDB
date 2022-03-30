@@ -17,8 +17,8 @@ int main(void)
         // return (1);
     }
     arr[0] = "my_table";
-    arr[1] = "65535";
-    arr[2] = "Test string";
+    arr[1] = "31032022";
+    arr[2] = "Катя - прикольная дефф4онка!";
     if (!insert(arr))
     {
         printf("Insert error!\n");
