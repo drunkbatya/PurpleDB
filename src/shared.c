@@ -1,6 +1,21 @@
 // Copyright [2022] <drunkbatya, koterin, GrusnyDance>
 
 #include "shared.h"
+#include "error.h"
+
+int check_if_table_exists(char *file_path)
+{
+    FILE *ptr = fopen(file_path, "r");
+    if (ptr == NULL)
+    {
+        error_unknown_table(file_path);
+        return (0);
+    } else
+    {
+        fclose(ptr);
+        return (1);
+    }
+}
 
 t_header *read_header_from_file(FILE *fptr, uint32_t offset, uint16_t size)
 {

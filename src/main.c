@@ -20,46 +20,46 @@ int main(void)
     }
     
     char *insert_arr[4];
+
     insert_arr[0] = "my_table";
     insert_arr[1] = "310";
     insert_arr[2] = "Dasha is so cool!";
-    insert_arr[3] = "24";
- 
+    insert_arr[3] = "24"; 
     if (insert(insert_arr) == 0)
     {
         printf("Insert error!\n");
         return (1);
     }
+
     insert_arr[0] = "my_table";
     insert_arr[1] = "410";
     insert_arr[2] = "Dasha cool!";
     insert_arr[3] = "25";
- 
     if (insert(insert_arr) == 0)
     {
         printf("Insert error!\n");
         return (1);
     }
+
     insert_arr[0] = "my_table";
     insert_arr[1] = "045";
     insert_arr[2] = "fghjkl;";
-    insert_arr[3] = "256";
- 
+    insert_arr[3] = "256"; 
     if (insert(insert_arr) == 0)
     {
         printf("Insert error!\n");
         return (1);
     }
-    insert_arr[0] = "my_table";
+
+    insert_arr[0] = "my_table3";
     insert_arr[1] = "8976";
     insert_arr[2] = "Dashhhhhh";
-    insert_arr[3] = "06";
- 
+    insert_arr[3] = "06"; 
     if (insert(insert_arr) == 0)
     {
         printf("Insert error!\n");
-        return (1);
     }
+
     printf("Rows: %d\n", get_rows_count("my_table.db"));
     if (p_select(arr) == 0)
     {

@@ -5,8 +5,8 @@ all: clean build
 
 build: purpledb
 
-purpledb: main.o create.o shared.o insert.o select.o
-	$(CC) $(CFLAGS) main.o create.o shared.o insert.o select.o -o purpledb
+purpledb: main.o create.o shared.o insert.o select.o error.o
+	$(CC) $(CFLAGS) main.o create.o shared.o insert.o select.o error.o -o purpledb
 
 main.o: main.c main.h
 	$(CC) $(CFLAGS) -c main.c -o main.o
@@ -20,8 +20,11 @@ insert.o: insert.c insert.h
 select.o: select.c select.h
 	$(CC) $(CFLAGS) -c select.c -o select.o
 
-file.o: shared.c shared.h
+shared.o: shared.c shared.h
 	$(CC) $(CFLAGS) -c shared.c -o shared.o
+
+error.o: error.c error.h
+	$(CC) $(CFLAGS) -c error.c -o error.o
 
 clean:
 	rm -f *.o purpledb

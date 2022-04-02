@@ -1,4 +1,4 @@
-// Copyright [2022] <drunkbatya>
+// Copyright [2022] <drunkbatya, koterin, grusnydance>
 
 #include "insert.h"
 
@@ -9,8 +9,8 @@ uint8_t insert_integer(char *str, FILE *fptr, uint32_t *offset)
 {
     INTEGER num;
 
-    num = atoi(str);  //TODO: check if not an int (atoi = 0)
-    if (!write_record_in_file(fptr, *offset, sizeof(INTEGER), &num))
+    num = atoi(str);  //TODO(grusnydance): check if not an int (atoi = 0)
+    if (write_record_in_file(fptr, *offset, sizeof(INTEGER), &num) == 0)
         return (0);
     *offset += sizeof(INTEGER);
     return (1);
@@ -28,7 +28,7 @@ uint8_t insert_string(char *str, FILE *fptr, uint32_t *offset)
         return (0);  // TODO(drunkbatya): add exeption
     memset(arr, 0, STRING_SIZE);
     strcpy(arr, str);
-    if (!write_record_in_file(fptr, *offset, STRING_SIZE, arr))
+    if (write_record_in_file(fptr, *offset, STRING_SIZE, arr) == 0)
         return (0);
     *offset += STRING_SIZE;
     return (1);
@@ -58,13 +58,13 @@ uint8_t insert(char **arr)
 
     strcpy(file_path, arr[0]);
     strcat(file_path, ".db");
+    if (check_if_table_exists(file_path) == 0)
+        return (0);
+
     column_count = read_column_count(file_path);  // TODO: column_count to column_num
     if (column_count < 1)
         return (0);  //TODO: describe error
     fptr = fopen(file_path, "rb+");
-    if (fptr == NULL)
-        return (0);
-
     t_header **headers_struct = calloc(column_count, sizeof(t_header *));
     
     count = 1;
