@@ -1,7 +1,7 @@
 // Copyright [2022] <drunkbatya>
 
-#ifndef SRC_FILE_H_
-#define SRC_FILE_H_
+#ifndef SRC_SHARED_H_
+#define SRC_SHARED_H_
 
 #include <unistd.h>
 #include <stdio.h>
@@ -16,4 +16,4 @@ COLUMN_COUNTER read_column_count(char *file_path);
 uint16_t get_rows_count(char *file_path);
 void safe_free(void *ptr);
 void safe_fclose(void *ptr);
-#endif  // SRC_FILE_H_
+#endif  // SRC_SHARED_H_

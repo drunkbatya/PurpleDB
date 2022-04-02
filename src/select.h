@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
-#include "file.h"
+#include "shared.h"
 #include "structure.h"
 
 uint8_t p_select(char **arr);

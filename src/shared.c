@@ -1,6 +1,6 @@
-// Copyright [2022] <drunkbatya>
+// Copyright [2022] <drunkbatya, koterin, GrusnyDance>
 
-#include "file.h"
+#include "shared.h"
 
 void *read_record_from_file(FILE *fptr, uint32_t offset, uint16_t size)
 {
@@ -17,14 +17,20 @@ void *read_record_from_file(FILE *fptr, uint32_t offset, uint16_t size)
 
 uint8_t write_record_in_file(FILE *fptr, uint32_t offset, uint16_t size, const void *record)
 {
+    printf("offset is %d\n", offset);
+    fseek(fptr, offset, SEEK_SET);
+    fwrite(record, size, 1, fptr);
+    fflush(fptr);
+    rewind(fptr);
+/*
     if (fseek(fptr, offset, SEEK_SET))
-        return (0);
-    if (!fwrite(record, size, 1, fptr))
+        return (0);  //TODO: describe errors
+    if (fwrite(record, size, 1, fptr) == 0)
         return (0);
     if (fflush(fptr))
         return (0);
     rewind(fptr);
-    return (1);
+  */  return (1);
 }
 
 // Read first byte of file to get number of columns in table.
@@ -36,10 +42,11 @@ COLUMN_COUNTER read_column_count(char *file_path)
     COLUMN_COUNTER *column_count_ptr;
     COLUMN_COUNTER column_count;
 
-    ptr = fopen(file_path, "r");
+    ptr = fopen(file_path, "rb");
     if (ptr == NULL)
         return (0);
     column_count_ptr = read_record_from_file(ptr, 0, sizeof(COLUMN_COUNTER));
+    printf("col count = %d\n", (int)(*column_count_ptr));  //TODO
     if (column_count_ptr == NULL)
     {
         safe_fclose(ptr);

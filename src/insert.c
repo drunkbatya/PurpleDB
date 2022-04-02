@@ -50,7 +50,7 @@ uint8_t make_insert_free(FILE *fptr, t_header *hptr, uint8_t return_code)
 uint8_t insert(char **arr)
 {
     FILE *fptr;
-    char file_path[strlen(arr[0]) + 2];
+    char file_path[strlen(arr[0]) + 4];
     uint16_t offset;
     COLUMN_COUNTER count;
     COLUMN_COUNTER column_count;
@@ -74,12 +74,12 @@ uint8_t insert(char **arr)
             make_insert_free(fptr, column, 0);
         if (column->datatype == integer)
         {
-            if (!insert_integer(arr[count + 1], fptr, &offset))
+            if (insert_integer(arr[count + 1], fptr, &offset) == 0)
                 return (make_insert_free(fptr, column, 0));
         }
         if (column->datatype == string)
         {
-            if (!insert_string(arr[count + 1], fptr, &offset))
+            if (insert_string(arr[count + 1], fptr, &offset) == 0)
                 return (make_insert_free(fptr, column, 0));
         }
         safe_free(column);

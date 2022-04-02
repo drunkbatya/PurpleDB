@@ -27,7 +27,7 @@ uint8_t write_column_count(char *file_path, COLUMN_COUNTER column_count)
 {
     FILE *ptr;
 
-    ptr = fopen(file_path, "wx");
+    ptr = fopen(file_path, "wb");
     if (ptr == NULL)
         return (0);
     if (!write_record_in_file(ptr, 0, sizeof(COLUMN_COUNTER), &column_count))
@@ -57,9 +57,9 @@ uint8_t create_table(char **arr, int column_count)
     index = 1;  // to skip table_name and to itterate by pairs
     strcpy(file_path, arr[0]);
     strcat(file_path, ".db");
-    if (!write_column_count(file_path, column_count))
+    if (!write_column_count(file_path, column_count))  // File was created here
         return (0);
-    ptr = fopen(file_path, "a");
+    ptr = fopen(file_path, "rb+");
     if (ptr == NULL)
         return (0);
     while (count < column_count)
@@ -71,8 +71,7 @@ uint8_t create_table(char **arr, int column_count)
         header->datatype = parse_datatype(arr[index + 1]);
         if (header->datatype == error)
             return (make_create_table_free(ptr, header, 0));
-        if (!write_record_in_file(ptr, ((count + sizeof(COLUMN_COUNTER)) \
-                        * sizeof(t_header)), sizeof(t_header), header))
+        if (write_record_in_file(ptr, sizeof(COLUMN_COUNTER) + count * sizeof(t_header), sizeof(t_header), header) == 0)
             return (make_create_table_free(ptr, header, 0));
         safe_free(header);
         count++;
