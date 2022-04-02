@@ -18,12 +18,44 @@ int main(void)
         printf("Create table error!\n");
         return (1);
     }
-    /*
-    arr[0] = "my_table";
-    arr[1] = "31032022";
-    arr[2] = "Даша - прикольная дефф4онка!";
     
-    if (insert(arr) == 0)
+    char *insert_arr[4];
+    insert_arr[0] = "my_table";
+    insert_arr[1] = "310";
+    insert_arr[2] = "Dasha is so cool!";
+    insert_arr[3] = "24";
+ 
+    if (insert(insert_arr) == 0)
+    {
+        printf("Insert error!\n");
+        return (1);
+    }
+    insert_arr[0] = "my_table";
+    insert_arr[1] = "410";
+    insert_arr[2] = "Dasha cool!";
+    insert_arr[3] = "25";
+ 
+    if (insert(insert_arr) == 0)
+    {
+        printf("Insert error!\n");
+        return (1);
+    }
+    insert_arr[0] = "my_table";
+    insert_arr[1] = "045";
+    insert_arr[2] = "fghjkl;";
+    insert_arr[3] = "256";
+ 
+    if (insert(insert_arr) == 0)
+    {
+        printf("Insert error!\n");
+        return (1);
+    }
+    insert_arr[0] = "my_table";
+    insert_arr[1] = "8976";
+    insert_arr[2] = "Dashhhhhh";
+    insert_arr[3] = "06";
+ 
+    if (insert(insert_arr) == 0)
     {
         printf("Insert error!\n");
         return (1);
@@ -33,6 +65,6 @@ int main(void)
     {
         printf("Select error!\n");
         return (1);
-    }*/
+    }
     return (0);
 }

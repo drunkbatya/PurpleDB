@@ -2,6 +2,19 @@
 
 #include "shared.h"
 
+t_header *read_header_from_file(FILE *fptr, uint32_t offset, uint16_t size)
+{
+    t_header *record = NULL;
+
+    record = malloc(size);
+  //  if (record == NULL)
+  //      return (record);
+    fseek(fptr, offset, SEEK_SET);
+    fread(record, size, 1, fptr);
+    rewind(fptr);
+    return (record);
+}
+
 void *read_record_from_file(FILE *fptr, uint32_t offset, uint16_t size)
 {
     void *record;
@@ -17,12 +30,6 @@ void *read_record_from_file(FILE *fptr, uint32_t offset, uint16_t size)
 
 uint8_t write_record_in_file(FILE *fptr, uint32_t offset, uint16_t size, const void *record)
 {
-    printf("offset is %d\n", offset);
-    fseek(fptr, offset, SEEK_SET);
-    fwrite(record, size, 1, fptr);
-    fflush(fptr);
-    rewind(fptr);
-/*
     if (fseek(fptr, offset, SEEK_SET))
         return (0);  //TODO: describe errors
     if (fwrite(record, size, 1, fptr) == 0)
@@ -30,7 +37,7 @@ uint8_t write_record_in_file(FILE *fptr, uint32_t offset, uint16_t size, const v
     if (fflush(fptr))
         return (0);
     rewind(fptr);
-  */  return (1);
+    return (1);
 }
 
 // Read first byte of file to get number of columns in table.
@@ -46,7 +53,6 @@ COLUMN_COUNTER read_column_count(char *file_path)
     if (ptr == NULL)
         return (0);
     column_count_ptr = read_record_from_file(ptr, 0, sizeof(COLUMN_COUNTER));
-    printf("col count = %d\n", (int)(*column_count_ptr));  //TODO
     if (column_count_ptr == NULL)
     {
         safe_fclose(ptr);

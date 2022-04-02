@@ -26,3 +26,4 @@ file.o: shared.c shared.h
 clean:
 	rm -f *.o purpledb
 	rm -f my_table.db
+	rm -f ../build/purpledb

@@ -5,12 +5,12 @@
 // Convert string str to int value, and insert to table via fptr.
 // Ranges - sizeof(int32_t) / 2 - from -2147483648 to +2147483647.
 // Type of int defined by INTEGER in structure.h .
-uint8_t insert_integer(char *str, FILE *fptr, uint16_t *offset)
+uint8_t insert_integer(char *str, FILE *fptr, uint32_t *offset)
 {
-    INTEGER integer;
+    INTEGER num;
 
-    integer = atoi(str);
-    if (!write_record_in_file(fptr, *offset, sizeof(INTEGER), &integer))
+    num = atoi(str);  //TODO: check if not an int (atoi = 0)
+    if (!write_record_in_file(fptr, *offset, sizeof(INTEGER), &num))
         return (0);
     *offset += sizeof(INTEGER);
     return (1);
@@ -20,7 +20,7 @@ uint8_t insert_integer(char *str, FILE *fptr, uint16_t *offset)
 // Data will be copied to new zeroed array and written to table.
 // Size of array defined by STRING_SIZE in structure.h .
 // Throws exeption if input string size greater then (STRING_SIZE - 1)
-uint8_t insert_string(char *str, FILE *fptr, uint16_t *offset)
+uint8_t insert_string(char *str, FILE *fptr, uint32_t *offset)
 {
     char arr[STRING_SIZE];
 
@@ -51,42 +51,58 @@ uint8_t insert(char **arr)
 {
     FILE *fptr;
     char file_path[strlen(arr[0]) + 4];
-    uint16_t offset;
+    uint32_t offset;
     COLUMN_COUNTER count;
     COLUMN_COUNTER column_count;
-    t_header *column;
+    t_header *header;  // TODO: unknown table error
 
-    count = 0;
     strcpy(file_path, arr[0]);
     strcat(file_path, ".db");
-    column_count = read_column_count(file_path);
+    column_count = read_column_count(file_path);  // TODO: column_count to column_num
     if (column_count < 1)
-        return (0);
-    fptr = fopen(file_path, "a+");
+        return (0);  //TODO: describe error
+    fptr = fopen(file_path, "rb+");
     if (fptr == NULL)
         return (0);
-    offset = sizeof(COLUMN_COUNTER) + (sizeof(t_header) * column_count);
-    while (count < column_count)
+
+    t_header **headers_struct = calloc(column_count, sizeof(t_header *));
+    
+    count = 1;
+    offset = sizeof(COLUMN_COUNTER);  // Pointer to the data beginning
+    while (count < column_count + 1)  // Writing headers structure
     {
-        column = read_record_from_file(fptr, sizeof(COLUMN_COUNTER) \
-                + (count * sizeof(t_header)), sizeof(t_header));
-        if (column == NULL)
-            make_insert_free(fptr, column, 0);
-        if (column->datatype == integer)
+        header = read_header_from_file(fptr, offset, sizeof(t_header));
+        if (header == NULL)
+            make_insert_free(fptr, header, 0);
+        headers_struct[count - 1] = header;
+        count++;
+        offset = offset + sizeof(t_header);
+    }
+    
+    fseek(fptr, 0, SEEK_END);
+    offset = ftell(fptr);
+    count = 1;
+    while (count < column_count + 1)
+    {
+        if (headers_struct[count - 1]->datatype == integer)
         {
-            if (insert_integer(arr[count + 1], fptr, &offset) == 0)
-                return (make_insert_free(fptr, column, 0));
+            insert_integer(arr[count], fptr, &offset);  //TODO: add checks for success
         }
-        if (column->datatype == string)
+        if (headers_struct[count - 1]->datatype == string)
         {
-            if (insert_string(arr[count + 1], fptr, &offset) == 0)
-                return (make_insert_free(fptr, column, 0));
+            insert_string(arr[count], fptr, &offset);
         }
-        safe_free(column);
         count++;
     }
-    printf("Column count: %d\n", column_count);
-    printf("File size: %d\n", get_file_size(fptr));
+
+    count = 0;
+    while (count < column_count)  // TODO: one function for freeing
+    {
+        safe_free(headers_struct[count]);
+        count++;
+    }
+    free(headers_struct);
+
     safe_fclose(fptr);
     return (1);
 }

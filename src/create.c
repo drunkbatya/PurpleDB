@@ -71,7 +71,8 @@ uint8_t create_table(char **arr, int column_count)
         header->datatype = parse_datatype(arr[index + 1]);
         if (header->datatype == error)
             return (make_create_table_free(ptr, header, 0));
-        if (write_record_in_file(ptr, sizeof(COLUMN_COUNTER) + count * sizeof(t_header), sizeof(t_header), header) == 0)
+        if (write_record_in_file(ptr, sizeof(COLUMN_COUNTER)
+                        + count * sizeof(t_header), sizeof(t_header), header) == 0)
             return (make_create_table_free(ptr, header, 0));
         safe_free(header);
         count++;
