@@ -15,7 +15,7 @@ void *read_record_from_file(FILE *fptr, uint32_t offset, uint16_t size)
     return (record);
 }
 
-int8_t write_record_in_file(FILE *fptr, uint32_t offset, uint16_t size, const void *record)
+uint8_t write_record_in_file(FILE *fptr, uint32_t offset, uint16_t size, const void *record)
 {
     if (fseek(fptr, offset, SEEK_SET))
         return (0);
@@ -26,9 +26,34 @@ int8_t write_record_in_file(FILE *fptr, uint32_t offset, uint16_t size, const vo
     rewind(fptr);
     return (1);
 }
-uint16_t get_file_size(FILE *fptr)
+
+// Read first byte of file to get number of columns in table.
+// Max size is sizeof(uint8_t) - 255 columns.
+// Type defined by COLUMN_COUNTER in structure.h .
+COLUMN_COUNTER read_column_count(char *file_path)
 {
-    uint16_t size;
+    FILE *ptr;
+    COLUMN_COUNTER *column_count_ptr;
+    COLUMN_COUNTER column_count;
+
+    ptr = fopen(file_path, "r");
+    if (ptr == NULL)
+        return (0);
+    column_count_ptr = read_record_from_file(ptr, 0, sizeof(COLUMN_COUNTER));
+    if (column_count_ptr == NULL)
+    {
+        safe_fclose(ptr);
+        return (0);
+    }
+    column_count = *column_count_ptr;
+    safe_fclose(ptr);
+    safe_free(column_count_ptr);
+    return (column_count);
+}
+
+uint32_t get_file_size(FILE *fptr)
+{
+    uint32_t size;
 
     fseek(fptr, 0, SEEK_END);
     size = ftell(fptr);
@@ -36,9 +61,57 @@ uint16_t get_file_size(FILE *fptr)
     return (size);
 }
 
-uint16_t get_records_count(FILE *fptr, uint16_t struct_size)
+uint16_t get_row_size(char *file_path)
 {
-    return (get_file_size(fptr) / struct_size);
+    FILE *fptr;
+    uint16_t size;
+    t_header *column;
+    COLUMN_COUNTER count;
+    COLUMN_COUNTER column_count;
+
+    size = 0;
+    count = 0;
+    column_count = read_column_count(file_path);
+    if (!column_count)
+        return (0);
+    fptr = fopen(file_path, "r");
+    if (fptr == NULL)
+        return (0);
+    while (count < column_count)
+    {
+        column = read_record_from_file(fptr, sizeof(COLUMN_COUNTER) \
+                + (count * sizeof(t_header)), sizeof(t_header));
+        if (column == NULL)
+        {
+            safe_fclose(fptr);
+            return (0);
+        }
+        if (column->datatype == integer)
+            size += sizeof(INTEGER);
+        if (column->datatype == string)
+            size += STRING_SIZE;
+        count++;
+    }
+    return (size);
+}
+
+uint16_t get_rows_count(char *file_path)
+{
+    FILE *fptr;
+    uint16_t size;
+    uint16_t row_size;
+    COLUMN_COUNTER column_count;
+
+    column_count = read_column_count(file_path);
+    if (!column_count)
+        return (0);
+    row_size = get_row_size(file_path);
+    fptr = fopen(file_path, "r");
+    if (fptr == NULL)
+        return (0);
+    size = get_file_size(fptr) - sizeof(COLUMN_COUNTER) - (column_count * sizeof(t_header));
+    safe_fclose(fptr);
+    return (size / row_size);
 }
 
 void safe_free(void *ptr)

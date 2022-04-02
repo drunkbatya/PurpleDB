@@ -10,9 +10,10 @@
 #include "structure.h"
 
 void *read_record_from_file(FILE *fptr, uint32_t offset, uint16_t size);
-uint16_t get_file_size(FILE *file);
-int8_t write_record_in_file(FILE *fptr, uint32_t offset, uint16_t size, const void *record);
-uint16_t get_records_count(FILE *file, uint16_t struct_size);
+uint32_t get_file_size(FILE *file);
+uint8_t write_record_in_file(FILE *fptr, uint32_t offset, uint16_t size, const void *record);
+COLUMN_COUNTER read_column_count(char *file_path);
+uint16_t get_rows_count(char *file_path);
 void safe_free(void *ptr);
 void safe_fclose(void *ptr);
 #endif  // SRC_FILE_H_

@@ -19,12 +19,17 @@ int main(void)
         // return (1);
     }
     arr[0] = "my_table";
-    arr[1] = "65535";
-    arr[2] = "Test string";
-    arr[3] = "32523";
+    arr[1] = "31032022";
+    arr[2] = "Катя - прикольная дефф4онка!";
     if (!insert(arr))
     {
         printf("Insert error!\n");
+        return (1);
+    }
+    printf("Rows: %d\n", get_rows_count("my_table.db"));
+    if (!p_select(arr))
+    {
+        printf("Select error!\n");
         return (1);
     }
     return (0);
