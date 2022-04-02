@@ -5,6 +5,9 @@ all: clean build
 
 build: purpledb
 
+leaks_check: main.o create.o shared.o insert.o select.o error.o
+	$(CC) $(CFLAGS) main.o create.o shared.o insert.o select.o error.o -o a.out
+
 purpledb: main.o create.o shared.o insert.o select.o error.o
 	$(CC) $(CFLAGS) main.o create.o shared.o insert.o select.o error.o -o purpledb
 
@@ -27,6 +30,6 @@ error.o: error.c error.h
 	$(CC) $(CFLAGS) -c error.c -o error.o
 
 clean:
-	rm -f *.o purpledb
+	rm -f *.o purpledb a.out
 	rm -f my_table.db
 	rm -f ../build/purpledb

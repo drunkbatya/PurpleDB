@@ -1,4 +1,4 @@
-// Copyright [2022] <drunkbatya>
+// Copyright [2022] <drunkbatya, koterin, GrusnyDance>
 
 #ifndef SRC_SHARED_H_
 #define SRC_SHARED_H_
@@ -11,6 +11,9 @@
 #include "error.h"
 
 int check_if_table_exists(char *file_path);
+void get_headers_structure(FILE *fptr, COLUMN_COUNTER column_number, t_header **hstr);
+void free_headers_struct(COLUMN_COUNTER column_number, t_header **hstr);
+
 void *read_record_from_file(FILE *fptr, uint32_t offset, uint16_t size);
 uint32_t get_file_size(FILE *file);
 uint8_t write_record_in_file(FILE *fptr, uint32_t offset, uint16_t size, const void *record);

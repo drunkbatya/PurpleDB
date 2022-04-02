@@ -16,6 +16,40 @@ int check_if_table_exists(char *file_path)
     }
 }
 
+void get_headers_structure(FILE *fptr, COLUMN_COUNTER column_number, t_header **hstr)
+{
+    uint32_t offset;
+    int count;
+    t_header *header;
+
+    offset = sizeof(COLUMN_COUNTER);
+    count = 1;
+
+    while (count < column_number + 1)
+    {
+        header = read_record_from_file(fptr, offset, sizeof(t_header));
+        if (header == NULL)
+        {
+            free_headers_struct(column_number, hstr);
+            return;
+        }
+        hstr[count - 1] = header;
+        offset = offset + sizeof(t_header);
+        count++;
+    }
+}
+
+void free_headers_struct(COLUMN_COUNTER column_number, t_header **hstr)
+{
+    int count = 0;
+    while (count < column_number)
+    {
+        safe_free(hstr[count]);
+        count++;
+    }
+    free(hstr);
+}
+
 void *read_record_from_file(FILE *fptr, uint32_t offset, uint16_t size)
 {
     void *record;
@@ -32,7 +66,7 @@ void *read_record_from_file(FILE *fptr, uint32_t offset, uint16_t size)
 uint8_t write_record_in_file(FILE *fptr, uint32_t offset, uint16_t size, const void *record)
 {
     if (fseek(fptr, offset, SEEK_SET))
-        return (0);  //TODO: describe errors
+        return (0);  // TODO(koterin): describe errors
     if (fwrite(record, size, 1, fptr) == 0)
         return (0);
     if (fflush(fptr))

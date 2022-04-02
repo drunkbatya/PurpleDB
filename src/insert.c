@@ -34,14 +34,6 @@ uint8_t insert_string(char *str, FILE *fptr, uint32_t *offset)
     return (1);
 }
 
-// To shrink code length
-uint8_t make_insert_free(FILE *fptr, t_header *hptr, uint8_t return_code)
-{
-    safe_fclose(fptr);
-    safe_free(hptr);
-    return (return_code);
-}
-
 // Insert data to existing table.
 // Expected count of array in arr = 1 + column_count.
 // Column count value is located in first byte (prob. bytes)
@@ -54,7 +46,7 @@ void insert(char **arr)
     uint32_t offset;
     COLUMN_COUNTER count;
     COLUMN_COUNTER column_number;
-    t_header *header;
+    t_header **headers_struct;
 
     strcpy(file_path, arr[0]);
     strcat(file_path, ".db");
@@ -67,21 +59,17 @@ void insert(char **arr)
         error_null_column_number();
         return;
     }
+
     fptr = fopen(file_path, "rb+");
-    t_header **headers_struct = calloc(column_number, sizeof(t_header *));
-    
-    count = 1;
-    offset = sizeof(COLUMN_COUNTER);  // Pointer to the beginning of the data
-    while (count < column_number + 1)  // Writing headers structure
+    headers_struct = calloc(column_number, sizeof(t_header *));
+    if (headers_struct == NULL)
     {
-        header = read_record_from_file(fptr, offset, sizeof(t_header));
-        if (header == NULL)
-            make_insert_free(fptr, header, 0);
-        headers_struct[count - 1] = header;
-        count++;
-        offset = offset + sizeof(t_header);
+        free(headers_struct);
+        safe_fclose(fptr);
+        return; //TODO: null pointer error
     }
-    
+    get_headers_structure(fptr, column_number, headers_struct);  // TODO(koterin): THIS BITCH LEAKS
+
     fseek(fptr, 0, SEEK_END);
     offset = ftell(fptr);
     count = 1;
@@ -89,22 +77,18 @@ void insert(char **arr)
     {
         if (headers_struct[count - 1]->datatype == integer)
         {
-            insert_integer(arr[count], fptr, &offset);  //TODO: add checks for success
+            if (insert_integer(arr[count], fptr, &offset) == 0)  //TODO: add checks for success
+                break;
         }
         if (headers_struct[count - 1]->datatype == string)
         {
-            insert_string(arr[count], fptr, &offset);
+            if (insert_string(arr[count], fptr, &offset) == 0)
+                break;
         }
         count++;
     }
 
-    count = 0;
-    while (count < column_number)  // TODO: one function for freeing
-    {
-        safe_free(headers_struct[count]);
-        count++;
-    }
-    free(headers_struct);
+    free_headers_struct(column_number, headers_struct);
 
     safe_fclose(fptr);
     return;
