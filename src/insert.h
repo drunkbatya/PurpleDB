@@ -1,4 +1,4 @@
-// Copyright [2022] <drunkbatya>
+// Copyright [2022] <drunkbatya, koterin, grusnydance>
 
 #ifndef SRC_INSERT_H_
 #define SRC_INSERT_H_
@@ -8,6 +8,6 @@
 #include "shared.h"
 #include "structure.h"
 
-uint8_t insert(char **arr);
+void insert(char **arr);
 
 #endif  // SRC_INSERT_H_

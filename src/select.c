@@ -57,7 +57,7 @@ uint8_t p_select(char **arr)
     if (fptr == NULL)
         return (0);
     rows = get_rows_count(file_path);
-    columns = read_column_count(file_path);
+    columns = read_column_number(file_path);
     if (!rows)
         return (0);
     if (!columns)

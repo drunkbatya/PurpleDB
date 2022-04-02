@@ -47,29 +47,29 @@ uint8_t make_insert_free(FILE *fptr, t_header *hptr, uint8_t return_code)
 // Column count value is located in first byte (prob. bytes)
 // in the beginning of the file. Column count must be > 0.
 // Arr format: [table_name] [column 1 value] ([column 2 value]) (etc..).
-uint8_t insert(char **arr)
+void insert(char **arr)
 {
     FILE *fptr;
     char file_path[strlen(arr[0]) + 4];
     uint32_t offset;
     COLUMN_COUNTER count;
-    COLUMN_COUNTER column_count;
-    t_header *header;  // TODO: unknown table error
+    COLUMN_COUNTER column_number;
+    t_header *header;
 
     strcpy(file_path, arr[0]);
     strcat(file_path, ".db");
     if (check_if_table_exists(file_path) == 0)
-        return (0);
+        return;
 
-    column_count = read_column_count(file_path);  // TODO: column_count to column_num
-    if (column_count < 1)
-        return (0);  //TODO: describe error
+    column_number = read_column_number(file_path);  // TODO: column_count to column_num
+    if (column_number < 1)
+        return;  //TODO: describe error
     fptr = fopen(file_path, "rb+");
-    t_header **headers_struct = calloc(column_count, sizeof(t_header *));
+    t_header **headers_struct = calloc(column_number, sizeof(t_header *));
     
     count = 1;
     offset = sizeof(COLUMN_COUNTER);  // Pointer to the data beginning
-    while (count < column_count + 1)  // Writing headers structure
+    while (count < column_number + 1)  // Writing headers structure
     {
         header = read_header_from_file(fptr, offset, sizeof(t_header));
         if (header == NULL)
@@ -82,7 +82,7 @@ uint8_t insert(char **arr)
     fseek(fptr, 0, SEEK_END);
     offset = ftell(fptr);
     count = 1;
-    while (count < column_count + 1)
+    while (count < column_number + 1)
     {
         if (headers_struct[count - 1]->datatype == integer)
         {
@@ -96,7 +96,7 @@ uint8_t insert(char **arr)
     }
 
     count = 0;
-    while (count < column_count)  // TODO: one function for freeing
+    while (count < column_number)  // TODO: one function for freeing
     {
         safe_free(headers_struct[count]);
         count++;
@@ -104,5 +104,5 @@ uint8_t insert(char **arr)
     free(headers_struct);
 
     safe_fclose(fptr);
-    return (1);
+    return;
 }

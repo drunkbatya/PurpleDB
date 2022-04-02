@@ -58,7 +58,7 @@ uint8_t write_record_in_file(FILE *fptr, uint32_t offset, uint16_t size, const v
 // Read first byte of file to get number of columns in table.
 // Max size is sizeof(uint8_t) - 255 columns.
 // Type defined by COLUMN_COUNTER in structure.h .
-COLUMN_COUNTER read_column_count(char *file_path)
+COLUMN_COUNTER read_column_number(char *file_path)
 {
     FILE *ptr;
     COLUMN_COUNTER *column_count_ptr;
@@ -99,7 +99,7 @@ uint16_t get_row_size(char *file_path)
 
     size = 0;
     count = 0;
-    column_count = read_column_count(file_path);
+    column_count = read_column_number(file_path);
     if (!column_count)
         return (0);
     fptr = fopen(file_path, "r");
@@ -130,7 +130,7 @@ uint16_t get_rows_count(char *file_path)
     uint16_t row_size;
     COLUMN_COUNTER column_count;
 
-    column_count = read_column_count(file_path);
+    column_count = read_column_number(file_path);
     if (!column_count)
         return (0);
     row_size = get_row_size(file_path);
