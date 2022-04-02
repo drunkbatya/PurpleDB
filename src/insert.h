@@ -7,6 +7,7 @@
 #include <string.h>
 #include "shared.h"
 #include "structure.h"
+#include "error.h"
 
 void insert(char **arr);
 

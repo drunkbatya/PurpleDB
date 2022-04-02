@@ -2,14 +2,9 @@
 
 #include <stdio.h>
 
-int error_shell_query_parse(void) {
-    printf("\nError! Incorrect query\n");
-    return (1);
-}
-
-int error_miss_semicolon(void) {
-    printf("\nError! Incorrect query: missing semicolon - ';'\n");
-    return (1);
+void error_null_column_number()
+{
+    printf("\nError! Columns amount must be more than 0\n");
 }
 
 void error_unknown_table(char *table_name) {
@@ -32,14 +27,14 @@ void error_not_int(char *strint) {
     printf("\nError! '%s' is not an integer\n", strint);
 }
 
-void invalid_id_error() {
+void error_invalid_id() {
     printf("\nId already exists\n");
 }
 
-void nothing_to_delete_error() {
+void error_nothing_to_delete() {
     printf("\nNo record matches your query\n");
 }
 
-void all_records_deleted_error() {
+void error_all_records_deleted() {
     printf("\nAll records were deleted previously\n");
 }

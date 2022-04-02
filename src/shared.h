@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include "structure.h"
+#include "error.h"
 
 int check_if_table_exists(char *file_path);
 t_header *read_header_from_file(FILE *fptr, uint32_t offset, uint16_t size);

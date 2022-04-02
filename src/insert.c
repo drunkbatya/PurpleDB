@@ -61,9 +61,12 @@ void insert(char **arr)
     if (check_if_table_exists(file_path) == 0)
         return;
 
-    column_number = read_column_number(file_path);  // TODO: column_count to column_num
+    column_number = read_column_number(file_path);
     if (column_number < 1)
-        return;  //TODO: describe error
+    {
+        error_null_column_number();
+        return;
+    }
     fptr = fopen(file_path, "rb+");
     t_header **headers_struct = calloc(column_number, sizeof(t_header *));
     

@@ -1,7 +1,6 @@
 // Copyright [2022] <drunkbatya, koterin, GrusnyDance>
 
 #include "shared.h"
-#include "error.h"
 
 int check_if_table_exists(char *file_path)
 {
