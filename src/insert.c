@@ -71,10 +71,10 @@ void insert(char **arr)
     t_header **headers_struct = calloc(column_number, sizeof(t_header *));
     
     count = 1;
-    offset = sizeof(COLUMN_COUNTER);  // Pointer to the data beginning
+    offset = sizeof(COLUMN_COUNTER);  // Pointer to the beginning of the data
     while (count < column_number + 1)  // Writing headers structure
     {
-        header = read_header_from_file(fptr, offset, sizeof(t_header));
+        header = read_record_from_file(fptr, offset, sizeof(t_header));
         if (header == NULL)
             make_insert_free(fptr, header, 0);
         headers_struct[count - 1] = header;

@@ -11,7 +11,6 @@
 #include "error.h"
 
 int check_if_table_exists(char *file_path);
-t_header *read_header_from_file(FILE *fptr, uint32_t offset, uint16_t size);
 void *read_record_from_file(FILE *fptr, uint32_t offset, uint16_t size);
 uint32_t get_file_size(FILE *file);
 uint8_t write_record_in_file(FILE *fptr, uint32_t offset, uint16_t size, const void *record);

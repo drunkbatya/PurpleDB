@@ -16,19 +16,6 @@ int check_if_table_exists(char *file_path)
     }
 }
 
-t_header *read_header_from_file(FILE *fptr, uint32_t offset, uint16_t size)
-{
-    t_header *record = NULL;
-
-    record = malloc(size);
-  //  if (record == NULL)
-  //      return (record);
-    fseek(fptr, offset, SEEK_SET);
-    fread(record, size, 1, fptr);
-    rewind(fptr);
-    return (record);
-}
-
 void *read_record_from_file(FILE *fptr, uint32_t offset, uint16_t size)
 {
     void *record;
