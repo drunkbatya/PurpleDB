@@ -22,3 +22,4 @@ file.o: file.c file.h
 
 clean:
 	rm -f *.o purpledb
+	rm -f my_table.db

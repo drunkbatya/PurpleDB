@@ -51,7 +51,7 @@ uint8_t create_table(char **arr, int column_count)
     int index;
     FILE *ptr;
     t_header *header;
-    char file_path[strlen(arr[0]) + 2];
+    char file_path[strlen(arr[1]) + 4];
 
     count = 0;
     index = 1;  // to skip table_name and to itterate by pairs
