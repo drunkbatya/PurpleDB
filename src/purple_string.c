@@ -6,7 +6,7 @@
 // This fucntion doing some magick to save the space alive!
 // It replaces space characters inside quotes to some unprintable
 // char, e.x. 26. We need this because we splitting user inputed
-// string by spaces.
+// string by spaces. See MAGICK_SPACE_SYM constant in purple_string.h
 uint8_t quoted_space_driver(char *str)
 {
     char *new_ptr;
@@ -25,12 +25,22 @@ uint8_t quoted_space_driver(char *str)
         while (*new_ptr != '"')
         {
             if (*new_ptr == ' ')
-                *new_ptr = 26;
+                *new_ptr = MAGICK_SPACE_SYM;
             new_ptr++;
         }
         new_ptr++;
     }
+    remove_char_from_str(str, '"');
     return (1);
+}
+
+// replaces all MAGICK_SPACE_SYM to ' ' to restore spaces
+// after separating string by strtok(str, " ").
+// see function quoted_space_driver.
+char *bring_space_back(char *str)
+{
+    replace_char_in_str(str, MAGICK_SPACE_SYM, ' ');
+    return (str);
 }
 
 // returns (true) if count of given char in given string
@@ -55,12 +65,14 @@ uint8_t check_unpair_char(char *str, char c)
 void remove_char_from_str(char *str, char c)
 {
     char *orig_str;
+    char *new_ptr;
 
     if (str == NULL || *str == '\0')
         return;
     orig_str = malloc(strlen(str) + 1);
     if (orig_str == NULL)
         return;
+    new_ptr = orig_str;
     strcpy(orig_str, str);
     memset(str, 0, strlen(str));
     while (*orig_str != '\0')
@@ -69,9 +81,11 @@ void remove_char_from_str(char *str, char c)
             *str++ = *orig_str;
         orig_str++;
     }
-    safe_free(orig_str);
+    safe_free(new_ptr);
 }
 
+// reads all chars from input buffer (stdin) to "/dev/null"
+// to avoid input endless loop
 void clear_input_buffer(void)
 {
     int16_t ch;
@@ -81,6 +95,8 @@ void clear_input_buffer(void)
         ch = getchar();
 }
 
+// reads string from stdin
+// throws error if buffer overflows
 uint8_t getstr(char *buf)
 {
     int16_t ch;
@@ -102,3 +118,18 @@ uint8_t getstr(char *buf)
     *new_ptr = '\0';
     return (1);
 }
+
+// replace all occurrence of char ch1 to ch2 from string str
+void replace_char_in_str(char *str, char ch1, char ch2)
+{
+    char *new_ptr;
+
+    new_ptr = str;
+    while (new_ptr && *new_ptr != '\0')
+    {
+        if (*new_ptr == ch1)
+            *new_ptr = ch2;
+        new_ptr++;
+    }
+}
+

@@ -10,7 +10,7 @@ void client(void)
     shell_buf[0] = 0;
     while (shell_buf[0] != EOF)
     {
-        printf(PS1);
+        printf(PURPLE PS1 NC);
         if (!getstr(shell_buf))
             continue;
         parse_query(shell_buf);
@@ -80,7 +80,7 @@ uint8_t parse_select_query(char *str)
     strtok(str, " ");  // skip select
     while (lecs_counter < 7)
     {
-        lecs[lecs_counter] = strtok(NULL, " ");
+        lecs[lecs_counter] = bring_space_back(strtok(NULL, " "));
         lecs_counter++;
     }
     check_out = check_select_query_no_where(lecs);
@@ -119,7 +119,7 @@ uint8_t parse_insert_query(char *str)
     strtok(NULL, " (),");  // skip into
     while (lecs_counter < 7)
     {
-        lecs[lecs_counter] = strtok(NULL, " (),");
+        lecs[lecs_counter] = bring_space_back(strtok(NULL, " (),"));
         lecs_counter++;
     }
     check_out = check_insert_query_3arg(lecs);
@@ -155,7 +155,7 @@ uint8_t parse_delete_query(char *str)
     strtok(NULL, " ");  // skip from
     while (lecs_counter < 5)
     {
-        lecs[lecs_counter] = strtok(NULL, " ");
+        lecs[lecs_counter] = bring_space_back(strtok(NULL, " "));
         lecs_counter++;
     }
     if (!check_delete_query(lecs))
@@ -180,7 +180,7 @@ uint8_t parse_update_query(char *str)
     strtok(str, " ");  // skip select
     while (lecs_counter < 9)
     {
-        lecs[lecs_counter] = strtok(NULL, " ");
+        lecs[lecs_counter] = bring_space_back(strtok(NULL, " "));
         lecs_counter++;
     }
     check_out = check_update_query(lecs);
