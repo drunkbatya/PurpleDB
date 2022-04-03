@@ -28,9 +28,10 @@ uint8_t write_column_count(char *file_path, COLUMN_COUNTER column_count)
     FILE *ptr;
 
     ptr = fopen(file_path, "wx");
-    if (ptr == NULL)
+    if (ptr == NULL) {
         return (0);
-    if (!write_record_in_file(ptr, 0, sizeof(COLUMN_COUNTER), &column_count))
+    }
+    if (write_record_in_file(ptr, 0, sizeof(COLUMN_COUNTER), &column_count) == 0)   // gd pointer to integer
     {
         safe_fclose(ptr);
         return (0);
@@ -45,36 +46,41 @@ uint8_t write_column_count(char *file_path, COLUMN_COUNTER column_count)
 // in the beginning of the file. Column count must be > 0.
 // Arr format: [table_name] [column 1 name] [column 1 type] (etc..).
 // For avaliable types see t_datatype in structure.h .
-uint8_t create_table(char **arr, int column_count)
+uint8_t create_table(char **arr, int column_count)  // gd column count is initialized in test as integer
 {
     int count;
     int index;
     FILE *ptr;
-    t_header *header;
+    t_header *header = NULL;
     char file_path[strlen(arr[1]) + 4];
 
     count = 0;
-    index = 1;  // to skip table_name and to itterate by pairs
+    index = 1;  // to skip table_name and to iterate by pairs
     strcpy(file_path, arr[0]);
     strcat(file_path, ".db");
-    if (!write_column_count(file_path, column_count))  // File was created here
+    if (write_column_count(file_path, column_count) == 0) {  // File was created here
         return (0);
+    }
     ptr = fopen(file_path, "r+");
-    if (ptr == NULL)
+    if (ptr == NULL) {
         return (0);
+    }
     while (count < column_count)
     {
-        header = (t_header *)malloc(sizeof(t_header));
-        if (header == NULL)
+        header = calloc(1, sizeof(t_header));
+        if (header == NULL) {
             return (make_create_table_free(ptr, header, 0));
+        }
         strcpy(header->column_name, arr[index]);
         header->datatype = parse_datatype(arr[index + 1]);
-        if (header->datatype == error)
+        if (header->datatype == error) {
             return (make_create_table_free(ptr, header, 0));
-        if (write_record_in_file(ptr, sizeof(COLUMN_COUNTER)
-                        + count * sizeof(t_header), sizeof(t_header), header) == 0)
+        }
+        if (write_record_in_file(ptr, sizeof(COLUMN_COUNTER) + count * sizeof(t_header), sizeof(t_header), header) == 0) {
             return (make_create_table_free(ptr, header, 0));
+        }
         safe_free(header);
+        header = NULL;
         count++;
         index+=2;
     }

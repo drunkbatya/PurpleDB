@@ -1,6 +1,8 @@
 // Copyright [2022] <drunkbatya, koterin, GrusnyDance>
 
 #include "shared.h"
+#include <stdlib.h>
+#include <string.h>
 
 int check_if_table_exists(char *file_path)
 {
@@ -15,45 +17,40 @@ int check_if_table_exists(char *file_path)
     }
 }
 
-void get_headers_structure(FILE *fptr, COLUMN_COUNTER column_number, t_header **hstr)
+void get_headers_structure(FILE *fptr, COLUMN_COUNTER column_number, int *reserve_array)
 {
     uint32_t offset;
     int count;
-    t_header *header;
+    t_header header;
 
     offset = sizeof(COLUMN_COUNTER);
     count = 1;
 
-    while (count < column_number + 1)
+    while (count <= column_number)
     {
-        header = read_record_from_file(fptr, offset, sizeof(t_header));
-        if (header == NULL)
-        {
-            free_headers_struct(column_number, hstr);
-            return;
-        }
-        hstr[count - 1] = header;
-        offset = offset + sizeof(t_header);
+        header = read_for_structures(fptr, offset);
+        reserve_array[count - 1] = header.datatype;
+        offset += sizeof(t_header);
         count++;
     }
+    return;
 }
 
-void free_headers_struct(COLUMN_COUNTER column_number, t_header **hstr)
+t_header read_for_structures(FILE *pfile, int offset) 
 {
-    int count = 0;
-    while (count < column_number)
-    {
-        safe_free(hstr[count]);
-        count++;
-    }
-    free(hstr);
+    fseek(pfile, offset, SEEK_SET);
+    t_header record;
+    fread(&record, sizeof(t_header), 1, pfile);
+    rewind(pfile);
+    return (record);
 }
+
 
 void *read_record_from_file(FILE *fptr, uint32_t offset, uint16_t size)
 {
     void *record;
 
-    record = malloc(size);
+    record = calloc(1, size);
     if (record == NULL)
         return (record);
     fseek(fptr, offset, SEEK_SET);
@@ -62,14 +59,15 @@ void *read_record_from_file(FILE *fptr, uint32_t offset, uint16_t size)
     return (record);
 }
 
-uint8_t write_record_in_file(FILE *fptr, uint32_t offset, uint16_t size, const void *record)
+uint8_t write_record_in_file(FILE *fptr, uint32_t offset, uint16_t size, void *record)
 {
-    if (fseek(fptr, offset, SEEK_SET))
+    if (fseek(fptr, offset, SEEK_SET) == 1)
         return (0);  // TODO(koterin): describe errors
-    if (fwrite(record, size, 1, fptr) == 0)
+    if (fwrite(record, size, 1, fptr) == 0) 
         return (0);
-    if (fflush(fptr))
-        return (0);
+    fflush(fptr);
+    // if (fflush(fptr) != 0)
+    //     return (0);
     rewind(fptr);
     return (1);
 }
@@ -105,6 +103,7 @@ uint32_t get_file_size(FILE *fptr)
     fseek(fptr, 0, SEEK_END);
     size = ftell(fptr);
     rewind(fptr);
+    printf("file size is %d\n", (int)size);
     return (size);
 }
 
@@ -126,11 +125,11 @@ uint16_t get_row_size(char *file_path)
         return (0);
     while (count < column_count)
     {
-        column = read_record_from_file(fptr, sizeof(COLUMN_COUNTER) \
-                + (count * sizeof(t_header)), sizeof(t_header));
+        column = read_record_from_file(fptr, sizeof(COLUMN_COUNTER) + (count * sizeof(t_header)), sizeof(t_header));
         if (column == NULL)
         {
             safe_fclose(fptr);
+            free(column);
             return (0);
         }
         if (column->datatype == integer)
@@ -138,7 +137,10 @@ uint16_t get_row_size(char *file_path)
         if (column->datatype == string)
             size += STRING_SIZE;
         count++;
+        free(column);
+        column = NULL;
     }
+    fclose(fptr);
     return (size);
 }
 
@@ -148,16 +150,19 @@ uint16_t get_rows_count(char *file_path)
     uint16_t size;
     uint16_t row_size;
     COLUMN_COUNTER column_count;
-
-    column_count = read_column_number(file_path);
+    
+    column_count = read_column_number(file_path);   // memory allocation
+    printf("col count is %d\n", column_count);
     if (!column_count)
         return (0);
-    row_size = get_row_size(file_path);
+    row_size = get_row_size(file_path);     // memory allocation
     fptr = fopen(file_path, "r");
     if (fptr == NULL)
         return (0);
     size = get_file_size(fptr) - sizeof(COLUMN_COUNTER) - (column_count * sizeof(t_header));
+    //  memory allocation
     safe_fclose(fptr);
+
     return (size / row_size);
 }
 
