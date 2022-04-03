@@ -8,8 +8,8 @@ build: test
 test: test.o create.o shared.o insert.o select.o error.o
 	$(CC) $(CFLAGS) test.o create.o shared.o insert.o select.o error.o -o test
 
-purpledb: main.o client.o create.o shared.o insert.o select.o error.o
-	$(CC) $(CFLAGS) main.o client.o create.o shared.o insert.o select.o error.o -o purpledb
+purpledb: main.o client.o create.o shared.o insert.o select.o error.o purple_string.o pretty_print.o
+	$(CC) $(CFLAGS) main.o client.o create.o shared.o insert.o select.o error.o purple_string.o pretty_print.o -o purpledb
 
 test.o: test.c test.h
 	$(CC) $(CFLAGS) -c test.c -o test.o
@@ -28,6 +28,15 @@ shared.o: shared.c shared.h
 
 error.o: error.c error.h
 	$(CC) $(CFLAGS) -c error.c -o error.o
+
+client.o: client.c client.h
+	$(CC) $(CFLAGS) -c client.c -o client.o
+
+purple_string.o: purple_string.c purple_string.h
+	$(CC) $(CFLAGS) -c purple_string.c -o purple_string.o
+
+pretty_print.o: pretty_print.c pretty_print.h
+	$(CC) $(CFLAGS) -c pretty_print.c -o pretty_print.o
 
 clean:
 	rm -f *.o

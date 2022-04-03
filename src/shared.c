@@ -81,7 +81,7 @@ COLUMN_COUNTER read_column_number(char *file_path)
     COLUMN_COUNTER *column_count_ptr;
     COLUMN_COUNTER column_count;
 
-    ptr = fopen(file_path, "rb");
+    ptr = fopen(file_path, "r");
     if (ptr == NULL)
         return (0);
     column_count_ptr = read_record_from_file(ptr, 0, sizeof(COLUMN_COUNTER));
