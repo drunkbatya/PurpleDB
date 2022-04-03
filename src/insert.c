@@ -9,7 +9,7 @@ uint8_t insert_integer(char *str, FILE *fptr, uint32_t *offset)
 {
     INTEGER num;
 
-    num = atoi(str);  //TODO(grusnydance): check if not an int (atoi = 0)
+    num = atoi(str);  // TODO(grusnydance): check if not an int (atoi = 0)
     if (write_record_in_file(fptr, *offset, sizeof(INTEGER), &num) == 0)
         return (0);
     *offset += sizeof(INTEGER);
@@ -66,7 +66,7 @@ void insert(char **arr)
     {
         free(headers_struct);
         safe_fclose(fptr);
-        return; //TODO: null pointer error
+        return;  // TODO(koterin): null pointer error
     }
     get_headers_structure(fptr, column_number, headers_struct);  // TODO(koterin): THIS BITCH LEAKS
 
@@ -77,7 +77,7 @@ void insert(char **arr)
     {
         if (headers_struct[count - 1]->datatype == integer)
         {
-            if (insert_integer(arr[count], fptr, &offset) == 0)  //TODO: add checks for success
+            if (insert_integer(arr[count], fptr, &offset) == 0)  // TODO(koterin): add checks for success
                 break;
         }
         if (headers_struct[count - 1]->datatype == string)

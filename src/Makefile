@@ -3,16 +3,16 @@ CFLAGS = -Wall -Werror -Wextra
 
 all: clean build
 
-build: purpledb
+build: test
 
-leaks_check: main.o create.o shared.o insert.o select.o error.o
-	$(CC) $(CFLAGS) main.o create.o shared.o insert.o select.o error.o -o a.out
+test: test.o create.o shared.o insert.o select.o error.o
+	$(CC) $(CFLAGS) test.o create.o shared.o insert.o select.o error.o -o test
 
-purpledb: main.o create.o shared.o insert.o select.o error.o
-	$(CC) $(CFLAGS) main.o create.o shared.o insert.o select.o error.o -o purpledb
+purpledb: main.o client.o create.o shared.o insert.o select.o error.o
+	$(CC) $(CFLAGS) main.o client.o create.o shared.o insert.o select.o error.o -o purpledb
 
-main.o: main.c main.h
-	$(CC) $(CFLAGS) -c main.c -o main.o
+test.o: test.c test.h
+	$(CC) $(CFLAGS) -c test.c -o test.o
 
 create.o: create.c create.h
 	$(CC) $(CFLAGS) -c create.c -o create.o
@@ -30,6 +30,6 @@ error.o: error.c error.h
 	$(CC) $(CFLAGS) -c error.c -o error.o
 
 clean:
-	rm -f *.o purpledb a.out
-	rm -f my_table.db
-	rm -f ../build/purpledb
+	rm -f *.o
+	rm -f *.db
+	rm -f purpledb test

@@ -27,7 +27,7 @@ uint8_t write_column_count(char *file_path, COLUMN_COUNTER column_count)
 {
     FILE *ptr;
 
-    ptr = fopen(file_path, "wb");
+    ptr = fopen(file_path, "wx");
     if (ptr == NULL)
         return (0);
     if (!write_record_in_file(ptr, 0, sizeof(COLUMN_COUNTER), &column_count))
@@ -59,7 +59,7 @@ uint8_t create_table(char **arr, int column_count)
     strcat(file_path, ".db");
     if (!write_column_count(file_path, column_count))  // File was created here
         return (0);
-    ptr = fopen(file_path, "rb+");
+    ptr = fopen(file_path, "r+");
     if (ptr == NULL)
         return (0);
     while (count < column_count)

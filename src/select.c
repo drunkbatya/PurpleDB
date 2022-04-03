@@ -58,10 +58,11 @@ uint8_t p_select(char **arr)
         return (0);
     rows = get_rows_count(file_path);
     columns = read_column_number(file_path);
-    if (!rows)
+    if (!rows || !columns)
+    {
+        safe_fclose(fptr);
         return (0);
-    if (!columns)
-        return (0);
+    }
     // check_column_name_exit(arr[1]); TODO(drunkbatya)
     offset = sizeof(COLUMN_COUNTER) + (sizeof(t_header) * columns);
     while (row_count < rows)

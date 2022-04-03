@@ -9,8 +9,7 @@ int check_if_table_exists(char *file_path)
     {
         error_unknown_table(file_path);
         return (0);
-    } else
-    {
+    } else {
         fclose(ptr);
         return (1);
     }
