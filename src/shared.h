@@ -11,12 +11,13 @@
 #include "error.h"
 
 int check_if_table_exists(char *file_path);
-void get_headers_structure(FILE *fptr, COLUMN_COUNTER column_number, t_header **hstr);
+void get_headers_structure(FILE *fptr, COLUMN_COUNTER column_number, int *reserve_array);
+t_header read_for_structures(FILE *pfile, int offset);
 void free_headers_struct(COLUMN_COUNTER column_number, t_header **hstr);
 
 void *read_record_from_file(FILE *fptr, uint32_t offset, uint16_t size);
 uint32_t get_file_size(FILE *file);
-uint8_t write_record_in_file(FILE *fptr, uint32_t offset, uint16_t size, const void *record);
+uint8_t write_record_in_file(FILE *fptr, uint32_t offset, uint16_t size, void *record);
 COLUMN_COUNTER read_column_number(char *file_path);
 uint16_t get_rows_count(char *file_path);
 void safe_free(void *ptr);
