@@ -1,4 +1,4 @@
-// Copyright [2022] <drunkbatya, koterin, GrusnyDance>
+// Copyright [2022] <drunkbatya, koterin, grusnydance>
 
 #include "shared.h"
 #include <stdlib.h>

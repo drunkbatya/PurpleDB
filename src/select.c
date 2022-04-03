@@ -5,7 +5,7 @@
 void print_describe_table_select(char **arr, COLUMN_COUNTER columns)
 {
     FILE *fptr;
-    char file_path[strlen(arr[0]) + 2];
+    char file_path[(int)strlen(arr[0]) + 2];
     t_header *column;
     COLUMN_COUNTER column_count;
 
@@ -17,17 +17,21 @@ void print_describe_table_select(char **arr, COLUMN_COUNTER columns)
         return;
     while (column_count < columns)
     {
-        column = read_record_from_file(fptr, sizeof(COLUMN_COUNTER) \
-                + (column_count * sizeof(t_header)), sizeof(t_header));
-        if (column == NULL)
+        column = read_record_from_file(fptr, sizeof(COLUMN_COUNTER) + (column_count * sizeof(t_header)), sizeof(t_header));
+        if (column == NULL) {
+            fclose(fptr);
+            free(column);
             return;
+        }
         printf("%s", column->column_name);
         if (column_count == columns - 1)
             printf("\n---\n");
         else
             printf("|");
         column_count++;
+        free(column);
     }
+    fclose(fptr);
 }
 
 // Select data from existing table
@@ -39,7 +43,7 @@ void print_describe_table_select(char **arr, COLUMN_COUNTER columns)
 // To SELECT * put asterisk to [column_name].
 uint8_t p_select(char **arr)
 {
-    char file_path[strlen(arr[0]) + 2];
+    char file_path[(int)strlen(arr[0]) + 4];
     char *string_ptr;
     FILE *fptr;
     uint16_t rows;
@@ -99,5 +103,6 @@ uint8_t p_select(char **arr)
         }
         row_count++;
     }
+    fclose(fptr);
     return (1);
 }

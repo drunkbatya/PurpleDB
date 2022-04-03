@@ -46,7 +46,7 @@ void insert(char **arr)
     uint32_t offset;
     COLUMN_COUNTER count;
     COLUMN_COUNTER column_number;
-    t_header **headers_struct;
+    int *reserve_array;
 
     strcpy(file_path, arr[0]);
     strcat(file_path, ".db");
@@ -61,26 +61,23 @@ void insert(char **arr)
     }
 
     fptr = fopen(file_path, "rb+");
-    headers_struct = calloc(column_number, sizeof(t_header *));
-    if (headers_struct == NULL)
-    {
-        free(headers_struct);
-        safe_fclose(fptr);
-        return;  // TODO(koterin): null pointer error
-    }
-    get_headers_structure(fptr, column_number, headers_struct);  // TODO(koterin): THIS BITCH LEAKS
+
+    reserve_array = calloc(column_number, sizeof(int *));
+
+    get_headers_structure(fptr, column_number, reserve_array);  // TODO(koterin): THIS BITCH is fine now
 
     fseek(fptr, 0, SEEK_END);
     offset = ftell(fptr);
     count = 1;
-    while (count < column_number + 1)
+
+    while (count <= column_number)
     {
-        if (headers_struct[count - 1]->datatype == integer)
+        if (reserve_array[count - 1] == integer)
         {
             if (insert_integer(arr[count], fptr, &offset) == 0)  // TODO(koterin): add checks for success
                 break;
         }
-        if (headers_struct[count - 1]->datatype == string)
+        if (reserve_array[count - 1] == string)
         {
             if (insert_string(arr[count], fptr, &offset) == 0)
                 break;
@@ -88,8 +85,7 @@ void insert(char **arr)
         count++;
     }
 
-    free_headers_struct(column_number, headers_struct);
-
     safe_fclose(fptr);
+    free(reserve_array);
     return;
 }
