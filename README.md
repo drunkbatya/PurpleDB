@@ -43,15 +43,16 @@ WHERE
 - select [column] from [table] where [column] = [value];
 - insert into [table] values ([value1], [value2], ..);
 - update [table] set [column] = [value] where [column] = [value];
+- delete from [table] where [column] = [value];
 
 ```sql
---Warning! Spaces in strings are not supported, use backslash '\' to immitate it.
+--Warning! Spaces in strings are not supported, use backslash '\' to imitate them.
 --Example:
 select id from modules where module_name = Some\module\11;
 ```
 
 ## How to build
-Just cd to src/ and type 'make'
+Just cd to src/ and type 'make' :
 ```bash
 [~/dev/PurpleDB]: $ cd src/
 [~/dev/PurpleDB/src]: $ make
@@ -66,8 +67,8 @@ PurpleDB :-(
 
 ## How to use
 ### List of tables
-This DBMS can't create arbitrary tables, it just uses three pre-defined data structures (stored in '.db' files which located into materials/ folder).
-Just type 'show databases;' to see actual list of tables:
+This DBMS is not designed to create tables, instead it modifies 3 pre-defined data structures (stored in '.db' files which located into materials/ folder).
+To see actual list of tables, type 'show databases;' :
 ```sql
 PurpleDB :-( show tables;
 SHOW TABLES
@@ -80,7 +81,7 @@ SHOW TABLES
  ```
 
 ### Table structure
-Standard SQL query 'describe table [table];' is works here!
+Standard SQL query 'describe table [table];' works here!
 ```sql
 PurpleDB :-( describe table status_events;
 DESCRIBE TABLE status_events
@@ -109,7 +110,7 @@ VALUES
 ```
 
 ### Update data
-Update it works too:
+Update works too:
 ```sql
 PurpleDB :-( update modules set module_name = Empty\name where id = 98;
 UPDATE 
@@ -135,4 +136,4 @@ WHERE
 | Empty name        |
  -------------------
  ```
- Enjoy..
+ Enjoy...
