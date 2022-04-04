@@ -7,5 +7,7 @@
 #include "create.h"
 #include "insert.h"
 #include "select.h"
+#include "update.h"
+
 
 #endif  // SRC_TEST_H_

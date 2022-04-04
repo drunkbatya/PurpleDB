@@ -25,7 +25,7 @@ uint8_t insert_string(char *str, FILE *fptr, uint32_t *offset)
     char arr[STRING_SIZE];
 
     if (strlen(str) > STRING_SIZE - 1)
-        return (0);  // TODO(drunkbatya): add exeption
+        return (0);  // TODO(drunkbatya): add exception
     memset(arr, 0, STRING_SIZE);
     strcpy(arr, str);
     if (write_record_in_file(fptr, *offset, STRING_SIZE, arr) == 0)

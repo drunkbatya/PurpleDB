@@ -13,7 +13,7 @@
 
 int check_if_table_exists(char *file_path);
 void get_headers_structure(FILE *fptr, COLUMN_COUNTER column_number, int *reserve_array);
-t_header read_for_structures(FILE *pfile, int offset);
+t_header read_for_structures(FILE *pfile, uint32_t offset);
 void free_headers_struct(COLUMN_COUNTER column_number, t_header **hstr);
 
 void *read_record_from_file(FILE *fptr, uint32_t offset, uint16_t size);

@@ -34,6 +34,19 @@ int main(void)
     arr[3] = "256";
     insert(arr);
 
+    arr[1] = "id";
+    arr[2] = "100500";
+    arr[3] = "age";
+    arr[4] = "25";
+    update(arr);
+
+    arr[1] = "name";
+    arr[2] = "Everybody cool";
+    arr[3] = "name";
+    arr[4] = "Dasha is so cool!";
+    update(arr);
+
+
     printf("Rows: %d\n", get_rows_count("my_table.db"));
     if (p_select(arr) == 0)
     {

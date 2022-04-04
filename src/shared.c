@@ -36,7 +36,7 @@ void get_headers_structure(FILE *fptr, COLUMN_COUNTER column_number, int *reserv
     return;
 }
 
-t_header read_for_structures(FILE *pfile, int offset) 
+t_header read_for_structures(FILE *pfile, uint32_t offset) 
 {
     fseek(pfile, offset, SEEK_SET);
     t_header record;
@@ -103,7 +103,6 @@ uint32_t get_file_size(FILE *fptr)
     fseek(fptr, 0, SEEK_END);
     size = ftell(fptr);
     rewind(fptr);
-    printf("file size is %d\n", (int)size);
     return (size);
 }
 
@@ -152,7 +151,6 @@ uint16_t get_rows_count(char *file_path)
     COLUMN_COUNTER column_count;
     
     column_count = read_column_number(file_path);   // memory allocation
-    printf("col count is %d\n", column_count);
     if (!column_count)
         return (0);
     row_size = get_row_size(file_path);     // memory allocation
