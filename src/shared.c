@@ -9,12 +9,12 @@ uint8_t check_if_table_exists(char *file_path)
     FILE *fptr;
 
     fptr = fopen(file_path, "r");
-    if (ptr == NULL)
+    if (fptr == NULL)
     {
         error_unknown_table(file_path);
         return (0);
     }
-    fclose(ptr);
+    safe_fclose(fptr);
     return (1);
 }
 
