@@ -126,7 +126,8 @@ uint16_t get_row_size(char *file_path)
         return (0);
     while (count < column_count)
     {
-        column = read_record_from_file(fptr, sizeof(COLUMN_COUNTER) + (count * sizeof(t_header)), sizeof(t_header));
+        column = read_record_from_file(fptr, sizeof(COLUMN_COUNTER) \
+                + (count * sizeof(t_header)), sizeof(t_header));
         if (column == NULL)
         {
             safe_fclose(fptr);
