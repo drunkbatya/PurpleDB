@@ -17,7 +17,8 @@ void print_describe_table_select(char **arr, COLUMN_COUNTER columns)
         return;
     while (column_count < columns)
     {
-        column = read_record_from_file(fptr, sizeof(COLUMN_COUNTER) + (column_count * sizeof(t_header)), sizeof(t_header));
+        column = read_record_from_file(fptr, sizeof(COLUMN_COUNTER) \
+                + (column_count * sizeof(t_header)), sizeof(t_header));
         if (column == NULL) {
             fclose(fptr);
             free(column);
@@ -41,7 +42,7 @@ void print_describe_table_select(char **arr, COLUMN_COUNTER columns)
 //   [operand - column name] [operator] [operand - column value].
 // To use SELECT without WHERE leave [operand - column name] empty.
 // To SELECT * put asterisk to [column_name].
-uint8_t p_select(char **arr)
+void p_select(char **arr)
 {
     char file_path[(int)strlen(arr[0]) + 4];
     char *string_ptr;
@@ -57,15 +58,15 @@ uint8_t p_select(char **arr)
     row_count = 0;
     strcpy(file_path, arr[0]);
     strcat(file_path, ".db");
-    fptr = fopen(file_path, "a+");
+    fptr = fopen(file_path, "r");
     if (fptr == NULL)
-        return (0);
+        return (error_unknown_table(arr[0]));
     rows = get_rows_count(file_path);
     columns = read_column_number(file_path);
     if (!rows || !columns)
     {
         safe_fclose(fptr);
-        return (0);
+        return (error_read_table(arr[0]));
     }
     // check_column_name_exit(arr[1]); TODO(drunkbatya)
     offset = sizeof(COLUMN_COUNTER) + (sizeof(t_header) * columns);
@@ -79,20 +80,26 @@ uint8_t p_select(char **arr)
             column = read_record_from_file(fptr, sizeof(COLUMN_COUNTER) \
                     + (column_count * sizeof(t_header)), sizeof(t_header));
             if (column == NULL)
-                return (0);
+                return;
             if (column->datatype == integer)
             {
-                integer_ptr = read_record_from_file(fptr, offset, sizeof(INTEGER));
-                printf("%d", *integer_ptr);
+                if (strcmp(column->column_name, arr[1]) == 0 || strcmp(arr[1], "*") == 0)
+                {
+                    integer_ptr = read_record_from_file(fptr, offset, sizeof(INTEGER));
+                    printf("%d", *integer_ptr);
+                    safe_free(integer_ptr);
+                }
                 offset += sizeof(INTEGER);
-                safe_free(integer_ptr);
             }
             if (column->datatype == string)
             {
-                string_ptr = read_record_from_file(fptr, offset, STRING_SIZE);
-                printf("%s", string_ptr);
+                if (strcmp(column->column_name, arr[1]) == 0 || strcmp(arr[1], "*") == 0)
+                {
+                    string_ptr = read_record_from_file(fptr, offset, STRING_SIZE);
+                    printf("%s", string_ptr);
+                    safe_free(string_ptr);
+                }
                 offset += STRING_SIZE;
-                safe_free(string_ptr);
             }
             if (column_count == columns - 1)
                 printf("\n");
@@ -104,5 +111,18 @@ uint8_t p_select(char **arr)
         row_count++;
     }
     fclose(fptr);
-    return (1);
+    return;
 }
+
+// NEW LOGIC
+// while (row_count < row)
+// {
+//      while (column_count < column)
+//      {
+//          column = read_column_from_disk();
+//          if (parse_where_condition(column, arr))
+//              if (column_name == arr[1])
+//                  print_column(column);
+//          offset = shift_offset(column);
+//      }
+//  }

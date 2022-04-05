@@ -48,10 +48,6 @@ int main(void)
 
 
     printf("Rows: %d\n", get_rows_count("my_table.db"));
-    if (p_select(arr) == 0)
-    {
-        printf("Select error!\n");
-        return (1);
-    }
+    p_select(arr);
     return (0);
 }

@@ -19,5 +19,6 @@ uint8_t error_unpaired_char(char c, uint8_t exitcode);
 uint8_t error_shell_buff_overflow(uint8_t exitcode);
 void error_shell_query_parse(void);
 void error_miss_semicolon(void);
+void error_read_table(char *table_name);
 
 #endif  // SRC_ERROR_H_

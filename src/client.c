@@ -100,7 +100,7 @@ uint8_t parse_select_query(char *str)
     lecs[2] = lecs[4];  // where
     lecs[3] = lecs[6];  // where_val
     pretty_print_select(lecs);
-    // select(lecs);
+    p_select(lecs);
     return (1);
 }
 

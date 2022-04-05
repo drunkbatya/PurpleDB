@@ -10,6 +10,7 @@
 #include "purple_string.h"
 #include "error.h"
 #include "pretty_print.h"
+#include "select.h"
 
 #define PS1 "PurpleDB :-( "
 #define WELCOME "Welcome to PurpleDB!\n\n"

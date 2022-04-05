@@ -68,3 +68,8 @@ void error_miss_semicolon(void)
 {
     printf("\nError! Incorrect query: missing semicolon - ';'\n");
 }
+
+void error_read_table(char *table_name)
+{
+    printf("\nError! Read table error! File '%s.db' may be corrupt\n", table_name);
+}
