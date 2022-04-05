@@ -67,8 +67,8 @@ PurpleDB :-(
 
 ## How to use
 ### List of tables
-This DBMS is not designed to create tables, instead it modifies 3 pre-defined data structures (stored in '.db' files which located into materials/ folder).
-To see the actual list of tables, type 'show databases;' :
+This DBMS is not designed to create tables, instead it modifies 3 pre-defined data structures (stored in '.db' files that are located into materials/ folder).
+To see the list of tables, type 'show databases;' :
 ```sql
 PurpleDB :-( show tables;
 SHOW TABLES
