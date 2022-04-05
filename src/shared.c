@@ -23,30 +23,19 @@ void get_headers_structure(FILE *fptr, COLUMN_COUNTER column_number, int *reserv
 {
     uint32_t offset;
     COLUMN_COUNTER count;
-    t_header header;
+    t_header *header;
 
     offset = sizeof(COLUMN_COUNTER);
     count = 0;
     while (count < column_number)
     {
-        header = read_for_structures(fptr, offset);
-        reserve_array[count] = header.datatype;
+        header = read_record_from_file(fptr, offset, sizeof(t_header));
+        reserve_array[count] = header->datatype;
         offset += sizeof(t_header);
         count++;
+        safe_free(header);
     }
 }
-
-t_header read_for_structures(FILE *fptr, uint32_t offset)
-{
-    t_header record;
-    t_header *head_ptr;
-
-    head_ptr = read_record_from_file(fptr, offset, sizeof(t_header));
-    record = *head_ptr;
-    safe_free(head_ptr);
-    return (record);
-}
-
 
 void *read_record_from_file(FILE *fptr, uint32_t offset, uint16_t size)
 {
