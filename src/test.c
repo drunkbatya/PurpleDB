@@ -46,8 +46,10 @@ int main(void)
     arr[4] = "Dasha is so cool!";
     update(arr);
 
-
     printf("Rows: %d\n", get_rows_count("my_table.db"));
+    arr[1] = "*";
+    arr[2] = "";
+    arr[3] = "";
     p_select(arr);
     return (0);
 }

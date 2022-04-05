@@ -74,7 +74,7 @@ void error_read_table(char *table_name)
     printf("\nError! Read table error! File '%s.db' may be corrupt\n", table_name);
 }
 
-void error_wrong_operator(char *op, char *datatype)
+void error_wrong_operator(char *op)
 {
-    printf("\nError! Wrong WHERE operator '%s' to datatype '%s'\n", op, datatype);
+    printf("\nError! Wrong WHERE operator '%s'\n", op);
 }
