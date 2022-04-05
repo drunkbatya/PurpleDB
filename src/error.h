@@ -20,5 +20,6 @@ uint8_t error_shell_buff_overflow(uint8_t exitcode);
 void error_shell_query_parse(void);
 void error_miss_semicolon(void);
 void error_read_table(char *table_name);
+void error_wrong_operator(char *op, char *datatype);
 
 #endif  // SRC_ERROR_H_

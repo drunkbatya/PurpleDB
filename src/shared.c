@@ -4,44 +4,46 @@
 #include <stdlib.h>
 #include <string.h>
 
-int check_if_table_exists(char *file_path)
+uint8_t check_if_table_exists(char *file_path)
 {
-    FILE *ptr = fopen(file_path, "r");
+    FILE *fptr;
+
+    fptr = fopen(file_path, "r");
     if (ptr == NULL)
     {
         error_unknown_table(file_path);
         return (0);
-    } else {
-        fclose(ptr);
-        return (1);
     }
+    fclose(ptr);
+    return (1);
 }
 
+// TODO(koterin): pls fix reserve_array datatype
 void get_headers_structure(FILE *fptr, COLUMN_COUNTER column_number, int *reserve_array)
 {
     uint32_t offset;
-    int count;
+    COLUMN_COUNTER count;
     t_header header;
 
     offset = sizeof(COLUMN_COUNTER);
-    count = 1;
-
-    while (count <= column_number)
+    count = 0;
+    while (count < column_number)
     {
         header = read_for_structures(fptr, offset);
-        reserve_array[count - 1] = header.datatype;
+        reserve_array[count] = header.datatype;
         offset += sizeof(t_header);
         count++;
     }
-    return;
 }
 
-t_header read_for_structures(FILE *pfile, uint32_t offset) 
+t_header read_for_structures(FILE *fptr, uint32_t offset)
 {
-    fseek(pfile, offset, SEEK_SET);
     t_header record;
-    fread(&record, sizeof(t_header), 1, pfile);
-    rewind(pfile);
+    t_header *head_ptr;
+
+    head_ptr = read_record_from_file(fptr, offset, sizeof(t_header));
+    record = *head_ptr;
+    safe_free(head_ptr);
     return (record);
 }
 
@@ -63,7 +65,7 @@ uint8_t write_record_in_file(FILE *fptr, uint32_t offset, uint16_t size, void *r
 {
     if (fseek(fptr, offset, SEEK_SET) == 1)
         return (0);  // TODO(koterin): describe errors
-    if (fwrite(record, size, 1, fptr) == 0) 
+    if (fwrite(record, size, 1, fptr) == 0)
         return (0);
     fflush(fptr);
     // if (fflush(fptr) != 0)
@@ -136,7 +138,7 @@ uint16_t get_row_size(char *file_path)
         if (column->datatype == string)
             size += STRING_SIZE;
         count++;
-        free(column);
+        safe_free(column);
         column = NULL;
     }
     fclose(fptr);
@@ -149,18 +151,16 @@ uint16_t get_rows_count(char *file_path)
     uint16_t size;
     uint16_t row_size;
     COLUMN_COUNTER column_count;
-    
-    column_count = read_column_number(file_path);   // memory allocation
+
+    column_count = read_column_number(file_path);
     if (!column_count)
         return (0);
-    row_size = get_row_size(file_path);     // memory allocation
+    row_size = get_row_size(file_path);
     fptr = fopen(file_path, "r");
     if (fptr == NULL)
         return (0);
     size = get_file_size(fptr) - sizeof(COLUMN_COUNTER) - (column_count * sizeof(t_header));
-    //  memory allocation
     safe_fclose(fptr);
-
     return (size / row_size);
 }
 
