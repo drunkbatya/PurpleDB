@@ -78,3 +78,7 @@ void error_wrong_operator(char *op)
 {
     printf("\nError! Wrong WHERE operator '%s'\n", op);
 }
+
+void nothing_to_delete_error(void) {
+    printf("\nNo record matches your query\n");
+}

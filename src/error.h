@@ -21,5 +21,6 @@ void error_shell_query_parse(void);
 void error_miss_semicolon(void);
 void error_read_table(char *table_name);
 void error_wrong_operator(char *op);
+void nothing_to_delete_error(void);
 
 #endif  // SRC_ERROR_H_
