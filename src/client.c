@@ -325,6 +325,6 @@ uint8_t check_update_query(char **lecs)
 void program_exit(void)
 {
     // save all shit
-    printf("Bye..\n");
+    printf("Bye...\n");
     exit(0);
 }

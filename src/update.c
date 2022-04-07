@@ -20,7 +20,7 @@ uint8_t insert_string_update(char *str, FILE *fptr, uint32_t offset)
     char arr[STRING_SIZE];
 
     if (strlen(str) > STRING_SIZE - 1)
-        return (0);  // TODO(drunkbatya): add exception
+        return (error_string_too_long(str, (STRING_SIZE - 1)));
     memset(arr, 0, STRING_SIZE);
     strcpy(arr, str);
     if (write_record_in_file(fptr, offset, STRING_SIZE, arr) == 0)
@@ -107,7 +107,7 @@ void update(char **arr)
         return;
     }
 
-    fptr = fopen(file_path, "rb+");
+    fptr = fopen(file_path, "r+");
 
     where_col_offset = find_offset_for_column(arr[3], fptr, column_number, &first_type);
     col_to_update_offset = find_offset_for_column(arr[1], fptr, column_number, &sec_type);

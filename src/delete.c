@@ -7,7 +7,7 @@ uint8_t insert_integer_delete(void *str, FILE *fptr, uint32_t offset)
 {
     INTEGER num;
 
-    num = *((int*)str);     // TODO(grusnydance): check if not an int (atoi = 0)
+    num = *((int*)str);  // TODO(grusnydance): check if not an int (atoi = 0)
     if (write_record_in_file(fptr, offset, sizeof(INTEGER), &num) == 0)
         return (0);
     return (1);
@@ -20,7 +20,7 @@ uint8_t insert_string_delete(void *str, FILE *fptr, uint32_t offset)
     char arr[STRING_SIZE];
 
     if (strlen(str) > STRING_SIZE - 1)
-        return (0);  // TODO(drunkbatya): add exception
+        return (error_string_too_long(str, (STRING_SIZE - 1)));
     memset(arr, 0, STRING_SIZE);
     strcpy(arr, str);
     if (write_record_in_file(fptr, offset, STRING_SIZE, arr) == 0)
@@ -77,6 +77,48 @@ uint32_t find_offset_for_row_delete(FILE *fptr, COLUMN_COUNTER column_number)
     return res;
 }
 
+int match_is_true(int *datatype, void *record, char *array)
+{
+    if ((*datatype == integer) && (*((int*)record) == atoi(array)))
+        return (1);
+    if ((*datatype == string) && (strcmp(record, array) == 0))
+        return (1);
+    return 0;
+}
+
+uint32_t get_size_by_datatype_delete(int *pointer) 
+{
+    if (*pointer == integer) 
+        return (sizeof(INTEGER));
+    if (*pointer == string)
+        return (STRING_SIZE);
+    return 0;
+}
+
+void rewrite_file(int start_index, uint16_t count, COLUMN_COUNTER column_number, 
+    int *reserve_array, FILE *fptr, uint32_t new_offset, uint32_t offset_of_whole_row)
+{
+    void *grab_value_for_shift;
+    for (int j = start_index; j <= count - 1; j++) {
+        for (int k = 0; k < column_number; k++) {
+            if (reserve_array[k] == integer) {
+                grab_value_for_shift = read_record_from_file(fptr,
+                        new_offset + offset_of_whole_row, sizeof(INTEGER));
+                insert_integer_delete(grab_value_for_shift, fptr, new_offset);
+                new_offset += sizeof(INTEGER);
+            }
+            if (reserve_array[k] == string) {
+                grab_value_for_shift = read_record_from_file(fptr,
+                        new_offset + offset_of_whole_row, STRING_SIZE);
+                insert_string_delete(grab_value_for_shift, fptr, new_offset);
+                new_offset += STRING_SIZE;
+            }
+            free(grab_value_for_shift);
+        }
+        rewind(fptr);
+    }
+}
+
 // Delete data in existing table.
 // Arr format: [table_name]
 // [where column name] [equals column value]
@@ -92,7 +134,6 @@ void delete(char **arr)
     int32_t diff;
     uint32_t size1;
     int *reserve_array;
-    void *grab_value_for_shift;
     uint32_t delete_lines_count = 0;
 
     strcpy(file_path, arr[0]);
@@ -115,42 +156,24 @@ void delete(char **arr)
     where_col_offset = sizeof(COLUMN_COUNTER) + sizeof(t_header) * column_number + where_col_offset;
     reserve_array = calloc(column_number, sizeof(int));
     get_headers_structure(fptr, column_number, reserve_array);
-    if (var_type == integer) size1 = sizeof(INTEGER);
-    if (var_type == string) size1 = STRING_SIZE;
+    size1 = get_size_by_datatype_delete(&var_type);
 
-    for (int i = 1; i <= count; i++)
+    for (int i = 0; i < count; i++)
     {
+        uint32_t new_offset;
+        
         void *record = calloc(1, size1);
         fseek(fptr, where_col_offset, SEEK_SET);
         fread(record, size1, 1, fptr);
-        if (((var_type == integer) && (*((int*)record) == atoi(arr[2]))) ||
-                 ((var_type == string) && (strcmp(record, arr[2]) == 0))) {
+        if (match_is_true(&var_type, record, arr[2])) {
             rewind(fptr);
             if (i == count) {
                 delete_lines_count++;
                 break;
             }
-
-            uint32_t new_offset = where_col_offset - diff;
-
-            for (int j = i; j <= count - 1; j++) {
-                for (int k = 0; k < column_number; k++) {
-                    if (reserve_array[k] == integer) {
-                        grab_value_for_shift = read_record_from_file(fptr,
-                             new_offset + offset_of_whole_row, sizeof(INTEGER));
-                        insert_integer_delete(grab_value_for_shift, fptr, new_offset);
-                        new_offset += sizeof(INTEGER);
-                    }
-                    if (reserve_array[k] == string) {
-                        grab_value_for_shift = read_record_from_file(fptr,
-                             new_offset + offset_of_whole_row, STRING_SIZE);
-                        insert_string_delete(grab_value_for_shift, fptr, new_offset);
-                        new_offset += STRING_SIZE;
-                    }
-                    free(grab_value_for_shift);
-                }
-                rewind(fptr);
-            }
+            new_offset = where_col_offset - diff;
+            rewrite_file(i, count, column_number, reserve_array, 
+                fptr, new_offset, offset_of_whole_row);
             i--;
             count--;
             rewind(fptr);
@@ -166,7 +189,7 @@ void delete(char **arr)
         uint32_t res = get_file_size(fptr) - shift;
         ftruncate(fileno(fptr), res);
     } else {
-        nothing_to_delete_error();
+        error_nothing_to_delete();
     }
     safe_fclose(fptr);
     return;

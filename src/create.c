@@ -29,12 +29,12 @@ uint8_t write_column_count(char *file_path, COLUMN_COUNTER column_count)
 
     ptr = fopen(file_path, "wx");
     if (ptr == NULL) {
-        return (0);
+        return (error_writing_in_file());
     }
     if (write_record_in_file(ptr, 0, sizeof(COLUMN_COUNTER), &column_count) == 0)   // gd pointer to integer
     {
         safe_fclose(ptr);
-        return (0);
+        return (error_writing_in_file());
     }
     safe_fclose(ptr);
     return (1);
@@ -59,11 +59,11 @@ uint8_t create_table(char **arr, int column_count)  // gd column count is initia
     strcpy(file_path, arr[0]);
     strcat(file_path, ".db");
     if (write_column_count(file_path, column_count) == 0) {  // File was created here
-        return (0);
+        return (error_writing_column_count());
     }
     ptr = fopen(file_path, "r+");
     if (ptr == NULL) {
-        return (0);
+        return (error_writing_in_file());
     }
     while (count < column_count)
     {
