@@ -178,3 +178,13 @@ void safe_fclose(void *ptr)
         return;
     fclose(ptr);
 }
+
+// get column's size by datatype
+uint16_t get_size_by_datatype(t_header *column)
+{
+    if (column->datatype == integer)
+        return (sizeof(INTEGER));
+    if (column->datatype == string)
+        return (STRING_SIZE);
+    return (0);
+}

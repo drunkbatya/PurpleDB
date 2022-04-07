@@ -23,4 +23,5 @@ uint16_t get_rows_count(char *file_path);
 uint16_t get_row_size(char *file_path);
 void safe_free(void *ptr);
 void safe_fclose(void *ptr);
+uint16_t get_size_by_datatype(t_header *column);
 #endif  // SRC_SHARED_H_

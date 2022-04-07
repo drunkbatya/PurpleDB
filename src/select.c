@@ -13,16 +13,6 @@ uint8_t is_column_to_select(t_header *column, char *column_name)
     return (0);
 }
 
-// set offset by column's datatype
-uint16_t shift_offset(t_header *column)
-{
-    if (column->datatype == integer)
-        return (sizeof(INTEGER));
-    if (column->datatype == string)
-        return (STRING_SIZE);
-    return (0);
-}
-
 void print_column(FILE *fptr, t_header *column, uint16_t offset)
 {
     INTEGER *integer_ptr;
@@ -112,7 +102,7 @@ void p_select(char **arr)
                 return (safe_fclose(fptr));
             if (is_column_to_select(column, arr[1]))
                 print_column(fptr, column, offset);
-            offset += shift_offset(column);
+            offset += get_size_by_datatype(column);
             safe_free(column);
             column_count++;
         }
