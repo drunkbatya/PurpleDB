@@ -8,6 +8,7 @@
 #include "insert.h"
 #include "select.h"
 #include "update.h"
+#include "delete.h"
 
 
 #endif  // SRC_TEST_H_
