@@ -73,16 +73,21 @@ void p_select(char **arr)
     row_count = 0;
     strcpy(file_path, arr[0]);
     strcat(file_path, ".db");
+    if (check_if_table_exists(file_path) == 0)
+        return;
     row_size = get_row_size(file_path);
     rows = get_rows_count(file_path);
     columns = read_column_number(file_path);
     fptr = fopen(file_path, "r");
-    if (fptr == NULL)
-        return (error_unknown_table(arr[0]));
-    if (rows == 0 || columns == 0 || row_size == 0)
+    if (columns == 0 || row_size == 0)
     {
         safe_fclose(fptr);
-        return (error_read_table(arr[0]));
+        return (error_corrupted_table_structure(file_path));
+    }
+    if (rows == 0)
+    {
+        safe_fclose(fptr);
+        return (error_empty_table(file_path));
     }
     offset = sizeof(COLUMN_COUNTER) + (sizeof(t_header) * columns);
     while (row_count < rows)

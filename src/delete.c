@@ -20,7 +20,7 @@ uint8_t insert_string_delete(void *str, FILE *fptr, uint32_t offset)
     char arr[STRING_SIZE];
 
     if (strlen(str) > STRING_SIZE - 1)
-        return (0);  // TODO(drunkbatya): add exception
+        return (error_string_too_long(str, (STRING_SIZE - 1)));
     memset(arr, 0, STRING_SIZE);
     strcpy(arr, str);
     if (write_record_in_file(fptr, offset, STRING_SIZE, arr) == 0)
@@ -166,7 +166,7 @@ void delete(char **arr)
         uint32_t res = get_file_size(fptr) - shift;
         ftruncate(fileno(fptr), res);
     } else {
-        nothing_to_delete_error();
+        error_nothing_to_delete();
     }
     safe_fclose(fptr);
     return;

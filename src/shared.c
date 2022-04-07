@@ -10,15 +10,11 @@ uint8_t check_if_table_exists(char *file_path)
 
     fptr = fopen(file_path, "r");
     if (fptr == NULL)
-    {
-        error_unknown_table(file_path);
-        return (0);
-    }
+        return (error_unknown_table(file_path));
     safe_fclose(fptr);
     return (1);
 }
 
-// TODO(koterin): pls fix reserve_array datatype
 void get_headers_structure(FILE *fptr, COLUMN_COUNTER column_number, int *reserve_array)
 {
     uint32_t offset;
@@ -53,12 +49,11 @@ void *read_record_from_file(FILE *fptr, uint32_t offset, uint16_t size)
 uint8_t write_record_in_file(FILE *fptr, uint32_t offset, uint16_t size, void *record)
 {
     if (fseek(fptr, offset, SEEK_SET) == 1)
-        return (0);  // TODO(koterin): describe errors
+        return (error_writing_in_file());
     if (fwrite(record, size, 1, fptr) == 0)
-        return (0);
-    fflush(fptr);
-    // if (fflush(fptr) != 0)
-    //     return (0);
+        return (error_writing_in_file());
+    if (fflush(fptr) != 0)
+        return (error_writing_in_file());
     rewind(fptr);
     return (1);
 }
@@ -74,7 +69,7 @@ COLUMN_COUNTER read_column_number(char *file_path)
 
     ptr = fopen(file_path, "r");
     if (ptr == NULL)
-        return (0);
+        return (error_writing_in_file());
     column_count_ptr = read_record_from_file(ptr, 0, sizeof(COLUMN_COUNTER));
     if (column_count_ptr == NULL)
     {
@@ -112,7 +107,7 @@ uint16_t get_row_size(char *file_path)
         return (0);
     fptr = fopen(file_path, "r");
     if (fptr == NULL)
-        return (0);
+        return (error_reading_file());
     while (count < column_count)
     {
         column = read_record_from_file(fptr, sizeof(COLUMN_COUNTER) \
@@ -121,6 +116,7 @@ uint16_t get_row_size(char *file_path)
         {
             safe_fclose(fptr);
             free(column);
+            error_corrupted_table_structure(file_path);
             return (0);
         }
         if (column->datatype == integer)
