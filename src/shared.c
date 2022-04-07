@@ -33,6 +33,40 @@ void get_headers_structure(FILE *fptr, COLUMN_COUNTER column_number, int *reserv
     }
 }
 
+void safe_free_headers(t_header **headers, COLUMN_COUNTER column_number)
+{
+    COLUMN_COUNTER count;
+
+    count = 0;
+    while ((headers != NULL) && (count < column_number))
+    {
+        if (headers[count] != NULL)
+            safe_free(headers[count]);
+        count++;
+    }
+    safe_free(headers);
+}
+
+t_header **get_headers(FILE *fptr, COLUMN_COUNTER column_number)
+{
+    COLUMN_COUNTER count;
+    uint32_t offset;
+    t_header **out;
+
+    count = 0;
+    offset = sizeof(COLUMN_COUNTER);
+    out = malloc(column_number * sizeof(t_header *));
+    while (count < column_number)
+    {
+        out[count] = read_record_from_file(fptr, offset, sizeof(t_header));
+        if (out[count] == NULL)
+            safe_free_headers(out, column_number);
+        offset += sizeof(t_header);
+        count++;
+    }
+    return (out);
+}
+
 void *read_record_from_file(FILE *fptr, uint32_t offset, uint16_t size)
 {
     void *record;

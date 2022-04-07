@@ -62,7 +62,7 @@ void p_select(char **arr)
 {
     char file_path[strlen(arr[0]) + 4];
     FILE *fptr;
-    t_header *column;
+    t_header **columns_arr;
     uint16_t offset;
     uint16_t rows;
     uint16_t row_size;
@@ -89,6 +89,7 @@ void p_select(char **arr)
         safe_fclose(fptr);
         return (error_empty_table(file_path));
     }
+    columns_arr = get_headers(fptr, columns);
     offset = sizeof(COLUMN_COUNTER) + (sizeof(t_header) * columns);
     while (row_count < rows)
     {
@@ -101,18 +102,14 @@ void p_select(char **arr)
         }
         while (column_count < columns)
         {
-            column = read_record_from_file(fptr, sizeof(COLUMN_COUNTER) \
-                    + (column_count * sizeof(t_header)), sizeof(t_header));
-            if (column == NULL)
-                return (safe_fclose(fptr));
-            if (is_column_to_select(column, arr[1]))
-                print_column(fptr, column, offset);
-            offset += get_size_by_datatype(column);
-            safe_free(column);
+            if (is_column_to_select(columns_arr[column_count], arr[1]))
+                print_column(fptr, columns_arr[column_count], offset);
+            offset += get_size_by_datatype(columns_arr[column_count]);
             column_count++;
         }
         printf("\n");
         row_count++;
     }
+    safe_free_headers(columns_arr, columns);
     safe_fclose(fptr);
 }
