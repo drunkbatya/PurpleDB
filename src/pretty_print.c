@@ -18,7 +18,7 @@ void pretty_print_select(char **arr)
     printf("\n"NC);
     printf(BOLD"WHERE"NC);
     printf("\n\t"CYAN);
-    printf("%s = %s", arr[2], arr[3]);
+    printf("%s %s %s", arr[2], arr[3], arr[4]);
     printf("\n"NC);
 }
 
@@ -51,7 +51,7 @@ void pretty_print_delete(char **arr)
     printf("\n"NC);
     printf(BOLD"WHERE"NC);
     printf("\n\t"CYAN);
-    printf("%s = %s", arr[1], arr[2]);
+    printf("%s %s %s", arr[2], arr[3], arr[4]);
     printf("\n"NC);
 }
 
@@ -67,6 +67,6 @@ void pretty_print_update(char **arr)
     printf("\n"NC);
     printf(BOLD"WHERE"NC);
     printf("\n\t"CYAN);
-    printf("%s = %s", arr[3], arr[4]);
+    printf("%s %s %s", arr[2], arr[3], arr[4]);
     printf("\n"NC);
 }

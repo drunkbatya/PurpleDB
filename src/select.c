@@ -13,6 +13,7 @@ uint8_t is_column_to_select(t_header *column, char *column_name)
     return (0);
 }
 
+// print single column value
 void print_column(FILE *fptr, t_header *column, uint16_t offset)
 {
     INTEGER *integer_ptr;
@@ -30,25 +31,6 @@ void print_column(FILE *fptr, t_header *column, uint16_t offset)
         printf("|%s|", string_ptr);
         safe_free(string_ptr);
     }
-}
-
-uint8_t bin_calc_int(int32_t num1, int32_t num2, char *op)
-{
-    if (strcmp(op, "=") == 0)
-        return (num1 = num2);
-    if (strcmp(op, "<") == 0)
-        return (num1 < num2);
-    if (strcmp(op, ">") == 0)
-        return (num1 < num2);
-    error_wrong_operator(op);
-    return (0);
-}
-
-//        1      0           2  3 4
-// select * from table where id = 2;
-uint8_t is_where_condition_true(void)
-{
-    return (1);
 }
 
 // Select data from existing table
@@ -89,7 +71,7 @@ void p_select(char **arr)
     while (row_count < rows)
     {
         column_count = 0;
-        if (is_where_condition_true() == 0)
+        if (is_where_condition_true(fptr, arr, columns_arr, offset, columns) == 0)
         {
             offset += row_size;
             row_count++;

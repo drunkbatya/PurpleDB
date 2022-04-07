@@ -26,4 +26,7 @@ void safe_fclose(void *ptr);
 uint16_t get_size_by_datatype(t_header *column);
 t_header **get_headers(FILE *fptr, COLUMN_COUNTER column_number);
 void safe_free_headers(t_header **headers, COLUMN_COUNTER column_number);
+uint8_t bin_calc_int(int64_t num1, int64_t num2, char *op);
+uint8_t is_where_condition_true(FILE *fptr, char **arr, t_header **columns_arr, \
+        uint16_t offset, COLUMN_COUNTER columns);
 #endif  // SRC_SHARED_H_

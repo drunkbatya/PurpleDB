@@ -71,7 +71,7 @@ void parse_query(char *str)
 uint8_t parse_select_query(char *str)
 {
     // column, from_op, table_name, where_op
-    // where, equal_op, where_val
+    // where, where_op, where_val
     char *lecs[7];
     int lecs_counter;
     int check_out;
@@ -94,11 +94,12 @@ uint8_t parse_select_query(char *str)
         lecs[4] = "*";  // where, empty str - ALL
         lecs[6] = "";  // where_val
     }
-    lecs[5] = lecs[0];  // temp column name
+    lecs[3] = lecs[0];  // temp column name
     lecs[0] = lecs[2];  // table_name
-    lecs[1] = lecs[5];  // column name
+    lecs[1] = lecs[3];  // column name
     lecs[2] = lecs[4];  // where
-    lecs[3] = lecs[6];  // where_val
+    lecs[3] = lecs[5];  // where_op
+    lecs[4] = lecs[6];  // where_val
     pretty_print_select(lecs);
     p_select(lecs);
     return (1);
@@ -219,7 +220,9 @@ uint8_t check_select_query_where(char **lecs)
         return (0);
     if (lecs[4] == NULL || strchr(lecs[4], ';'))  // where this
         return (0);
-    if (lecs[5] == NULL || strcmp(lecs[5], "="))
+    if (lecs[5] == NULL)
+        return (0);
+    if (strcmp(lecs[5], "=") && strcmp(lecs[5], "<") && strcmp(lecs[5], ">"))
         return (0);
     if (lecs[6] == NULL)  // equals this
         return (0);
