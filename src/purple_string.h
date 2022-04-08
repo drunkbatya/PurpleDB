@@ -12,6 +12,7 @@
 void replace_char_in_str(char *str, char ch1, char ch2);
 char *bring_space_back(char *str);
 uint8_t quoted_space_driver(char *str);
+uint32_t count_char(char *str, char c);
 uint8_t check_unpair_char(char *str, char c);
 void remove_char_from_str(char *str, char c);
 uint8_t getstr(char *buf);

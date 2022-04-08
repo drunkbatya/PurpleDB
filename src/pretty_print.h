@@ -10,5 +10,6 @@ void pretty_print_select(char **arr);
 void pretty_print_insert(char **arr);
 void pretty_print_delete(char **arr);
 void pretty_print_update(char **arr);
+void pretty_print_create(char **arr, uint16_t column_count);
 
 #endif  // SRC_PRETTY_PRINT_H_

@@ -11,6 +11,7 @@
 #include "error.h"
 #include "pretty_print.h"
 #include "select.h"
+#include "create.h"
 
 #define PS1 "PurpleDB :-( "
 #define WELCOME "Welcome to PurpleDB!\n\n"
@@ -23,6 +24,7 @@
 
 void client(void);
 void parse_query(char *str);
+uint8_t parse_create_query(char *str);
 uint8_t parse_select_query(char *str);
 uint8_t parse_insert_query(char *str);
 uint8_t parse_delete_query(char *str);

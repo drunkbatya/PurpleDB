@@ -31,6 +31,12 @@ void parse_query(char *str)
         return (error_miss_semicolon());
     if (quoted_space_driver(str) == 0)
         return;
+    if (strncmp(str, "create table ", 13) == 0)
+    {
+        if (!parse_create_query(str))
+            return;
+        return;
+    }
     if (strncmp(str, "select ", 7) == 0)
     {
         if (!parse_select_query(str))
@@ -102,6 +108,34 @@ uint8_t parse_select_query(char *str)
     lecs[4] = lecs[6];  // where_val
     pretty_print_select(lecs);
     p_select(lecs);
+    return (1);
+}
+
+uint8_t parse_create_query(char *str)
+{
+    // CREATE TABLE my_table (id integer, name string);
+    // table_name, [column 1 name] [column 1 type] (etc..).
+    char *lecs[SHELL_BUF_SIZE];  // maximum size, to avoid using dynamic memmory
+    uint16_t lecs_counter;
+    uint16_t column_count;
+
+    if (check_unpair_char(str, '(') == 0)
+        return (error_unpaired_char('(', 0));
+    lecs_counter = 0;
+    strtok(str, " (),");  // skip create
+    strtok(NULL, " (),");  // skip table
+    while (lecs_counter < SHELL_BUF_SIZE)
+    {
+        lecs[lecs_counter] = bring_space_back(strtok(NULL, " (),"));
+        if (lecs[lecs_counter] == NULL)
+            break;
+        lecs_counter++;
+    }
+    column_count = (lecs_counter - 2) / 2;
+    if ((column_count % 2) != 0)
+        return (0);
+    pretty_print_create(lecs, column_count);
+    create_table(lecs, column_count);
     return (1);
 }
 

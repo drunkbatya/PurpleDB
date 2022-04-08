@@ -70,3 +70,26 @@ void pretty_print_update(char **arr)
     printf("%s %s %s", arr[2], arr[3], arr[4]);
     printf("\n"NC);
 }
+
+void pretty_print_create(char **arr, uint16_t column_count)
+{
+    uint16_t count;
+
+    count = 0;
+    printf(BOLD"CREATE TABLE "NC);
+    printf(CYAN"%s", arr[0]);
+    arr++;  // to skip table name and leave count = 0
+    printf("\n"NC);
+    printf("(\n");
+    while (count < (column_count * 2))
+    {
+        printf("\t%s ", arr[count]);
+        printf(CYAN"%s", arr[count + 1]);
+        if (count == column_count - 1)
+            printf("\n"NC);
+        else
+            printf(",\n"NC);
+        count += 2;
+    }
+    printf(")\n");
+}

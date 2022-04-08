@@ -43,9 +43,8 @@ char *bring_space_back(char *str)
     return (str);
 }
 
-// returns (true) if count of given char in given string
-// is an even number. Also true if char isn't exist in string.
-uint8_t check_unpair_char(char *str, char c)
+// returns count of all ocurance of given char in given string
+uint32_t count_char(char *str, char c)
 {
     char *new_ptr;
     uint32_t count;
@@ -58,7 +57,17 @@ uint8_t check_unpair_char(char *str, char c)
             count++;
         new_ptr++;
     }
-    return (!(count % 2));
+    return (count);
+}
+
+// returns (true) if count of given char in given string
+// is an even number. Also true if char isn't exist in string.
+// If char is '(' function will compare count of '(' with count of ')'.
+uint8_t check_unpair_char(char *str, char c)
+{
+    if (c == '(')
+        return (count_char(str, '(') == count_char(str, ')'));
+    return (!(count_char(str, c) % 2));
 }
 
 // remove all occurrence of char c from string str
