@@ -37,17 +37,20 @@ int main(void)
     arr[1] = "id";
     arr[2] = "100500";
     arr[3] = "age";
-    arr[4] = "25";
+    arr[4] = "<";
+    arr[5] = "25";
     update(arr);
 
     arr[1] = "name";
     arr[2] = "Everybody cool";
     arr[3] = "name";
-    arr[4] = "Dasha is so cool!";
+    arr[4] = "=";
+    arr[5] = "Dasha is so cool!";
     update(arr);
 
-    arr[1] = "name";
-    arr[2] = "Dasha cool!";
+    arr[1] = "age";
+    arr[2] = "=";
+    arr[3] = "25";
     delete(arr);
 
     printf("Rows: %d\n", get_rows_count("my_table.db"));
