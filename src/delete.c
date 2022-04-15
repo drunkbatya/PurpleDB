@@ -77,26 +77,28 @@ uint32_t find_offset_for_row_delete(FILE *fptr, COLUMN_COUNTER column_number)
     return res;
 }
 
-int match_is_true(int *datatype, void *record, char *array)
+int match_is_true(int *datatype, void *record, char *array_op, char *array_val)
 {
-    if ((*datatype == integer) && (*((int*)record) == atoi(array)))
-        return (1);
-    if ((*datatype == string) && (strcmp(record, array) == 0))
+    if (*datatype == integer) {
+        if (bin_calc_int(*((int*)record), atoi(array_val), array_op))
+            return 1;
+    }
+    if ((*datatype == string) && (strcmp(record, array_val) == 0))
         return (1);
     return 0;
 }
 
-uint32_t get_size_by_datatype_delete(int *pointer) 
+uint32_t get_size_by_datatype_delete(int *pointer)
 {
-    if (*pointer == integer) 
+    if (*pointer == integer)
         return (sizeof(INTEGER));
     if (*pointer == string)
         return (STRING_SIZE);
     return 0;
 }
 
-void rewrite_file(int start_index, uint16_t count, COLUMN_COUNTER column_number, 
-    int *reserve_array, FILE *fptr, uint32_t new_offset, uint32_t offset_of_whole_row)
+void rewrite_file(int start_index, uint16_t count, COLUMN_COUNTER column_number,
+     int *reserve_array, FILE *fptr, uint32_t new_offset, uint32_t offset_of_whole_row)
 {
     void *grab_value_for_shift;
     for (int j = start_index; j <= count - 1; j++) {
@@ -119,61 +121,27 @@ void rewrite_file(int start_index, uint16_t count, COLUMN_COUNTER column_number,
     }
 }
 
-// Delete data in existing table.
-// Arr format: [table_name]
-// [where column name] [equals column value]
-void delete(char **arr)
+int detect_lines_to_delete(uint16_t count, uint32_t size1, FILE *fptr,
+ uint32_t where_col_offset, uint32_t diff, int var_type, char **arr,
+ COLUMN_COUNTER column_number, int *reserve_array, uint32_t offset_of_whole_row)
 {
-    FILE *fptr;
-    char file_path[strlen(arr[0]) + 4];
-    COLUMN_COUNTER column_number;
-    uint32_t where_col_offset;
-    int var_type;
-    uint32_t offset_of_whole_row;
-    uint16_t count;
-    int32_t diff;
-    uint32_t size1;
-    int *reserve_array;
-    uint32_t delete_lines_count = 0;
-
-    strcpy(file_path, arr[0]);
-    strcat(file_path, ".db");
-    if (check_if_table_exists(file_path) == 0)
-        return;
-
-    column_number = read_column_number(file_path);
-    if (column_number < 1) {
-        error_null_column_number();
-        return;
-    }
-
-    fptr = fopen(file_path, "rb+");
-
-    where_col_offset = find_offset_for_column_delete(arr[1], fptr, column_number, &var_type);
-    diff = where_col_offset;
-    offset_of_whole_row = find_offset_for_row_delete(fptr, column_number);
-    count = get_rows_count(file_path);
-    where_col_offset = sizeof(COLUMN_COUNTER) + sizeof(t_header) * column_number + where_col_offset;
-    reserve_array = calloc(column_number, sizeof(int));
-    get_headers_structure(fptr, column_number, reserve_array);
-    size1 = get_size_by_datatype_delete(&var_type);
-
+    int delete_lines_count = 0;
     for (int i = 0; i < count; i++)
     {
-        uint32_t new_offset;
-        
+        // uint32_t new_offset;
+
         void *record = calloc(1, size1);
         fseek(fptr, where_col_offset, SEEK_SET);
         fread(record, size1, 1, fptr);
-        if (match_is_true(&var_type, record, arr[2])) {
+        if (match_is_true(&var_type, record, arr[2], arr[3])) {
             rewind(fptr);
-            if (i == count) {
+            if (i == count - 1) {
                 delete_lines_count++;
                 break;
             }
-            new_offset = where_col_offset - diff;
-            rewrite_file(i, count, column_number, reserve_array, 
-                fptr, new_offset, offset_of_whole_row);
+            // new_offset = where_col_offset - diff;
+            rewrite_file(i, count, column_number, reserve_array,
+                fptr, (where_col_offset - diff), offset_of_whole_row);
             i--;
             count--;
             rewind(fptr);
@@ -184,6 +152,11 @@ void delete(char **arr)
         where_col_offset += offset_of_whole_row;
     }
     free(reserve_array);
+    return delete_lines_count;
+}
+
+void truncate_file(int delete_lines_count, uint32_t offset_of_whole_row, FILE *fptr)
+{
     if (delete_lines_count > 0) {
         uint32_t shift = offset_of_whole_row * delete_lines_count;
         uint32_t res = get_file_size(fptr) - shift;
@@ -191,6 +164,46 @@ void delete(char **arr)
     } else {
         error_nothing_to_delete();
     }
+}
+
+// Delete data in existing table.
+// Arr format: [table_name]
+// [where column name] [operator] [column value]
+void delete(char **arr)
+{
+    FILE *fptr;
+    char path[strlen(arr[0]) + 4];
+    COLUMN_COUNTER column_number;
+    uint32_t where_col_offset;
+    int var_type;
+    uint32_t offset_of_whole_row;
+    uint16_t count;
+    int32_t diff;
+    uint32_t size1;
+    int *reserve_array;
+    uint32_t delete_lines;
+
+    strcpy(path, arr[0]);
+    strcat(path, ".db");
+    if (check_if_table_exists(path) == 0)
+        return;
+    column_number = read_column_number(path);
+    if (column_number < 1) {
+        error_null_column_number();
+        return;
+    }
+    fptr = fopen(path, "rb+");
+    where_col_offset = find_offset_for_column_delete(arr[1], fptr, column_number, &var_type);
+    diff = where_col_offset;  // bytes from the start of the row to where column
+    offset_of_whole_row = find_offset_for_row_delete(fptr, column_number);
+    count = get_rows_count(path);  // numbers of rows in the table
+    where_col_offset = sizeof(COLUMN_COUNTER) + sizeof(t_header) * column_number + where_col_offset;
+    reserve_array = calloc(column_number, sizeof(int));
+    get_headers_structure(fptr, column_number, reserve_array);
+    size1 = get_size_by_datatype_delete(&var_type);
+    delete_lines = detect_lines_to_delete(count, size1, fptr, where_col_offset, diff,
+                         var_type, arr, column_number, reserve_array, offset_of_whole_row);
+    truncate_file(delete_lines, offset_of_whole_row, fptr);
     safe_fclose(fptr);
     return;
 }
