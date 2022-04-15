@@ -28,58 +28,33 @@ uint8_t insert_string_update(char *str, FILE *fptr, uint32_t offset)
     return (1);
 }
 
-uint32_t find_offset_for_column(char *arr, FILE *fptr, uint8_t col_number, int * type_pointer)
+void change_values(uint16_t count, uint32_t offset1, uint32_t size1, \
+FILE *fptr, int first_type, char **arr, int sec_type, int32_t diff, int32_t offset_of_whole_row)
 {
-    uint32_t res = 0;
-    uint32_t offset = sizeof(COLUMN_COUNTER);
-    t_header *local = NULL;
-
-    for (int i = 1; i <= col_number; i++)
+    for (int i = 0; i < count; i++)
     {
-        local = read_record_from_file(fptr, offset, sizeof(t_header));
-        if (strcmp(arr, local->column_name) == 0)
-        {
-            if (local->datatype == integer) {
-                *type_pointer = local->datatype;
-            } else if (local->datatype == string) {
-                *type_pointer = local->datatype;
+        void *record = calloc(1, size1);
+        fseek(fptr, offset1, SEEK_SET);
+        fread(record, size1, 1, fptr);
+        if (match_is_true(&first_type, record, arr[4], arr[5])) {
+            rewind(fptr);
+            if (sec_type == integer) {
+                insert_integer_update(arr[2], fptr, offset1 - diff);
             }
-            free(local);
-            break;
+            if (sec_type == string) {
+                insert_string_update(arr[2], fptr, offset1 - diff);
+            }
         }
-        offset += sizeof(t_header);
-        if (local->datatype == integer) {
-            res += sizeof(INTEGER);
-        } else if (local->datatype == string) {
-            res += STRING_SIZE;
-        }
-        free(local);
+        free(record);
+        record = NULL;
+        offset1 += offset_of_whole_row;
     }
-    return res;
-}
-
-uint32_t find_offset_for_row(FILE *fptr, COLUMN_COUNTER column_number)
-{
-    uint32_t res = 0;
-    uint32_t offset = sizeof(COLUMN_COUNTER);
-
-    for (int i = 1; i <= column_number; i++)
-    {
-        t_header *local = read_record_from_file(fptr, offset, sizeof(t_header));
-        offset += sizeof(t_header);
-        if (local->datatype == integer) {
-            res += sizeof(INTEGER);
-        } else if (local->datatype == string) {
-            res += STRING_SIZE;
-        }
-        free(local);
-    }
-    return res;
 }
 
 // Update data in existing table.
 // Arr format: [table_name] [name of column to update]
-// [value to update] [where column name] [equals column value]
+// [value to update] [where column name] [operator]
+// [equals column value]
 void update(char **arr)
 {
     FILE *fptr;
@@ -89,8 +64,7 @@ void update(char **arr)
     uint32_t offset2;
     int sec_type;
     COLUMN_COUNTER column_number;
-    uint32_t where_col_offset;
-    uint32_t col_to_update_offset;
+    uint32_t where_col_offset, col_to_update_offset;
     uint32_t offset_of_whole_row;
     uint16_t count;
     int32_t diff;
@@ -100,15 +74,12 @@ void update(char **arr)
     strcat(file_path, ".db");
     if (check_if_table_exists(file_path) == 0)
         return;
-
     column_number = read_column_number(file_path);
     if (column_number < 1) {
         error_null_column_number();
         return;
     }
-
     fptr = fopen(file_path, "r+");
-
     where_col_offset = find_offset_for_column(arr[3], fptr, column_number, &first_type);
     col_to_update_offset = find_offset_for_column(arr[1], fptr, column_number, &sec_type);
     offset_of_whole_row = find_offset_for_row(fptr, column_number);
@@ -116,28 +87,9 @@ void update(char **arr)
     offset1 = sizeof(COLUMN_COUNTER) + sizeof(t_header) * column_number + where_col_offset;
     offset2 = sizeof(COLUMN_COUNTER) + sizeof(t_header) * column_number + col_to_update_offset;
     diff = offset1 - offset2;
-    if (first_type == integer) size1 = sizeof(INTEGER);
-    if (first_type == string) size1 = STRING_SIZE;
-
-    for (int i = 1; i <= count; i++)
-    {
-        void *record = calloc(1, size1);
-        fseek(fptr, offset1, SEEK_SET);
-        fread(record, size1, 1, fptr);
-        if (((first_type == integer) && (*((int*)record) == atoi(arr[4]))) ||
-                 ((first_type == string) && (strcmp(record, arr[4]) == 0))) {
-                rewind(fptr);
-                if (sec_type == integer) {
-                    insert_integer_update(arr[2], fptr, offset1 - diff);
-                }
-                if (sec_type == string) {
-                    insert_string_update(arr[2], fptr, offset1 - diff);
-                }
-        }
-        free(record);
-        record = NULL;
-        offset1 += offset_of_whole_row;
-    }
+    size1 = get_size_by_datatype_simple(&first_type);
+    change_values(count, offset1, size1, fptr, first_type,
+         arr, sec_type, diff, offset_of_whole_row);
     safe_fclose(fptr);
     return;
 }
