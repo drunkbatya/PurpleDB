@@ -29,4 +29,9 @@ void safe_free_headers(t_header **headers, COLUMN_COUNTER column_number);
 uint8_t bin_calc_int(int64_t num1, int64_t num2, char *op);
 uint8_t is_where_condition_true(FILE *fptr, char **arr, t_header **columns_arr, \
         uint16_t offset, COLUMN_COUNTER columns);
+uint32_t find_offset_for_column(char *arr, FILE *fptr, uint8_t col_number, \
+        int * type_pointer);
+uint32_t find_offset_for_row(FILE *fptr, COLUMN_COUNTER column_number);
+uint32_t get_size_by_datatype_simple(int *pointer);
+int match_is_true(int *datatype, void *record, char *array_op, char *array_val);
 #endif  // SRC_SHARED_H_

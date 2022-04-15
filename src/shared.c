@@ -208,7 +208,7 @@ uint16_t get_size_by_datatype(t_header *column)
     return (0);
 }
 
-// Binnary calculator to proceed WHERE conditions
+// Binary calculator to proceed WHERE conditions
 uint8_t bin_calc_int(int64_t num1, int64_t num2, char *op)
 {
     if (strcmp(op, "=") == 0)
@@ -275,4 +275,74 @@ uint8_t is_where_condition_true(FILE *fptr, char **arr, t_header **columns_arr, 
         return (check_where(fptr, offset, columns_arr[column_count], arr));
     }
     return (0);  // TODO(drunkbatya): error no column
+}
+
+uint32_t find_offset_for_column(char *arr, FILE *fptr, uint8_t col_number, int * type_pointer)
+{
+    uint32_t res = 0;
+    uint32_t offset = sizeof(COLUMN_COUNTER);
+    t_header *local = NULL;
+
+    for (int i = 0; i < col_number; i++)
+    {
+        local = read_record_from_file(fptr, offset, sizeof(t_header));
+        if (strcmp(arr, local->column_name) == 0)
+        {
+            if (local->datatype == integer) {
+                *type_pointer = local->datatype;
+            } else if (local->datatype == string) {
+                *type_pointer = local->datatype;
+            }
+            free(local);
+            break;
+        }
+        offset += sizeof(t_header);
+        if (local->datatype == integer) {
+            res += sizeof(INTEGER);
+        } else if (local->datatype == string) {
+            res += STRING_SIZE;
+        }
+        free(local);
+    }
+    return res;
+}
+
+uint32_t find_offset_for_row(FILE *fptr, COLUMN_COUNTER column_number)
+{
+    uint32_t res = 0;
+    uint32_t offset = sizeof(COLUMN_COUNTER);
+    t_header *local = NULL;
+
+    for (int i = 0; i < column_number; i++)
+    {
+        local = read_record_from_file(fptr, offset, sizeof(t_header));
+        offset += sizeof(t_header);
+        if (local->datatype == integer) {
+            res += sizeof(INTEGER);
+        } else if (local->datatype == string) {
+            res += STRING_SIZE;
+        }
+        free(local);
+    }
+    return res;
+}
+
+uint32_t get_size_by_datatype_simple(int *pointer)
+{
+    if (*pointer == integer)
+        return (sizeof(INTEGER));
+    if (*pointer == string)
+        return (STRING_SIZE);
+    return 0;
+}
+
+int match_is_true(int *datatype, void *record, char *array_op, char *array_val)
+{
+    if (*datatype == integer) {
+        if (bin_calc_int(*((int*)record), atoi(array_val), array_op))
+            return 1;
+    }
+    if ((*datatype == string) && (strcmp(record, array_val) == 0))
+        return (1);
+    return 0;
 }
