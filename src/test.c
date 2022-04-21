@@ -13,7 +13,7 @@ int main(void)
     arr[4] = "string";
     arr[5] = "age";
     arr[6] = "integer";
-    if (create_table(arr, 3) == 0)
+    if (p_create(arr, 3) == 0)
     {
         printf("Create table error!\n");
         return (1);

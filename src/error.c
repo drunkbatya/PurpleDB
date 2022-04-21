@@ -109,3 +109,8 @@ void error_wrong_operator(char *op)
 {
     printf("\nError! Wrong WHERE operator '%s'\n", op);
 }
+
+void error_table_exist(char *name)
+{
+    printf("\nError table '%s' already exist!\n", name);
+}

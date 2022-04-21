@@ -79,8 +79,8 @@ uint8_t parse_select_query(char *str)
     // column, from_op, table_name, where_op
     // where, where_op, where_val
     char *lecs[7];
-    int lecs_counter;
-    int check_out;
+    uint8_t check_out;
+    uint16_t lecs_counter;
 
     lecs_counter = 0;
     strtok(str, " ");  // skip select
@@ -116,6 +116,7 @@ uint8_t parse_create_query(char *str)
     // CREATE TABLE my_table (id integer, name string);
     // table_name, [column 1 name] [column 1 type] (etc..).
     char *lecs[SHELL_BUF_SIZE];  // maximum size, to avoid using dynamic memmory
+    uint8_t check_out;
     uint16_t lecs_counter;
     uint16_t column_count;
 
@@ -134,8 +135,11 @@ uint8_t parse_create_query(char *str)
     column_count = (lecs_counter - 2) / 2;
     if ((column_count % 2) != 0)
         return (0);
+    check_out = check_create_query(lecs, column_count);
+    if (!check_out)
+        return (0);
     pretty_print_create(lecs, column_count);
-    create_table(lecs, column_count);
+    p_create(lecs, column_count);
     return (1);
 }
 
@@ -144,10 +148,9 @@ uint8_t parse_insert_query(char *str)
     // table_name, values_op, value1,
     // value2, value3, value4, value5
     //
-    // in our way we have only 3 or 5 unit structures
-    char *lecs[7];
-    int lecs_counter;
-    int check_out;
+    char *lecs[SHELL_BUF_SIZE];  // maximum size, to avoid using dynamic memmory
+    uint8_t check_out;
+    uint16_t lecs_counter;
 
     lecs_counter = 0;
     strtok(str, " (),");  // skip insert
@@ -155,19 +158,13 @@ uint8_t parse_insert_query(char *str)
     while (lecs_counter < 7)
     {
         lecs[lecs_counter] = bring_space_back(strtok(NULL, " (),"));
+        if (lecs[lecs_counter] == NULL)
+            return (0);
         lecs_counter++;
     }
-    check_out = check_insert_query_3arg(lecs);
+    check_out = check_insert_query(lecs);
     if (!check_out)
         return (0);
-    if (check_out == 2)
-    {
-        if (!check_insert_query_5arg(lecs))
-            return (0);
-    } else {
-        lecs[5] = "";
-        lecs[6] = "";
-    }
     lecs[1] = lecs[2];  // value1
     lecs[2] = lecs[3];  // value2
     lecs[3] = lecs[4];  // value3
@@ -183,7 +180,7 @@ uint8_t parse_delete_query(char *str)
     // table_name, where_op, where,
     // equal_op, where_val
     char *lecs[5];
-    int lecs_counter;
+    uint16_t lecs_counter;
 
     lecs_counter = 0;
     strtok(str, " ");  // skip delete
@@ -208,8 +205,8 @@ uint8_t parse_update_query(char *str)
     // new_value, where_op, where, equal_op,
     // where_val
     char *lecs[9];
-    int lecs_counter;
-    int check_out;
+    uint8_t check_out;
+    uint16_t lecs_counter;
 
     lecs_counter = 0;
     strtok(str, " ");  // skip select
@@ -269,7 +266,30 @@ uint8_t check_select_query_where(char **lecs)
     return (1);
 }
 
-uint8_t check_insert_query_3arg(char **lecs)
+uint8_t check_create_query(char **lecs, uint16_t column_count)
+{
+    uint16_t count;
+
+    count = 0;
+    if (lecs[0] == NULL || strchr(lecs[0], ';'))  // table_name
+        return (0);
+    lecs++;  // to skip table name and leave count = 0
+    while (count < (column_count * 2))
+    {
+        if (lecs[count] == NULL || strchr(lecs[count], ';'))  // column name
+        {
+            printf("count\n");
+            return (0);
+        }
+        if (lecs[count + 1] == NULL)
+            return (0);
+        count += 2;
+    }
+    if (strcmp(lecs[column_count * 2], ";\n") != 0)
+        return (0);
+    return (1);
+}
+uint8_t check_insert_query(char **lecs)
 {
     if (lecs[0] == NULL || strchr(lecs[0], ';'))  // table_name
         return (0);
@@ -285,22 +305,6 @@ uint8_t check_insert_query_3arg(char **lecs)
     {
         *(strchr(lecs[5], ';')) = '\0';
         if (strlen(lecs[5]))
-            return (0);
-        return (1);
-    }
-    return (2);
-}
-
-uint8_t check_insert_query_5arg(char **lecs)
-{
-    if (lecs[5] == NULL || strchr(lecs[0], ';'))  // value4
-        return (0);
-    if (lecs[6] == NULL)  // value5
-        return (0);
-    if (strchr(lecs[6], ';'))
-    {
-        *(strchr(lecs[6], ';')) = '\0';
-        if (!strlen(lecs[6]))
             return (0);
     }
     return (1);

@@ -25,6 +25,7 @@ void error_unknown_column(char *column, char *table_name);
 void error_unknown_condition(char *column);
 void error_nothing_to_delete(void);
 void error_all_records_deleted(void);
+void error_table_exist(char *name);
 uint8_t error_unknown_table(char *table_name);
 uint8_t error_string_too_long(char *str, int str_size);
 

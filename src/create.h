@@ -8,5 +8,5 @@
 #include "shared.h"
 #include "structure.h"
 
-uint8_t create_table(char **arr, int column_count);
+uint8_t p_create(char **arr, int column_count);
 #endif  // SRC_CREATE_H_

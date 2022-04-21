@@ -28,8 +28,10 @@ uint8_t write_column_count(char *file_path, COLUMN_COUNTER column_count)
     FILE *ptr;
 
     ptr = fopen(file_path, "wx");
-    if (ptr == NULL) {
-        return (error_writing_in_file());
+    if (ptr == NULL)
+    {
+        error_table_exist(file_path);
+        return (0);
     }
     if (write_record_in_file(ptr, 0, sizeof(COLUMN_COUNTER), &column_count) == 0)   // gd pointer to integer
     {
@@ -46,7 +48,7 @@ uint8_t write_column_count(char *file_path, COLUMN_COUNTER column_count)
 // in the beginning of the file. Column count must be > 0.
 // Arr format: [table_name] [column 1 name] [column 1 type] (etc..).
 // For avaliable types see t_datatype in structure.h .
-uint8_t create_table(char **arr, int column_count)  // gd column count is initialized in test as integer
+uint8_t p_create(char **arr, int column_count)  // gd column count is initialized in test as integer
 {
     int count;
     int index;
@@ -81,6 +83,7 @@ uint8_t create_table(char **arr, int column_count)  // gd column count is initia
         count++;
         index+=2;
     }
+    printf("Table '%s' created!\n", file_path);
     safe_fclose(ptr);
     return (1);
 }
